@@ -4,16 +4,23 @@
             // 
             [`[a-zA-Z0-9_]+:`, `
             yytext = yytext[0: len(yytext) - 1]
-            return 'KEY'
+            return 'REQUIRED_KEY'
+            `],
+            // 
+            [`[a-zA-Z0-9_]+:\\?`, `
+            yytext = yytext[0: len(yytext) - 2]
+            return 'OPTIONAL_KEY'
             `],
     
             [`[a-zA-Z0-9_]+`, `return 'VAL'`],
     
             ["\\[", "return '['"],
             ["\\]", "return ']'"],
+
+            // ["&", "return '&'"],
     
     
-            ["\\.\\.\\.", "return 'ADDITIONAL_PROPERTIES'"],
+            ["\\.\\.\\.", "return '...'"],
             // ------------------------------------------------
             // Indent/Dedent.
     
