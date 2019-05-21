@@ -2,7 +2,7 @@ import poyo
 from functools import reduce
 
 
-
+import json
 class Node:
     def __init__(self, value, parent=None):
         # self.key = key
@@ -72,10 +72,7 @@ t = make_tree({
     }
 })
 
-if __name__ == "__main__":
-    print(t)
-    print()
-    print(b)
+
 
 """
 two:
@@ -187,20 +184,20 @@ INT = 'Int'
 STR = 'Str'
 FLOAT = 'Float'
 MORE = '...'
-
+INDENT_SIZE = 2
 
 def _make_tree(tokens, node: Node=Node('root'), offset=0):
-    # print('call')
+    print('call')
 
     for (i, token) in enumerate(tokens):
-        # print(i, token['type'], token['value'])
-        # print(node.value)
+        print(i, token['type'], token['value'])
+        print(node.value)
         if token['type'] == 'REQUIRED_KEY':
             child = Node(token['value'], node)    
             node = node.insert(child)
             node = child
 
-        elif token['type'] == 'OPTIONAL_KEY':
+        elif token['type'] == 'OPTIONAL_KEY': # TODO
             child = Node(token['value'], node)    
             node = node.insert(child)
             node = child
@@ -223,12 +220,17 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             elif int(token['value']) > offset:
                 # print(f"{token['value']} > {offset}")
                 node = _make_tree(tokens, node, int(token['value']))
-            else:
+            else: # TODO, other root keys end here
                 # print(f"{token['value']} < {offset}")
-                off = (offset - token['value']) / 2
+                off = (offset - int(token['value'])) // INDENT_SIZE
+                print('off', off)
                 while off:
                     node = node.parent
+                    offset -= INDENT_SIZE
                     off -= 1
+                node = node.parent
+                print(offset)
+                print(node.value)
                 return node
 
         # elif token['type'] == '&':
@@ -261,7 +263,8 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
 
 def make(tokens):
     root = Node('root',)
-    res = _make_tree(dummy(tokens), root, -1)
+    # root.parent = root
+    res = _make_tree(dummy(tokens), root, 0)
     # print('res', res)
     return root
 
@@ -277,13 +280,24 @@ class dotdict(dict):
 
 
 
-def make_schema(node):
+
+
+def make_schema(node, definitions):
     to_skip = [MORE]
+
+    if not len(node.children):
+        raise Exception(f'missing definition {node.value}')
+
+    if any([node.children[0].value == x for x in definitions]): # custom definition
+        return {
+            '$ref': f'#/definitions/{node.children[0].value}'
+        }
+
     if node.children[0].value == LIST:
         return {
             'type': 'array',
             'title': node.parent.value,
-            'items': make_schema(node.children[0])
+            'items': make_schema(node.children[0], definitions)
         }
 
     elif node.children[0].value == STR:
@@ -298,15 +312,15 @@ def make_schema(node):
     elif node.children[0].value == MORE:
         return {}
 
-    else:
+    else: # object
         ellipses = [ x for x in node.children if x.value == MORE ]
         if any(ellipses):
             _type = ellipses[0].children[0] if len(ellipses[0].children) else None
             return {
-                'additional_properties': make_schema(_type) if _type else True,
+                'additional_properties': make_schema(_type, definitions) if _type else True,
                 'type': 'object',
                 'properties': {
-                    child.value: make_schema(child) for child in node.children if not child.value in to_skip
+                    child.value: make_schema(child, definitions) for child in node.children if not child.value in to_skip
                 },
                 'title': node.value,
             }
@@ -315,9 +329,44 @@ def make_schema(node):
                 'additional_properties': False,
                 'type': 'object',
                 'properties': {
-                    child.value: make_schema(child) for child in node.children if not child.value in to_skip
+                    child.value: make_schema(child, definitions) for child in node.children if not child.value in to_skip
                 },
                 'required': [child.value for child in node.children],
                 'title': node.value,
             }
+
+
+# TODO
+def root_schema(root):
+    definitions = [ child.value for child in root.children ]
+    print(definitions)
+    schema = {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        'definitions': {},
+    }
+    for child in root.children:
+        schema['definitions'][child.value] = make_schema(child, definitions)
+
+    return schema
+
+test_schema = """
+Bot:
+    username: Str
+    data:
+        competitors: [Str]
+    dependencies: [Url]
+Url: Str
+
+"""
+
+if __name__ == "__main__":
+    INDENT_SIZE = 4
+    from test import tokenize
+    tokens = tokenize(test_schema)
+    # print([t for t in tokens if t['value'] == 'Cosa'])
+    # print(json.dumps(tokens, indent=4))
+    tree = make(tokens)
+    print(tree)
+    print()
+    print(json.dumps(root_schema(tree), indent=4))
 

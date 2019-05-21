@@ -49,14 +49,6 @@ obj:
 Tokenizer.__next__ = Tokenizer.get_next_token
 Tokenizer.__iter__ = lambda self: iter(self.get_next_token, EOF_TOKEN)
 
-tokenizer = Tokenizer(string2)
-tokens = [t for t in tokenizer]
-
-while tokens[0]['value'] == 'SEPARATOR':
-  tokens = tokens[1:]
-
-while tokens[-1]['value'] == 'SEPARATOR':
-  tokens = tokens[:-1]
 
 # print(json.dumps(tokens, indent=4))
 # print(json.dumps([{t['type']: t['value']} for t in tokenizer], indent=4))
@@ -78,16 +70,18 @@ object:
   ]
   some:
     shit:
-      not: Int
+      not: Cosa
 """
+def tokenize(string):
+  tokenizer = Tokenizer(string)
+  tokens = [t for t in tokenizer]
+  while tokens[0]['type'] == 'SEPARATOR':
+    tokens = tokens[1:]
+  while tokens[-1]['type'] == 'SEPARATOR':
+    tokens = tokens[:-1]
+  return tokens
 
-tokenizer = Tokenizer(schema)
-tokens = [t for t in tokenizer]
-print(make(tokens, ))
-while tokens[0]['value'] == 'SEPARATOR':
-  tokens = tokens[1:]
+if __name__ == "__main__":
+  tokens = tokenize(schema)
 
-while tokens[-1]['value'] == 'SEPARATOR':
-  tokens = tokens[:-1]
-
-print(json.dumps(make_schema(make(tokens)), indent=4))
+  print(json.dumps(make_schema(make(tokens), ['Cosa']), indent=4))
