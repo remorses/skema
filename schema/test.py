@@ -1,7 +1,7 @@
 
 
-from parser import Tokenizer, EOF_TOKEN
-from tree import dotdict, make_tree, make_schema
+from .parser import Tokenizer, EOF_TOKEN
+from .tree import dotdict, make_tree, make_schema
 import json
 
 string_ = """
@@ -84,4 +84,4 @@ def tokenize(string):
 if __name__ == "__main__":
   tokens = tokenize(schema)
 
-  print(json.dumps(make_schema(make(tokens), ['Cosa']), indent=4))
+  print(json.dumps(make_schema(make_tree(tokens), ['Cosa']), indent=4))

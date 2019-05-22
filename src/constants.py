@@ -1,0 +1,9 @@
+LIST = '__LIST'
+AND = '__AND'
+OR = '__OR'
+ANY = 'Any'
+INT = 'Int'
+STR = 'Str'
+FLOAT = 'Float'
+MORE = '...'
+INDENT_SIZE = 2
