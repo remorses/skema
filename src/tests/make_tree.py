@@ -22,20 +22,15 @@ Cosa:
         cosa: Cosa
         a: Int
         b: Int
-        ...
 
 """
 
-test_schema = """
-Bot:
-    username: Str
-"""
 
 if __name__ == "__main__":
     INDENT_SIZE = 4
     tokens = tokenize(test_schema)
     # print([t for t in tokens if t['value'] == 'Cosa'])
-    # print(json.dumps(tokens, indent=4))
+    print(json.dumps(tokens, indent=4))
     tree = make_tree(tokens)
     print(tree)
     print()

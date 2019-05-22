@@ -33,7 +33,8 @@ def make_value_tree(ast, node = Node('root')):
         node.insert(Node(ast))
     return node
 
-INDENT_SIZE = 2
+# TODO parametrize this
+INDENT_SIZE = 4
 
 def _make_tree(tokens, node: Node=Node('root'), offset=0):
     log('call')

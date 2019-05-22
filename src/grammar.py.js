@@ -7,6 +7,9 @@
             return 'REQUIRED_KEY'
             `],
             // 
+            ["( )?\\[( )?", "return '['"],
+            ["( )?\\]( )?", "return ']'"],
+
             [`[a-zA-Z0-9_]+:\\?`, `
             yytext = yytext[0: len(yytext) - 2]
             return 'OPTIONAL_KEY'
@@ -15,8 +18,7 @@
             [`[a-zA-Z0-9_&\\| "]+`, `return 'VAL'`],
             [`[a-zA-Z0-9_]+`, `return 'VAL'`],
     
-            ["\\[", "return '['"],
-            ["\\]", "return ']'"],
+
 
             // ["&", "return '&'"],
     
