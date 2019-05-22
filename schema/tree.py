@@ -4,8 +4,11 @@ from functools import reduce
 
 import json
 class Node:
-    def __init__(self, value, parent=None):
-        # self.key = key
+    def __init__(self, value, parent=None): 
+        # TODO 
+        # optional when key is optional, so children[0] is optional
+        # &, Node(&).children, every property of every child is grouped
+        # |, one of children is valid
         self.value = value
         self.children = []
         self.parent = parent
@@ -23,18 +26,14 @@ class Node:
 
 
 
-def make_tree(obj, key='root'):
+def tree_from_dict(obj: dict, key='root'):
     node = Node(key)
     for k, val in obj.items(): # properties
         if isinstance(val, dict): # is_object
-            node.insert(make_tree(val, k))
+            node.insert(tree_from_dict(val, k))
         else:
             node.insert(Node(k,).insert(Node(val,)))
     return node
-
-
-
-
 
 
 
@@ -58,7 +57,7 @@ b = Node(1).insert(
     )
 
 
-t = make_tree({
+t = tree_from_dict({
     'a': 1,
     'b': 2,
     'e': 1,
@@ -72,106 +71,6 @@ t = make_tree({
     }
 })
 
-
-
-"""
-two:
-  three: 3
-  arr: [
-    a: 1
-    b: 2
-    ...
-  ]
-four: 4
-arr: [Str]
-
-
-[
-    {
-        "SEPARATOR": 0
-    },
-    {
-        "KEY": "two"
-    },
-    {
-        "SEPARATOR": 2
-    },
-    {
-        "KEY": "three"
-    },
-    {
-        "VAL": "3"
-    },
-    {
-        "SEPARATOR": 2
-    },
-    {
-        "KEY": "arr"
-    },
-    {
-        "[": "["
-    },
-    {
-        "SEPARATOR": 4
-    },
-    {
-        "KEY": "a"
-    },
-    {
-        "VAL": "1"
-    },
-    {
-        "SEPARATOR": 4
-    },
-    {
-        "KEY": "b"
-    },
-    {
-        "VAL": "2"
-    },
-    {
-        "SEPARATOR": 4
-    },
-    {
-        "ADDITIONAL_PROPERTIES": "..."
-    },
-    {
-        "SEPARATOR": 2
-    },
-    {
-        "]": "]"
-    },
-    {
-        "SEPARATOR": 0
-    },
-    {
-        "KEY": "four"
-    },
-    {
-        "VAL": "4"
-    },
-    {
-        "SEPARATOR": 0
-    },
-    {
-        "KEY": "arr"
-    },
-    {
-        "[": "["
-    },
-    {
-        "VAL": "Str"
-    },
-    {
-        "]": "]"
-    },
-    {
-        "SEPARATOR": 0
-    }
-]
-
-
-"""
 
 def dummy(iter):
     yield from iter
@@ -261,7 +160,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
 
     return node
 
-def make(tokens):
+def make_tree(tokens) -> Node:
     root = Node('root',)
     # root.parent = root
     res = _make_tree(dummy(tokens), root, 0)
@@ -356,6 +255,15 @@ Bot:
         competitors: [Str]
     dependencies: [Url]
 Url: Str
+Cosa:
+    a: Str
+    b: Str
+    c: Int
+    d:
+        cosa: Cosa
+        a: Int
+        b: Int
+        ...
 
 """
 
@@ -365,7 +273,7 @@ if __name__ == "__main__":
     tokens = tokenize(test_schema)
     # print([t for t in tokens if t['value'] == 'Cosa'])
     # print(json.dumps(tokens, indent=4))
-    tree = make(tokens)
+    tree = make_tree(tokens)
     print(tree)
     print()
     print(json.dumps(root_schema(tree), indent=4))

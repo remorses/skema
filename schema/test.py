@@ -1,7 +1,7 @@
 
 
 from parser import Tokenizer, EOF_TOKEN
-from tree import dotdict, _make_tree, make, make_schema
+from tree import dotdict, make_tree, make_schema
 import json
 
 string_ = """
