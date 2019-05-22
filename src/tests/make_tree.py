@@ -28,7 +28,7 @@ Cosa:
 
 test_schema = """
 Bot:
-    username: Int | "wow"
+    username: Str
 """
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ class Node:
         # optional when key is optional, so children[0] is optional
         # &, Node(&).children, every property of every child is grouped
         # |, one of children is valid
-        self.value = value
+        self.value = value.strip() if isinstance(value, str) else value
         self.children = []
         self.parent = parent
     

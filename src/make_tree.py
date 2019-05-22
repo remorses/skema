@@ -103,6 +103,10 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
 
 def make_tree(tokens) -> Node:
     root = Node('root',)
+    print(tokens)
+    INDENT_SIZE = list(filter(lambda x: x['type'] == 'SEPARATOR', tokens))
+    INDENT_SIZE = INDENT_SIZE[0]['value'] if INDENT_SIZE else 2
+    print(INDENT_SIZE)
     # root.parent = root
     res = _make_tree(dummy(tokens), root, 0)
     # print('res', res)

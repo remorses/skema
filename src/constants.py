@@ -6,4 +6,3 @@ INT = 'Int'
 STR = 'Str'
 FLOAT = 'Float'
 MORE = '...'
-INDENT_SIZE = 2
