@@ -12,6 +12,7 @@
             return 'OPTIONAL_KEY'
             `],
     
+            [`[a-zA-Z0-9_&\\| "]+`, `return 'VAL'`],
             [`[a-zA-Z0-9_]+`, `return 'VAL'`],
     
             ["\\[", "return '['"],

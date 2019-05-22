@@ -1,6 +1,6 @@
 import poyo
 from functools import reduce
-
+import fastjsonschema
 
 import json
 class Node:
@@ -85,6 +85,31 @@ FLOAT = 'Float'
 MORE = '...'
 INDENT_SIZE = 2
 
+
+def extract_ast(text: str):
+    if '&' in text:
+        parts = text.split('&')
+        yield (AND, [x for p in parts for x in tuple(extract_ast(p.strip()))])
+    elif '|' in text:
+        parts = text.split('|')
+        yield (OR, [x for p in parts for x in tuple(extract_ast(p.strip()))])
+    else:
+        yield text
+
+def make_value_tree(ast, node = Node('root')):
+    # children = next(extract_nodes(val))
+    print('ast', ast)
+    if isinstance(ast, tuple):
+        op, rest = ast
+        child = Node(op)
+        node.insert(child)
+        # node = child
+        for t in rest:
+            make_value_tree(t, child)
+    else:
+        node.insert(Node(ast))
+    return node
+
 def _make_tree(tokens, node: Node=Node('root'), offset=0):
     print('call')
 
@@ -102,9 +127,12 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             node = child
             
         elif token['type'] == 'VAL':
-            child = Node(token['value'], node)    
-            node = node.insert(child)
-            # node = child
+            ast = next(extract_ast(token['value']))
+            root = make_value_tree(ast, node)
+            print(ast)
+            # node = node.insert(*root.children)
+            # child = Node(token['value'], node)    
+            # node = node.insert(child)
 
         elif token['type'] == MORE:
             child = Node(token['value'], node)    
@@ -187,12 +215,30 @@ def make_schema(node, definitions):
     if not len(node.children):
         raise Exception(f'missing definition {node.value}')
 
-    if any([node.children[0].value == x for x in definitions]): # custom definition
+    elif any([node.children[0].value == x for x in definitions]): # custom definition
         return {
             '$ref': f'#/definitions/{node.children[0].value}'
         }
 
-    if node.children[0].value == LIST:
+    elif '"' in node.children[0].value:
+        value = node.children[0].value.split('"')
+        value = [x.strip() for x in value if x.strip()] or ['']
+        value = value[0]
+        return {
+            'const': value,
+        }
+
+    elif node.children[0].value == OR:
+        return {
+            'oneOf': [make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+        }
+
+    elif node.children[0].value == AND:
+        return {
+            'allOf': [make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+        }
+
+    elif node.children[0].value == LIST:
         return {
             'type': 'array',
             'title': node.parent.value,
@@ -250,7 +296,7 @@ def root_schema(root):
 
 test_schema = """
 Bot:
-    username: Str
+    username: "ciao"
     data:
         competitors: [Str]
     dependencies: [Url]
@@ -267,6 +313,11 @@ Cosa:
 
 """
 
+test_schema = """
+Bot:
+    username: Int | "wow"
+"""
+
 if __name__ == "__main__":
     INDENT_SIZE = 4
     from test import tokenize
@@ -276,5 +327,13 @@ if __name__ == "__main__":
     tree = make_tree(tokens)
     print(tree)
     print()
-    print(json.dumps(root_schema(tree), indent=4))
+    schema = root_schema(tree)
+    print(json.dumps(schema, indent=4))
+    schema['$ref'] = "#/definitions/Bot"
+    test_ = {
+        'username': "wow"
+    }
+    validate = fastjsonschema.compile(schema)
+    validate(test_)
+    print()
 
