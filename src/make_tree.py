@@ -1,6 +1,7 @@
 
 from .tree import Node
 from .constants import *
+from .support import log
 
 def dummy(iter):
     yield from iter
@@ -20,7 +21,7 @@ def extract_ast(text: str):
 
 def make_value_tree(ast, node = Node('root')):
     # children = next(extract_nodes(val))
-    print('ast', ast)
+    log('ast', ast)
     if isinstance(ast, tuple):
         op, rest = ast
         child = Node(op)
@@ -33,11 +34,11 @@ def make_value_tree(ast, node = Node('root')):
     return node
 
 def _make_tree(tokens, node: Node=Node('root'), offset=0):
-    print('call')
+    log('call')
 
     for (i, token) in enumerate(tokens):
-        print(i, token['type'], token['value'])
-        print(node.value)
+        log(i, token['type'], token['value'])
+        log(node.value)
         if token['type'] == 'REQUIRED_KEY':
             child = Node(token['value'], node)    
             node = node.insert(child)
@@ -51,7 +52,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         elif token['type'] == 'VAL':
             ast = next(extract_ast(token['value']))
             root = make_value_tree(ast, node)
-            print(ast)
+            log(ast)
             # node = node.insert(*root.children)
             # child = Node(token['value'], node)    
             # node = node.insert(child)
@@ -63,27 +64,27 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             node = child
 
         elif token['type'] == 'SEPARATOR':
-            # print('here')
+            # log('here')
             if int(token['value']) == offset:
                 node = node.parent
             elif int(token['value']) > offset:
-                # print(f"{token['value']} > {offset}")
+                # log(f"{token['value']} > {offset}")
                 node = _make_tree(tokens, node, int(token['value']))
             else: # TODO, other root keys end here
-                # print(f"{token['value']} < {offset}")
+                # log(f"{token['value']} < {offset}")
                 off = (offset - int(token['value'])) // INDENT_SIZE
-                print('off', off)
+                log('off', off)
                 while off:
                     node = node.parent
                     offset -= INDENT_SIZE
                     off -= 1
                 node = node.parent
-                print(offset)
-                print(node.value)
+                log(offset)
+                log(node.value)
                 return node
 
         elif token['type'] == '[':
-            # print('here')
+            # log('here')
             child = Node(LIST, node)    
             node = node.insert(child)
             node = child
@@ -103,11 +104,11 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
 
 def make_tree(tokens) -> Node:
     root = Node('root',)
-    print(tokens)
+    log(tokens)
     INDENT_SIZE = list(filter(lambda x: x['type'] == 'SEPARATOR', tokens))
     INDENT_SIZE = INDENT_SIZE[0]['value'] if INDENT_SIZE else 2
-    print(INDENT_SIZE)
+    log(INDENT_SIZE)
     # root.parent = root
     res = _make_tree(dummy(tokens), root, 0)
-    # print('res', res)
+    # log('res', res)
     return root

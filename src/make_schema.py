@@ -79,7 +79,7 @@ def _make_schema(node, definitions):
 # TODO
 def make_schema(root):
     definitions = [ child.value for child in root.children ]
-    print(definitions)
+    # print(definitions)
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
         'definitions': {},
