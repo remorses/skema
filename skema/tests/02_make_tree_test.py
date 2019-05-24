@@ -27,8 +27,19 @@ Cosa:
         b: Int
 
 """
+with_lines = """
+Bot:
+    username: "ciao"
 
-@pytest.mark.parametrize('string', [simple, complex_schema])
+Url: Str
+
+Cosa:
+    a: Str
+    b: Str
+
+"""
+
+@pytest.mark.parametrize('string', [simple, complex_schema, with_lines])
 def test_make_tree(string):
     tokens = tokenize(string)
     tree = make_tree(tokens)

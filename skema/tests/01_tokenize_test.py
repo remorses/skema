@@ -23,11 +23,22 @@ X:
         d: 4
           e: 5
 """
+with_lines = """
+Bot:
+    username: "ciao"
 
+Url: Str
 
-@pytest.mark.parametrize("string", [many_props, very_deep], ids=lambda a: str(a))
+Cosa:
+    a: Str
+    b: Str
+
+"""
+
+@pytest.mark.parametrize("string", [many_props, very_deep, with_lines], ids=lambda a: str(a))
 def test_tokenize(string):
   tokens = tokenize(string)
+  print(json.dumps(tokens, indent=4))
   assert tokens
   assert tokens[0]['value'] != 'SEPARATOR'
   assert tokens[-1]['value'] != 'SEPARATOR'
