@@ -17,7 +17,8 @@ main = rcompose(
     partial(json.dumps, indent=4)
 )
 
-string = sys.argv[-1]
+
+string = sys.stdin.read()
 
 # string = """
 # Bot:
