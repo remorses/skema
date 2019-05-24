@@ -1,5 +1,14 @@
-# cd ~
-X='
+Bot:
+  username: Str
+  competitors: [Str]
+  age: Int
+  friends: [Bot]
+  data: InstagramData
+
+InstagramData:
+  password: Str + Int
+  username: Bot + InstagramData + ...
+
 AddedTodo:
   type: "added_todo"
   payload: 
@@ -16,5 +25,4 @@ RemovedTodo:
     todo_id: Int
 
 Event: AddedTodo | RemovedTodo
-'
-echo "$X" | python -m skema
+

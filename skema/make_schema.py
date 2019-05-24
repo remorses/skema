@@ -8,7 +8,7 @@ def _make_schema(node, definitions):
     to_skip = [MORE]
 
     if not len(node.children):
-        raise Exception(f'missing definition {node.value}')
+        raise Exception(f'missing definition {repr(node.value)}')
 
     elif any([node.children[0].value == x for x in definitions]): # custom definition
         return {
@@ -25,12 +25,12 @@ def _make_schema(node, definitions):
 
     elif node.children[0].value == OR:
         return {
-            'oneOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+            'oneOf': [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
         }
 
     elif node.children[0].value == AND:
         return {
-            'allOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+            'allOf': [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
         }
 
     elif node.children[0].value == LIST:

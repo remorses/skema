@@ -2,48 +2,20 @@
 from ..tokenize import tokenize
 from ..make_schema import make_schema
 from ..make_tree import make_tree
+from ..tree import map_tree, traverse_tree
 import pytest
 import fastjsonschema
+from .data import strings
+from .support import keys, values
 
-simple = """
-X:
-    ciao: Str
-    b: Int
-"""
-complex_schema = """
-Bot:
-    username: "ciao"
-    data:
-        competitors: [Str]
-    dependencies: [Url]
-Url: Str
-Cosa:
-    a: Str
-    b: Str
-    c: Int
-    d:
-        cosa: Cosa
-        a: Int
-        b: Int
 
-"""
-with_lines = """
-Bot:
-    username: "ciao"
 
-Url: Str
 
-Cosa:
-    a: Str
-    b: Str
-
-"""
-
-@pytest.mark.parametrize('string', [simple, complex_schema, with_lines])
+@pytest.mark.parametrize("string", values(strings), ids=keys(strings))
 def test_make_tree(string):
     tokens = tokenize(string)
     tree = make_tree(tokens)
-    assert tree
+    assert all([traverse_tree(lambda x: bool(x.value.strip()), tree)])
     assert tree.children
 
 

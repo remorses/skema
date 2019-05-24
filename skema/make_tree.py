@@ -30,7 +30,7 @@ def make_value_tree(ast, node = Node('root')):
         for t in rest:
             make_value_tree(t, child)
     else:
-        node.insert(Node(ast))
+        node.insert(Node(ast, node, ))
     return node
 
 # TODO parametrize this

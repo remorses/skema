@@ -38,3 +38,18 @@ def tree_from_dict(obj: dict, key='root'):
     return node
 
 
+def map_tree(f, node, result=Node('_')):
+    if not node.children:
+        f(node)
+    else:
+        for child in node.children:
+            f(child)
+    return result
+
+def traverse_tree(f, node, result=[]):
+    if not node.children:
+        result.append(f(node))
+    else:
+        for child in node.children:
+            traverse_tree(f, child, result)
+    return result
