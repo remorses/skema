@@ -13,6 +13,7 @@ AddedTodo:
 RemovedTodo:
     type: "removed_todo"
     payload:
+        id: Str
     todo_id: Int
 
 Event: AddedTodo | RemovedTodo
@@ -70,33 +71,36 @@ generates the less readable json schema
                     "additional_properties": false,
                     "type": "object",
                     "properties": {
-                        "todo_id": {
-                            "type": "number",
-                            "multipleOf": 1.0
+                        "id": {
+                            "type": "string"
                         }
                     },
                     "required": [
-                        "todo_id"
+                        "id"
                     ],
                     "title": "payload"
                 },
-                "Event": {
-                    "oneOf": [
-                        {
-                            "$ref": "#/definitions/AddedTodo"
-                        },
-                        {
-                            "$ref": "#/definitions/RemovedTodo"
-                        }
-                    ]
+                "todo_id": {
+                    "type": "number",
+                    "multipleOf": 1.0
                 }
             },
             "required": [
                 "type",
                 "payload",
-                "Event"
+                "todo_id"
             ],
             "title": "RemovedTodo"
+        },
+        "Event": {
+            "oneOf": [
+                {
+                    "$ref": "#/definitions/AddedTodo"
+                },
+                {
+                    "$ref": "#/definitions/RemovedTodo"
+                }
+            ]
         }
     }
 }

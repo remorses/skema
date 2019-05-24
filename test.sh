@@ -9,6 +9,7 @@ AddedTodo:
 RemovedTodo:
     type: "removed_todo"
     payload:
+        id: Str
     todo_id: Int
 
 Event: AddedTodo | RemovedTodo
