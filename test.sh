@@ -3,8 +3,9 @@ X='
 AddedTodo:
     type: "added_todo"
     payload:
-    todo:
-        name: Str
+        todo:
+            name: Str
+
 RemovedTodo:
     type: "removed_todo"
     payload:

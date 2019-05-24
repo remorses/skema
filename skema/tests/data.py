@@ -99,6 +99,21 @@ Cosa:
 
 """
 
+problematic = """
+AddedTodo:
+    type: "added_todo"
+    payload:
+        todo:
+            name: Str
+
+RemovedTodo:
+    type: "removed_todo"
+    payload:
+    todo_id: Int
+
+Event: AddedTodo | RemovedTodo
+"""
+
 strings = {x: y for (x, y) in locals().items() if not x[0] == '_'}
 
 # print(list(strings.keys()))
