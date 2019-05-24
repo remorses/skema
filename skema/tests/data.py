@@ -54,18 +54,14 @@ Cosa:
         a: Int
         b: Int
 
-"""
-with_lines = """
-Bot:
-    username: "ciao"
-
-Url: Str
-
-Cosa:
-    a: Str
-    b: Str
+Array: [
+    cosa: Int
+    object:
+        ciao: Str
+]
 
 """
+
 
 events = """
 A:
@@ -90,6 +86,18 @@ B:
 
 # Event: AddedTodo | RemovedTodo
 # """
+
+with_lines = """
+Bot:
+    username: "ciao"
+
+Url: Str
+
+Cosa:
+    a: Str
+    b: Str
+
+"""
 
 strings = {x: y for (x, y) in locals().items() if not x[0] == '_'}
 

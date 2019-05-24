@@ -15,7 +15,23 @@ def remove_duplicates(acc, token):
     return acc + [token]
    
 
-
+INDENT_SIZE = 4
+def decompose_indents(acc, token):
+  last = [x for x in acc if x['type'] == 'SEPARATOR']
+  last = last[-1] if last else None
+  if last and token['type'] == 'SEPARATOR':
+    difference = (last['value'] - token['value']) // INDENT_SIZE
+    if difference > 1:
+      tokens = [token] * difference
+      tokens = [{**x} for x in tokens]
+      for i, token in enumerate(tokens):
+        print(last['value'] - ((i + 1) * INDENT_SIZE))
+        tokens[i].update({'value': last['value'] - ((i + 1) * INDENT_SIZE)})
+      return acc + tokens
+    else:
+      return acc + [token]
+  else:
+    return acc + [token]
 
 def tokenize(string):
   tokenizer = Tokenizer(string)
@@ -25,5 +41,15 @@ def tokenize(string):
     tokens = tokens[1:]
   if tokens[-1]['type'] == 'SEPARATOR':
     tokens = tokens[:-1]
+  tokens = reduce(decompose_indents, tokens, [])
   return tokens
 
+
+if __name__ == "__main__":
+    toks = [
+      { 'value': 0 , 'type': 'SEPARATOR' },
+      { 'value': 8 , 'type': 'SEPARATOR' },
+      { 'value': 0 , 'type': 'SEPARATOR' },
+    ]
+    x = reduce(decompose_indents, toks, [])
+    print(x)

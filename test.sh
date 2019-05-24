@@ -1,13 +1,13 @@
 # cd ~
 X='
 AddedTodo:
-  type: "added_todo"
-  payload:
+    type: "added_todo"
+    payload:
     todo:
-      name: Str
+        name: Str
 RemovedTodo:
-  type: "removed_todo"
-  payload:
+    type: "removed_todo"
+    payload:
     todo_id: Int
 
 Event: AddedTodo | RemovedTodo

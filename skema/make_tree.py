@@ -21,10 +21,10 @@ def extract_ast(text: str):
 
 def make_value_tree(ast, node = Node('root')):
     # children = next(extract_nodes(val))
-    log('ast', ast)
+    # log('ast', ast)
     if isinstance(ast, tuple):
         op, rest = ast
-        child = Node(op)
+        child = Node(op, node)
         node.insert(child)
         # node = child
         for t in rest:
@@ -42,8 +42,10 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         raise Exception('all nodes should have parents')
 
     for (i, token) in enumerate(tokens):
+        log()
         log(i, token['type'], token['value'])
-        log(node.value)
+        log('node', node.value)
+        log('offset', offset)
         if token['type'] == 'REQUIRED_KEY':
             child = Node(token['value'], node)    
             node = node.insert(child)
@@ -57,7 +59,8 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         elif token['type'] == 'VAL':
             ast = next(extract_ast(token['value']))
             root = make_value_tree(ast, node)
-            log(ast)
+            node = node.parent
+            # log(ast)
             # node = node.insert(*root.children)
             # child = Node(token['value'], node)    
             # node = node.insert(child)
@@ -71,20 +74,23 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         elif token['type'] == 'SEPARATOR':
             # log('here')
             if int(token['value']) == offset:
-                node = node.parent
+                # node = node.parent
+                pass
             elif int(token['value']) > offset:
-                # log(f"{token['value']} > {offset}")
+                log(f"{token['value']} > {offset}")
                 node = _make_tree(tokens, node, int(token['value']))
+                # node = node.parent
+                # offset -= INDENT_SIZE
             else: # TODO, other root keys end here
                 log(f"{token['value']} < {offset}")
                 off = (offset - int(token['value'])) // INDENT_SIZE
                 log('off', off)
-                offset -= off * INDENT_SIZE
-                while off + 1:
+                # offset -= off * INDENT_SIZE
+                while off :
                     node = node.parent
                     off -= 1
-                log(offset)
-                log(node.value)
+                log('offset', offset)
+                # log('value', node.value)
                 return node
 
         elif token['type'] == '[':
@@ -92,11 +98,12 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             child = Node(LIST, node)    
             node = node.insert(child)
             node = child
-            node = _make_tree(tokens, node, offset)
+            node = _make_tree(tokens, node, offset )
         
         elif token['type'] == ']':
-            while node.value != LIST:
-                node = node.parent
+            log(node.value)
+            # while node.value != LIST:
+            #     node = node.parent
             node = node.parent
             return node
 
