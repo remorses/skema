@@ -2,6 +2,7 @@
 
 ## example
 
+this skema snippet
 ```yaml
 AddedTodo:
     type: "added_todo"
@@ -16,7 +17,90 @@ RemovedTodo:
 
 Event: AddedTodo | RemovedTodo
 ```
-
+generates the less readable json schema
+```json
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "definitions": {
+        "AddedTodo": {
+            "additional_properties": false,
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "added_todo"
+                },
+                "payload": {
+                    "additional_properties": false,
+                    "type": "object",
+                    "properties": {
+                        "todo": {
+                            "additional_properties": false,
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "name"
+                            ],
+                            "title": "todo"
+                        }
+                    },
+                    "required": [
+                        "todo"
+                    ],
+                    "title": "payload"
+                }
+            },
+            "required": [
+                "type",
+                "payload"
+            ],
+            "title": "AddedTodo"
+        },
+        "RemovedTodo": {
+            "additional_properties": false,
+            "type": "object",
+            "properties": {
+                "type": {
+                    "const": "removed_todo"
+                },
+                "payload": {
+                    "additional_properties": false,
+                    "type": "object",
+                    "properties": {
+                        "todo_id": {
+                            "type": "number",
+                            "multipleOf": 1.0
+                        }
+                    },
+                    "required": [
+                        "todo_id"
+                    ],
+                    "title": "payload"
+                },
+                "Event": {
+                    "oneOf": [
+                        {
+                            "$ref": "#/definitions/AddedTodo"
+                        },
+                        {
+                            "$ref": "#/definitions/RemovedTodo"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "type",
+                "payload",
+                "Event"
+            ],
+            "title": "RemovedTodo"
+        }
+    }
+}
+```
 ## spec
 
 - all root properties are references and can be used as types
