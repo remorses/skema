@@ -64,7 +64,8 @@ import re as _syntax_tool_re
 def _lex_rule1(self):
     global __, __loc, yytext, yyleng
     
-    yytext = yytext[0: len(yytext) - 1]
+    last = len(yytext.strip()) - 1
+    yytext = yytext[0:last]
     return 'REQUIRED_KEY'
     
 
@@ -109,7 +110,7 @@ def _lex_rule9(self):
     global __, __loc, yytext, yyleng
     pass
 
-_lex_rules = [['^[a-zA-Z0-9_]+:', _lex_rule1],
+_lex_rules = [['^[a-zA-Z0-9_]+:[ ]*', _lex_rule1],
 ['^( )?\[( )?', _lex_rule2],
 ['^( )?\]( )?', _lex_rule3],
 ['^[a-zA-Z0-9_]+:\?', _lex_rule4],

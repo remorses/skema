@@ -8,7 +8,7 @@ def _make_schema(node, definitions):
     to_skip = [MORE]
 
     if not len(node.children):
-        raise Exception(f'missing definition {repr(node.value)}')
+        raise Exception(f'missing definition {repr(node.value)} {"after " + repr(node.parent.value) if node.parent else None}')
 
     elif any([node.children[0].value == x for x in definitions]): # custom definition
         return {

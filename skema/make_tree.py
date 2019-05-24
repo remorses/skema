@@ -38,6 +38,8 @@ INDENT_SIZE = 4
 
 def _make_tree(tokens, node: Node=Node('root'), offset=0):
     log('call')
+    if not node.parent and node.value != 'root':
+        raise Exception('all nodes should have parents')
 
     for (i, token) in enumerate(tokens):
         log(i, token['type'], token['value'])
@@ -74,14 +76,13 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
                 # log(f"{token['value']} > {offset}")
                 node = _make_tree(tokens, node, int(token['value']))
             else: # TODO, other root keys end here
-                # log(f"{token['value']} < {offset}")
+                log(f"{token['value']} < {offset}")
                 off = (offset - int(token['value'])) // INDENT_SIZE
                 log('off', off)
-                while off:
+                offset -= off * INDENT_SIZE
+                while off + 1:
                     node = node.parent
-                    offset -= INDENT_SIZE
                     off -= 1
-                node = node.parent
                 log(offset)
                 log(node.value)
                 return node
@@ -117,8 +118,12 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
 def make_tree(tokens) -> Node:
     root = Node('root',)
     log(tokens)
-    INDENT_SIZE = list(filter(lambda x: x['type'] == 'SEPARATOR', tokens))
-    INDENT_SIZE = INDENT_SIZE[0]['value'] if INDENT_SIZE else 2
+    separators = list(filter(lambda x: x['type'] == 'SEPARATOR', tokens))
+    is_4indents = [x['value'] % 4 == 0 for x in separators]
+    is_2indents = [x['value'] % 2 == 0 for x in separators]
+    if not all(is_4indents): #and not all(is_2indents):
+        raise Exception('indents must be all 2 or 4 spaces') 
+    INDENT_SIZE = 4 #separators[0]['value'] if separators else 4
     log(INDENT_SIZE)
     # root.parent = root
     res = _make_tree(dummy(tokens), root, 0)

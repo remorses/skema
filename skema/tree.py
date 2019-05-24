@@ -20,7 +20,7 @@ class Node:
         return self
     
     def __repr__(self, indent=''):
-        res = (indent + str(self.value))
+        res = (indent + str(self.value) or '""')
         res += ':' if len(self.children) else ''
         for c in self.children:
             res += '\n' + Node.__repr__(c, indent + '\t')

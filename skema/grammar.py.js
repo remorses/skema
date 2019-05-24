@@ -2,8 +2,9 @@
     lex: {
         rules: [
             // 
-            [`[a-zA-Z0-9_]+:`, `
-            yytext = yytext[0: len(yytext) - 1]
+            [`[a-zA-Z0-9_]+:[ ]*`, `
+            last = len(yytext.strip()) - 1
+            yytext = yytext[0:last]
             return 'REQUIRED_KEY'
             `],
             // 
@@ -16,7 +17,7 @@
             `],
     
             [`[a-zA-Z0-9_&\\| "]+`, `return 'VAL'`],
-            [`[a-zA-Z0-9_]+`, `return 'VAL'`],
+            // [`[a-zA-Z0-9_]+`, `return 'VAL'`],
     
 
 

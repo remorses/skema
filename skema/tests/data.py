@@ -12,7 +12,6 @@ X:
     ciao: Str
     b: Int | Str
     c: "ciao"
-    ...
 
 B:
     x: Int
@@ -26,50 +25,18 @@ X:
     ciao: Str
     b: Int | Str
     c: "ciao"
-    ...
 
 B:
     x: Int
 
 C:
     x: X | B
-    b:
-        c:
-            ...
+    b: Int
+
     
 """
 
-tricky = """
-AddedTodo:
-  type: "added_todo"
-  payload: 
-    todo:
-      name: Str
-      data:
-        ...
-  meta:
-    ...
-"""
 
-
-events = """
-AddedTodo:
-  type: "added_todo"
-  payload: 
-    todo:
-      name: Str
-      data:
-        ...
-  meta:
-    ...
-
-RemovedTodo:
-  type: "removed_todo"
-  payload:
-    todo_id: Int
-
-Event: AddedTodo | RemovedTodo
-"""
 
 complex_schema = """
 Bot:
@@ -99,6 +66,30 @@ Cosa:
     b: Str
 
 """
+
+events = """
+A:
+    x: "Int"
+    payload:
+        cosa: Int
+
+B:
+    x:
+        ciao: Str
+"""
+# problem = """
+# AddedTodo:
+#     type: "added_todo"
+#     payload:
+#         todo:
+#             name: Str
+# RemovedTodo:
+#     type: "removed_todo"
+#     payload:
+#         todo_id: Int
+
+# Event: AddedTodo | RemovedTodo
+# """
 
 strings = {x: y for (x, y) in locals().items() if not x[0] == '_'}
 
