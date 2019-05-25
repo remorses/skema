@@ -1,0 +1,9 @@
+{
+    "python.testing.pyTestArgs": [
+        "skema"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pyTestEnabled": true,
+    // "python.testing.outputWindow": "integratedTerminal",
+}

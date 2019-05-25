@@ -73,19 +73,7 @@ B:
     x:
         ciao: Str
 """
-# problem = """
-# AddedTodo:
-#     type: "added_todo"
-#     payload:
-#         todo:
-#             name: Str
-# RemovedTodo:
-#     type: "removed_todo"
-#     payload:
-#         todo_id: Int
 
-# Event: AddedTodo | RemovedTodo
-# """
 
 with_lines = """
 Bot:
@@ -113,6 +101,10 @@ RemovedTodo:
 
 Event: AddedTodo | RemovedTodo
 """
+
+# failing = """
+# ciao: NonEsisto
+# """
 
 strings = {x: y for (x, y) in locals().items() if not x[0] == '_'}
 

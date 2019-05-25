@@ -38,6 +38,7 @@ INDENT_SIZE = 4
 
 def _make_tree(tokens, node: Node=Node('root'), offset=0):
     log('call')
+    # assert None
     if not node.parent and node.value != 'root':
         raise Exception('all nodes should have parents')
 
