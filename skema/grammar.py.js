@@ -8,8 +8,8 @@
             return 'REQUIRED_KEY'
             `],
             // 
-            ["( )?\\[( )?", "return '['"],
-            ["( )?\\]( )?", "return ']'"],
+            ["\\[", "return '['"],
+            ["\\]", "return ']'"],
 
             [`[a-zA-Z0-9_]+:\\?`, `
             yytext = yytext[0: len(yytext) - 2]

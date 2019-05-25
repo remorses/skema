@@ -1,6 +1,7 @@
 
 
 from .parser import Tokenizer, EOF_TOKEN
+from .support import log
 from functools import reduce
 import json
 
@@ -52,4 +53,4 @@ if __name__ == "__main__":
       { 'value': 0 , 'type': 'SEPARATOR' },
     ]
     x = reduce(decompose_indents, toks, [])
-    print(x)
+    log(x)
