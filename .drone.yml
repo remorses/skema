@@ -5,9 +5,9 @@ steps:
 - name: test
   image: python:3.7-alpine
   commands:
-  - pip install .
-  - pip install pytest
-  - pytest
+  - pip install . > /dev/null
+  - pip install pytest > /dev/null
+  - pytest  --disable-warnings
 - name: bump
   image: xplugins/bump
   settings:
