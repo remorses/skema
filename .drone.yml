@@ -27,3 +27,6 @@ steps:
     setupfile: setup.py
     password:
       from_secret: pypi_password
+    distributions:
+      - sdist
+      - bdist_wheel
