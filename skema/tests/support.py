@@ -1,8 +1,15 @@
 
 import inspect
-from funcy import compose
 from operator import methodcaller
+from functools import reduce
 
+
+def compose(*fs):
+    """Composes passed functions."""
+    if fs:
+        pair = lambda f, g: lambda *a, **kw: f(g(*a, **kw))
+        return reduce(pair, fs)
+    
 
 def get_name(var):
     callers_local_vars = inspect.currentframe().f_back.f_locals.items()

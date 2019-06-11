@@ -6,7 +6,6 @@ from .make_tree import make_tree
 import sys
 import json
 from functools import reduce, partial
-# from funcy import rcompose
 
 rcompose = lambda *arr: reduce(lambda f, g: lambda *a, **kw: f(g(*a, **kw)), reversed(arr))
 
