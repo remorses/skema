@@ -19,4 +19,4 @@ steps:
   settings:
     username: xmorse
     password:
-      from_password: pypi_password
+      from_secret: pypi_password
