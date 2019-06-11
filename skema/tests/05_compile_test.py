@@ -13,3 +13,8 @@ from .. import compile
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
 def test_make_schema(string):
     validate = compile(string)
+
+    try:
+        validate({})
+    except Exception as e:
+        print(e)
