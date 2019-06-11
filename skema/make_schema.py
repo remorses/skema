@@ -5,7 +5,7 @@ from .constants import *
 
 
 def _make_schema(node, definitions):
-    to_skip = [MORE]
+    to_skip = [ELLIPSIS]
 
     if not len(node.children):
         raise Exception(f'missing definition {repr(node.value)} {"after " + repr(node.parent.value) if node.parent else None}')
@@ -49,11 +49,11 @@ def _make_schema(node, definitions):
     elif node.children[0].value == INT:
         return { 'type': 'number', "multipleOf": 1.0 }
 
-    elif node.children[0].value == MORE:
+    elif node.children[0].value == ELLIPSIS:
         return { 'type': 'object', 'additionalProperties': True }
 
     else: # object
-        ellipses = [ x for x in node.children if x.value == MORE ]
+        ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
         if any(ellipses):
             _type = ellipses[0].children[0] if len(ellipses[0].children) else None
             return {

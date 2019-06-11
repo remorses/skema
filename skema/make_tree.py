@@ -66,7 +66,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             # child = Node(token['value'], node)    
             # node = node.insert(child)
 
-        elif token['type'] == MORE:
+        elif token['type'] == ELLIPSIS:
             child = Node(token['value'], node)    
             # child.insert(Node(ANY, child))
             node = node.insert(child)
