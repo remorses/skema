@@ -70,7 +70,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             child = Node(token['value'], node)    
             # child.insert(Node(ANY, child))
             node = node.insert(child)
-            node = child
+            # node = child
 
         elif token['type'] == 'SEPARATOR':
             # log('here')

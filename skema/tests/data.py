@@ -102,6 +102,50 @@ RemovedTodo:
 Event: AddedTodo | RemovedTodo
 """
 
+real_no_ellipsis = """
+Task:
+    deadline: Date
+    cron: Str
+    script: Str
+    variables: Str
+    results: [
+        events: [
+            type: Str
+            payload: Str
+            obj:
+                some: Int
+                other: Str
+        ]
+        data: Str
+    ]
+Date: Str
+"""
+
+real_with_ellipsis = """
+Task:
+    deadline: Date
+    cron: Str
+    script: Str
+    variables: 
+        ...
+    results: [
+        events: [
+            type: Str
+            payload: Str
+            obj:
+                some: Int
+                other:
+                    ...
+                ...
+        ]
+        data: Str
+        array: [
+            ...
+        ]
+    ]
+Date: Str
+"""
+
 # failing = """
 # ciao: NonEsisto
 # """

@@ -1,4 +1,4 @@
-LIST = '__LIST'
+LIST = 'array'
 AND = '__AND'
 OR = '__OR'
 ANY = 'Any'

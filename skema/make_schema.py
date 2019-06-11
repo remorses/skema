@@ -50,14 +50,14 @@ def _make_schema(node, definitions):
         return { 'type': 'number', "multipleOf": 1.0 }
 
     elif node.children[0].value == MORE:
-        return {}
+        return { 'type': 'object', 'additionalProperties': True }
 
     else: # object
         ellipses = [ x for x in node.children if x.value == MORE ]
         if any(ellipses):
             _type = ellipses[0].children[0] if len(ellipses[0].children) else None
             return {
-                'additional_properties': _make_schema(_type, definitions) if _type else True,
+                'additionalProperties': _make_schema(_type, definitions) if _type else True,
                 'type': 'object',
                 'properties': {
                     child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
@@ -66,7 +66,7 @@ def _make_schema(node, definitions):
             }
         else:
             return {
-                'additional_properties': False,
+                'additionalProperties': False,
                 'type': 'object',
                 'properties': {
                     child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip

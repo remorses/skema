@@ -19,11 +19,14 @@ class Node:
         [self.children.append(n) for n in nodes]
         return self
     
-    def __repr__(self, indent=''):
+    def __repr__(self, ):
+        return str(self.value) + ':' if len(self.children) else ''
+    
+    def __str__(self, indent=''):
         res = (indent + str(self.value) or '""')
         res += ':' if len(self.children) else ''
         for c in self.children:
-            res += '\n' + Node.__repr__(c, indent + '\t')
+            res += '\n' + Node.__str__(c, indent + '\t')
         return res
 
 
