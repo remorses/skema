@@ -18,5 +18,6 @@ steps:
   image: plugins/pypi
   settings:
     username: xmorse
+    setupfile: setup.py
     password:
       from_secret: pypi_password
