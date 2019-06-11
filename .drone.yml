@@ -3,6 +3,7 @@ name: default
 
 steps:
 - name: test
+  image: python:3.7-alpine
   commands:
   - pip install .
   - pip install pytest
