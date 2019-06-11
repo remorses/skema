@@ -1,0 +1,21 @@
+kind: pipeline
+name: default
+
+steps:
+- name: test
+  commands:
+  - pip install .
+  - pip install pytest
+  - pytest
+- name: bump
+  image: xplugins/bump
+  settings:
+    github_token: 
+      from_secret: github_token
+    versionfile: VERSION
+- name: pypi_publish
+  image: plugins/pypi
+  settings:
+    username: xmorse
+    password:
+      from_password: pypi_password
