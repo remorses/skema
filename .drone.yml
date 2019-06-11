@@ -1,6 +1,12 @@
 kind: pipeline
 name: default
 
+# skip bump tag
+trigger:
+  ref:
+    exclude:
+    - refs/tags/*
+
 steps:
 - name: test
   image: python:3.7-alpine
