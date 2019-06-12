@@ -47,13 +47,14 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         log(i, token['type'], token['value'])
         log('node', node.value)
         log('offset', offset)
+        
         if token['type'] == 'REQUIRED_KEY':
             child = Node(token['value'], node)    
             node = node.insert(child)
             node = child
 
         elif token['type'] == 'OPTIONAL_KEY': # TODO
-            child = Node(token['value'], node)    
+            child = Node(token['value'], node, required=False)    
             node = node.insert(child)
             node = child
             

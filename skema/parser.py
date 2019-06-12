@@ -64,25 +64,26 @@ import re as _syntax_tool_re
 def _lex_rule1(self):
     global __, __loc, yytext, yyleng
     
+    last = len(yytext.strip()) - 2
+    yytext = yytext[0:last]
+    return 'OPTIONAL_KEY'
+    
+
+def _lex_rule2(self):
+    global __, __loc, yytext, yyleng
+    
     last = len(yytext.strip()) - 1
     yytext = yytext[0:last]
     return 'REQUIRED_KEY'
     
 
-def _lex_rule2(self):
+def _lex_rule3(self):
     global __, __loc, yytext, yyleng
     return '['
 
-def _lex_rule3(self):
-    global __, __loc, yytext, yyleng
-    return ']'
-
 def _lex_rule4(self):
     global __, __loc, yytext, yyleng
-    
-    yytext = yytext[0: len(yytext) - 2]
-    return 'OPTIONAL_KEY'
-    
+    return ']'
 
 def _lex_rule5(self):
     global __, __loc, yytext, yyleng
@@ -106,10 +107,10 @@ def _lex_rule8(self):
     global __, __loc, yytext, yyleng
     pass
 
-_lex_rules = [['^[a-zA-Z0-9_]+:[ ]*', _lex_rule1],
-['^\[', _lex_rule2],
-['^\]', _lex_rule3],
-['^[a-zA-Z0-9_]+:\?', _lex_rule4],
+_lex_rules = [['^[a-zA-Z0-9_]+:\?[ ]*', _lex_rule1],
+['^[a-zA-Z0-9_]+:[ ]*', _lex_rule2],
+['^\[', _lex_rule3],
+['^\]', _lex_rule4],
 ['^[a-zA-Z0-9_&\| "]+', _lex_rule5],
 ['^\.\.\.', _lex_rule6],
 ['^\n( *)', _lex_rule7],

@@ -6,7 +6,7 @@ import json
 
 
 class Node:
-    def __init__(self, value, parent=None): 
+    def __init__(self, value, parent=None, required=True): 
         # TODO 
         # optional when key is optional, so children[0] is optional
         # &, Node(&).children, every property of every child is grouped
@@ -14,6 +14,7 @@ class Node:
         self.value = value.strip() if isinstance(value, str) else value
         self.children = []
         self.parent = parent
+        self.required = required
     
     def insert(self, *nodes):
         [self.children.append(n) for n in nodes]

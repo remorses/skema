@@ -77,7 +77,7 @@ def _make_schema(node, definitions):
                 'properties': {
                     child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
                 },
-                'required': [child.value for child in node.children],
+                'required': [child.value for child in node.children if child.required],
                 'title': node.value,
             }
 

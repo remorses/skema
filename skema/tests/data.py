@@ -189,6 +189,23 @@ Result:
 Date: Str
 """
 
+with_optionals = """
+Result:
+    events:? [
+        type: Str
+        payload:? Str
+        obj:?
+            some: Int | null
+            other:
+                ...
+            ...
+    ]
+    data:? Str
+    array: [
+        ...
+    ]
+"""
+
 # failing = """
 # ciao: NonEsisto
 # """
