@@ -146,6 +146,49 @@ Task:
 Date: Str
 """
 
+with_nulls = """
+Data:
+    never: Bool | null
+    say: "ciao" | null
+"""
+
+matrix = """
+Data:
+    matrix: [[Int]]
+    bo: [[Custom]]
+Custom:
+    ciao: Str
+    ...
+"""
+
+with_spaces = """
+Task:
+    deadline: Date
+    cron: Str
+    script: Str
+    variables: 
+        ...
+    results: [Result]
+
+
+Result:
+    events: [
+        type: Str
+        payload: Str
+        obj:
+            some: Int
+            other:
+                ...
+            ...
+    ]
+    data: Str
+    array: [
+        ...
+    ]
+
+Date: Str
+"""
+
 # failing = """
 # ciao: NonEsisto
 # """

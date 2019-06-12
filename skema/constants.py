@@ -5,4 +5,7 @@ ANY = 'Any'
 INT = 'Int'
 STR = 'Str'
 FLOAT = 'Float'
+NULL = 'null'
+BOOL = 'Bool'
 ELLIPSIS = '...'
+
