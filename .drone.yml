@@ -13,7 +13,7 @@ steps:
   commands:
   - pip install . > /dev/null
   - pip install pytest > /dev/null
-  - pytest  --disable-warnings -sv --colors=yes
+  - pytest  --disable-warnings -sv --color=yes
 - name: bump
   image: xplugins/bump
   settings:
