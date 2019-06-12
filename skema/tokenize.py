@@ -26,7 +26,7 @@ def decompose_indents(acc, token):
       tokens = [token] * difference
       tokens = [{**x} for x in tokens]
       for i, token in enumerate(tokens):
-        print(last['value'] - ((i + 1) * INDENT_SIZE))
+        # print(last['value'] - ((i + 1) * INDENT_SIZE))
         tokens[i].update({'value': last['value'] - ((i + 1) * INDENT_SIZE)})
       return acc + tokens
     else:
