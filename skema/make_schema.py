@@ -63,23 +63,23 @@ def _make_schema(node, definitions):
         if any(ellipses):
             _type = ellipses[0].children[0] if len(ellipses[0].children) else None
             return {
-                'additionalProperties': _make_schema(_type, definitions) if _type else True,
+                'title': node.value,
                 'type': 'object',
+                'required': [child.value for child in node.children if child.required],
                 'properties': {
                     child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
                 },
-                'required': [child.value for child in node.children if child.required],
-                'title': node.value,
+                'additionalProperties': _make_schema(_type, definitions) if _type else True,
             }
         else:
             return {
-                'additionalProperties': False,
+                'title': node.value,
                 'type': 'object',
+                'required': [child.value for child in node.children if child.required],
                 'properties': {
                     child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
                 },
-                'required': [child.value for child in node.children if child.required],
-                'title': node.value,
+                'additionalProperties': False,  
             }
 
 
