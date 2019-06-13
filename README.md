@@ -122,10 +122,6 @@ generates the less readable json schema
     - `Object1 | Object2` means "properties of object 1 and not 2 or 2 and not 1"
 
 TODO:
-- tests for make_tree
-- tests for make_schema
-- optional keys
-- root key as the main schema
-- move extract_ast to tokens instead of a value, so value won't must contain spaces
+- make `compile(schema, definition='Root')
 
 

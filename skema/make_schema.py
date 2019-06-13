@@ -88,8 +88,8 @@ def make_schema(root):
     # print(definitions)
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
-        'definitions': {},
         '$ref': '#/definitions/' + definitions[0],
+        'definitions': {},
     }
     for child in root.children:
         schema['definitions'][child.value] = _make_schema(child, definitions)

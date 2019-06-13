@@ -206,6 +206,13 @@ Result:
     ]
 """
 
+super_simple = """
+req:
+    ok: Bool
+    bot:
+        ...
+"""
+
 # failing = """
 # ciao: NonEsisto
 # """
