@@ -12,7 +12,6 @@ from .__main__ import main, to_jsonschema
 rcompose = lambda *arr: reduce(lambda f, g: lambda *a, **kw: f(g(*a, **kw)), reversed(arr))
 
 
-
 def compile(definition,):
     jsonschema = to_jsonschema(definition)
     return compile_(jsonschema)
