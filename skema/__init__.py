@@ -5,14 +5,12 @@ from .make_tree import make_tree
 import sys
 import json
 from functools import reduce, partial
+import jsonref
+import fastjsonschema
+from .__main__ import main, to_jsonschema
 
 rcompose = lambda *arr: reduce(lambda f, g: lambda *a, **kw: f(g(*a, **kw)), reversed(arr))
 
-to_jsonschema = rcompose(
-    tokenize,
-    make_tree,
-    make_schema
-)
 
 
 def compile(definition,):
