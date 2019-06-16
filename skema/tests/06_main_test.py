@@ -12,11 +12,11 @@ from .. import main
 
 
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
-def test_mmain_no_refs_resolve(string):
+def test_main_no_refs_resolve(string):
     print(main(string))
 
 
 
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
-def test_mmain(string):
+def test_main_with_refs(string):
     print(main(string, resolve=True))
