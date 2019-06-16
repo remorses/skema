@@ -43,6 +43,9 @@ def _make_schema(node, definitions):
     elif node.children[0].value == STR:
         return { 'type': 'string' }
 
+    elif node.children[0].value == ANY:
+        return {}
+
     elif node.children[0].value == BOOL:
         return { 'type': 'boolean' }
 

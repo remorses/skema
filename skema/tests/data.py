@@ -213,6 +213,13 @@ req:
         ...
 """
 
+with_any = """
+req:
+    ok: Any
+    bot:
+        ...
+"""
+
 # failing = """
 # ciao: NonEsisto
 # """
