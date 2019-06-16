@@ -60,27 +60,19 @@ def _make_schema(node, definitions):
 
     else: # object
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
-        if any(ellipses):
-            _type = ellipses[0].children[0] if len(ellipses[0].children) else None
-            return {
-                'title': node.value,
-                'type': 'object',
-                'required': [child.value for child in node.children if child.required],
-                'properties': {
-                    child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
-                },
-                'additionalProperties': _make_schema(_type, definitions) if _type else True,
-            }
-        else:
-            return {
-                'title': node.value,
-                'type': 'object',
-                'required': [child.value for child in node.children if child.required],
-                'properties': {
-                    child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
-                },
-                'additionalProperties': False,  
-            }
+        # if any(ellipses):
+        #     _type = ellipses[0].children[0] if len(ellipses[0].children) else None # TODO don't know what is this
+        return {
+            'title': node.value,
+            'type': 'object',
+            'required': [child.value for child in node.children if child.required and not child.value in to_skip],
+            'properties': {
+                child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
+            },
+            'additionalProperties': True if len(ellipses) else False,
+            # 'additionalProperties': _make_schema(_type, definitions) if _type else True 
+        }
+
 
 
 # TODO
