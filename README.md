@@ -1,7 +1,7 @@
 # skema: schema sdl that compiles to json-schema
 
 <--- [bump] -->
-## last version: 0.0.10
+## last version: 0.0.11
 ## example
 
 this skema snippet
