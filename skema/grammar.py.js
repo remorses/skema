@@ -1,7 +1,7 @@
 ({
     lex: {
         rules: [
-            [`[a-zA-Z0-9_]+:\\?[ ]*`, `
+            [`[a-zA-Z0-9_]+\\?:[ ]*`, `
             last = len(yytext.strip()) - 2
             yytext = yytext[0:last]
             return 'OPTIONAL_KEY'

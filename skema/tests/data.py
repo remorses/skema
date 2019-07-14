@@ -191,16 +191,16 @@ Date: Str
 
 with_optionals = """
 Result:
-    events:? [
+    events?: [
         type: Str
-        payload:? Str
-        obj:?
+        payload?: Str
+        obj?:
             some: Int | null
             other:
                 ...
             ...
     ]
-    data:? Str
+    data?: Str
     array: [
         ...
     ]

@@ -107,7 +107,7 @@ def _lex_rule8(self):
     global __, __loc, yytext, yyleng
     pass
 
-_lex_rules = [['^[a-zA-Z0-9_]+:\?[ ]*', _lex_rule1],
+_lex_rules = [['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule1],
 ['^[a-zA-Z0-9_]+:[ ]*', _lex_rule2],
 ['^\[', _lex_rule3],
 ['^\]', _lex_rule4],
