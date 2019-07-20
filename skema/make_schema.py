@@ -36,7 +36,7 @@ def _make_schema(node, definitions):
     elif node.children[0].value == LIST:
         return {
             'type': 'array',
-            'title': node.parent.value,
+            # 'title': node.value,
             'items': _make_schema(node.children[0], definitions)
         }
 

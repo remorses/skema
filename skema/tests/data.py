@@ -20,14 +20,14 @@ C:
     c: Str
 """
 
-reference_union = """
+union = """
 X:
     ciao: Str
     b: Int | Str
     c: "ciao"
 
 B:
-    x: Int
+    x: Int | null
 
 C:
     x: X | B
@@ -53,12 +53,22 @@ Cosa:
         cosa: Cosa
         a: Int
         b: Int
+"""
 
+arrays = """
 Array: [
     cosa: Int
     object:
         ciao: Str
+    another: [
+        cose: Str
+        altre: Int
+    ]
+    types: [Type]
 ]
+
+Type:
+    x: Int
 
 """
 
