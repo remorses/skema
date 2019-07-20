@@ -25,7 +25,7 @@ def _make_schema(node, definitions):
 
     elif node.children[0].value == OR:
         return {
-            'oneOf': [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
+            'anyOf': [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
         }
 
     elif node.children[0].value == AND:
