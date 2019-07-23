@@ -8,7 +8,7 @@ from functools import reduce, partial
 import jsonref
 import fastjsonschema
 from .__main__ import main, to_jsonschema
-
+from .fake_data import fake_data
 rcompose = lambda *arr: reduce(lambda f, g: lambda *a, **kw: f(g(*a, **kw)), reversed(arr))
 
 

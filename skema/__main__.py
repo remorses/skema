@@ -14,9 +14,6 @@ from .resolve_refs import resolve_refs
 rcompose = lambda *arr: reduce(lambda f, g: lambda *a, **kw: f(g(*a, **kw)), reversed(arr))
 
 
-
-
-
 def to_jsonschema(schema, ref=None, resolve=False):
     
     result = rcompose(
