@@ -1,6 +1,6 @@
 # skema: schema sdl that compiles to json-schema
 
-<--- [bump] -->
+[bump]
 ## last version: 0.0.14
 ## example
 
