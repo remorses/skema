@@ -29,8 +29,10 @@ def _make_schema(node, definitions):
         }
 
     elif node.children[0].value == AND:
+        options = [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
+        options = [{**opt, 'additionalProperties': True} for opt in options if not isinstance(opt, dict) and opt.get('additionalProperties', True)]
         return {
-            'allOf': [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
+            'allOf': options,
         }
 
     elif node.children[0].value == LIST:
