@@ -309,6 +309,17 @@ Event:
 Ciao: /eiii/
 '''
 
+with_comments = '''
+"""evento del sistema"""
+Event:
+    x: Int # un int
+    b: Ciao
+    pattern: /ciao/ # una regex uau
+    patterns: [/cacca/]
+
+Ciao: /eiii/
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """

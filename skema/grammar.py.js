@@ -11,7 +11,7 @@
             return 'ANNOTATION'
             `],
 
-            ['/.*/', `
+            ['/.*/[ ]*', `
             last = len(yytext.strip()) - 1
             yytext = yytext[1:last]
             return 'REGEX'
@@ -62,8 +62,9 @@
     
             return 'SEPARATOR'
             `],
-    
+            [`#.*`, `pass`],
             [`\\s+`, `pass`],
+            
             // [`:`,    `/* skip whitespace */`],
             // [`\\-`,     `return '-'`],
         ],
