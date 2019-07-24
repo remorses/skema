@@ -1,7 +1,7 @@
 # skema: schema sdl that compiles to json-schema
 
 <!---[bump]--->
-## last version: 0.0.16
+## last version: 0.0.17
 ## example
 
 todo
