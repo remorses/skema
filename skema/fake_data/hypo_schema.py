@@ -1,7 +1,7 @@
 from random import randint
 
 from hypothesis import strategies as hs
-
+import json
 from .regex import regex
 
 
@@ -106,24 +106,31 @@ def gen_any_of(prop, customs):
 
     return hs.one_of(possible_values)
 
-def gen_all_of(prop, customs):
+specials = ['allOf', 'oneOf', 'anyOf']
+
+def merge_all_of(prop,):
     dicts = prop["allOf"]
-    if not all([d['type'] == 'object' for d in dicts]):
-        raise Exception('allOf is supported as array of object types')
+
+    if not all([any([x in d for x in specials]) or d.get('type') == 'object'  for d in dicts]):
+        raise Exception(f'allOf is supported as array of object types: {json.dumps(dicts, indent=4, default=repr)}')
     result = {
         'additionalProperties': True,
         'required': [],
         'properties': {},
     }
     for obj in dicts:
+        if 'allOf' in obj:
+            obj = merge_all_of(obj)
+    
         result['additionalProperties'] = result['additionalProperties'] and bool(obj.get('additionalProperties', True))
         result['properties'] = {**result['properties'], **(obj.get('properties', {}) or {})}
         result['required'] = result['required'] + (obj.get('required', [])  or [])
     result['required'] = list(set(result['required']))
+    return result
+
+def gen_all_of(prop, customs):
+    result = merge_all_of(prop)
     return gen_object(result, customs)
-
-
-
 
 def get_generator(prop, customs={}):
     disp = {"string": gen_string,
