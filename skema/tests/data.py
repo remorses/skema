@@ -287,7 +287,7 @@ Other:
 """
 
 with_annotation = '''
-"""evento del sistema"""
+"evento del sistema"
 Event:
     x: Int
     b: Ciao

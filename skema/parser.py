@@ -66,6 +66,10 @@ def _lex_rule1(self):
     
     last = len(yytext.strip()) - 3
     yytext = yytext[3:last]
+    if yytext and yytext[0] == '\n':
+        yytext = yytext[1:]
+    if yytext and yytext[-1] == '\n':
+        yytext = yytext[:-1]
     return 'ANNOTATION'
     
 
@@ -103,7 +107,15 @@ def _lex_rule6(self):
 
 def _lex_rule7(self):
     global __, __loc, yytext, yyleng
-    return 'VAL'
+    
+    # print('token_start_column', self.token_start_column)
+    if self.token_start_column == 0:
+        last = len(yytext.strip()) - 1
+        yytext = yytext[1:last]
+        return 'ANNOTATION'
+    else:
+        return 'VAL'
+    
 
 def _lex_rule8(self):
     global __, __loc, yytext, yyleng
@@ -123,7 +135,7 @@ def _lex_rule10(self):
     global __, __loc, yytext, yyleng
     pass
 
-_lex_rules = [['"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
+_lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
 ['^/.*/', _lex_rule2],
 ['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule3],
 ['^[a-zA-Z0-9_]+:[ ]*', _lex_rule4],

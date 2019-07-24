@@ -32,6 +32,10 @@ EventB:
     ...
 
 """,
+    'regex': """
+    Ciao:
+        x: /\d*/
+    """
 }
 
 @pytest.mark.parametrize("string", values(schemas), ids=keys(schemas))

@@ -1,9 +1,13 @@
 ({
     lex: {
         rules: [
-            ['"""(?:(?!""").|\n)*"""[ ]*', `
+            ['"""(?:(?!""").|\\n)*"""[ ]*', `
             last = len(yytext.strip()) - 3
             yytext = yytext[3:last]
+            if yytext and yytext[0] == '\\n':
+                yytext = yytext[1:]
+            if yytext and yytext[-1] == '\\n':
+                yytext = yytext[:-1]
             return 'ANNOTATION'
             `],
 
@@ -31,7 +35,15 @@
             ["\\]", "return ']'"],
 
     
-            [`[a-zA-Z0-9_&\\| "]+`, `return 'VAL'`],
+            [`[a-zA-Z0-9_&\\| "]+`, `
+            # print('token_start_column', self.token_start_column)
+            if self.token_start_column == 0:
+                last = len(yytext.strip()) - 1
+                yytext = yytext[1:last]
+                return 'ANNOTATION'
+            else:
+                return 'VAL'
+            `],
             // [`[a-zA-Z0-9_]+`, `return 'VAL'`],
     
 
