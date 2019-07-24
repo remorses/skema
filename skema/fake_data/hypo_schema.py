@@ -15,7 +15,11 @@ def gen_string(prop):
     min_value = prop.get("minLength", 5)
     max_value = prop.get("maxLength", 30)
     pattern = prop.get('pattern', '[ A-Za-z\d]+')
-    return hs.just(regex(pattern).filter(lambda x: min_value <= len(x) and len(x) <= max_value).example())
+    return hs.just(regex(pattern)\
+        .filter(lambda x: min_value <= len(x) and len(x) <= max_value)\
+        .map(lambda x: x.rstrip('\x00'))\
+        .example()
+    )
     # return hs.text(
     #     hs.characters(
     #         max_codepoint=100, 
@@ -144,8 +148,8 @@ def get_generator(prop, customs={}):
     if enum is not None:
         return gen_enum(prop)
 
-    const = prop.get("const", None)
-    if const is not None:
+    
+    if 'const' in prop:
         return gen_const(prop)
 
     one_of = prop.get("oneOf", None)
