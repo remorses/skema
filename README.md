@@ -5,7 +5,33 @@
 ## example
 
 todo
-- remove begin and end indents
+- add string patterns
+```yaml
+Object:
+    regex: /\w*/
+    string: Str
+```
+- add descriptions
+
+```yaml
+"The event type"
+Event:
+    type: "trigger" | "unknown"
+    data:
+        ...
+    by: User
+
+"""
+The annotation will be put in json schema description,
+can also be used to write the type to use in fake_data:
+:type datetime.datetime
+The faker will try tu use this Class
+"""
+User:
+    name: Str
+    phone: Int
+```
+
 
 this skema snippet
 ```yaml
