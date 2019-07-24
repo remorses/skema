@@ -64,12 +64,28 @@ import re as _syntax_tool_re
 def _lex_rule1(self):
     global __, __loc, yytext, yyleng
     
+    last = len(yytext.strip()) - 3
+    yytext = yytext[2:last]
+    return 'ANNOTATION'
+    
+
+def _lex_rule2(self):
+    global __, __loc, yytext, yyleng
+    
+    last = len(yytext.strip()) - 1
+    yytext = yytext[1:last]
+    return 'REGEX'
+    
+
+def _lex_rule3(self):
+    global __, __loc, yytext, yyleng
+    
     last = len(yytext.strip()) - 2
     yytext = yytext[0:last]
     return 'OPTIONAL_KEY'
     
 
-def _lex_rule2(self):
+def _lex_rule4(self):
     global __, __loc, yytext, yyleng
     
     last = len(yytext.strip()) - 1
@@ -77,23 +93,23 @@ def _lex_rule2(self):
     return 'REQUIRED_KEY'
     
 
-def _lex_rule3(self):
+def _lex_rule5(self):
     global __, __loc, yytext, yyleng
     return '['
 
-def _lex_rule4(self):
+def _lex_rule6(self):
     global __, __loc, yytext, yyleng
     return ']'
 
-def _lex_rule5(self):
+def _lex_rule7(self):
     global __, __loc, yytext, yyleng
     return 'VAL'
 
-def _lex_rule6(self):
+def _lex_rule8(self):
     global __, __loc, yytext, yyleng
     return '...'
 
-def _lex_rule7(self):
+def _lex_rule9(self):
     global __, __loc, yytext, yyleng
     
     
@@ -103,20 +119,22 @@ def _lex_rule7(self):
     return 'SEPARATOR'
     
 
-def _lex_rule8(self):
+def _lex_rule10(self):
     global __, __loc, yytext, yyleng
     pass
 
-_lex_rules = [['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule1],
-['^[a-zA-Z0-9_]+:[ ]*', _lex_rule2],
-['^\[', _lex_rule3],
-['^\]', _lex_rule4],
-['^[a-zA-Z0-9_&\| "]+', _lex_rule5],
-['^\.\.\.', _lex_rule6],
-['^\n( *)', _lex_rule7],
-['^\s+', _lex_rule8]]
+_lex_rules = [['"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
+['^/.*/', _lex_rule2],
+['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule3],
+['^[a-zA-Z0-9_]+:[ ]*', _lex_rule4],
+['^\[', _lex_rule5],
+['^\]', _lex_rule6],
+['^[a-zA-Z0-9_&\| "]+', _lex_rule7],
+['^\.\.\.', _lex_rule8],
+['^\n( *)', _lex_rule9],
+['^\s+', _lex_rule10]]
 
-_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6,7]}
+_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6,7,8,9]}
 
 EOF_TOKEN = {
   'type': EOF,

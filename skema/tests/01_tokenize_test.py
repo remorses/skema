@@ -16,6 +16,19 @@ def test_tokenize(string):
   assert tokens[-1]['value'] != 'SEPARATOR'
     
 
+annotated = '''
+"""ciao"""
+Event:
+    a: Int
+    b: Str
+"""ei"""
+'''
+
+def test_annotation():
+  tokens = tokenize(annotated)
+  print(json.dumps(tokens, indent=4))
+  assert tokens[-1]['type'] == 'ANNOTATION'
+
 # if __name__ == "__main__":
 #   tokens = tokenize(schema)
 

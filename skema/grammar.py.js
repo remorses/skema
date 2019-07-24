@@ -1,6 +1,18 @@
 ({
     lex: {
         rules: [
+            ['"""(?:(?!""").|\n)*"""[ ]*', `
+            last = len(yytext.strip()) - 3
+            yytext = yytext[2:last]
+            return 'ANNOTATION'
+            `],
+            
+            ['/.*/', `
+            last = len(yytext.strip()) - 1
+            yytext = yytext[1:last]
+            return 'REGEX'
+            `],
+
             [`[a-zA-Z0-9_]+\\?:[ ]*`, `
             last = len(yytext.strip()) - 2
             yytext = yytext[0:last]

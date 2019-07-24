@@ -62,10 +62,12 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             ast = next(extract_ast(token['value']))
             root = make_value_tree(ast, node)
             node = node.parent
-            # log(ast)
-            # node = node.insert(*root.children)
-            # child = Node(token['value'], node)    
-            # node = node.insert(child)
+            
+        elif token['type'] == 'REGEX':
+            child = Node(REGEX, node,)
+            child.pattern = token['type']
+            node.insert(child)
+            node = node.parent
 
         elif token['type'] == ELLIPSIS:
             child = Node(token['value'], node)    
@@ -108,7 +110,10 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             #     node = node.parent
             node = node.parent
             return node
-
+        
+        elif token['type'] == 'ANNOTATION':
+            node.child_annotation = token['value']
+            # return node
 
         else:
             raise Exception(f'{token["type"]} not implemented')

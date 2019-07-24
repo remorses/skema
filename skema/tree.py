@@ -15,6 +15,8 @@ class Node:
         self.children = []
         self.parent = parent
         self.required = required
+        self.child_annotation = ''
+        self.pattern = ''
     
     def insert(self, *nodes):
         [self.children.append(n) for n in nodes]

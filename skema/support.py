@@ -1,4 +1,4 @@
 
 
 log = lambda *x: None # print
-# log = print
+log = print

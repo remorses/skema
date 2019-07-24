@@ -46,6 +46,9 @@ def _make_schema(node, definitions):
     elif node.children[0].value == STR:
         return { 'type': 'string' }
 
+    elif node.children[0].value == REGEX:
+        return { 'type': 'string', 'pattern': node.children[0].pattern }
+
     elif node.children[0].value == ANY:
         return {}
 
@@ -70,6 +73,7 @@ def _make_schema(node, definitions):
         #     _type = ellipses[0].children[0] if len(ellipses[0].children) else None # TODO don't know what is this
         return {
             'title': node.value,
+            'description': node.parent.child_annotation,
             'type': 'object',
             'required': [child.value for child in node.children if child.required and not child.value in to_skip],
             'properties': {

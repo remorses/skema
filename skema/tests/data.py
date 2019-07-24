@@ -286,6 +286,28 @@ Other:
     ]
 """
 
+with_annotation = '''
+"""evento del sistema"""
+Event:
+    x: Int
+    b: Ciao
+
+"""
+qualcosa
+"""
+Ciao: Any
+'''
+
+with_regex = '''
+"""evento del sistema"""
+Event:
+    x: Int
+    b: Ciao
+    pattern: /ciao/
+
+Ciao: /eiii/
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """
