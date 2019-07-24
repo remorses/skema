@@ -230,6 +230,62 @@ req:
         ...
 """
 
+indented = """
+    Root: EventA & EventB
+    EventA:
+        type: Str
+        fields:
+            args: [
+                name: Str
+                type: Str | Any
+            ]
+        ...
+
+    EventB:
+        timestamp: Int
+        sentBy: Str
+        madeBy: "me" | "you"
+        ...
+"""
+
+indented_badly = """
+
+    Root: EventA & EventB
+    EventA:
+        type: Str
+        fields:
+            args: [
+                name: Str
+                type: Str | Any
+            ]
+        ...
+
+
+    EventB:
+        timestamp: Int
+        sentBy: Str
+        madeBy: "me" | "you"
+        ...
+    """
+
+allOf = """
+Root: EventA & EventB
+EventA:
+    type: Str
+    fields: Other & Str
+EventB:
+    timestamp: Int
+    sentBy: Str
+    madeBy: "me" | "you"
+    ...
+Other:
+    ciao: Int
+    Cose: Str
+    arr: [
+        many: Str
+    ]
+"""
+
 # failing = """
 # ciao: NonEsisto
 # """

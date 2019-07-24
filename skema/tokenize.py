@@ -26,13 +26,25 @@ def decompose_indents(acc, token):
       tokens = [token] * difference
       tokens = [{**x} for x in tokens]
       for i, token in enumerate(tokens):
-        # print(last['value'] - ((i + 1) * INDENT_SIZE))
-        tokens[i].update({'value': last['value'] - ((i + 1) * INDENT_SIZE)})
+        value = last['value'] - ((i + 1) * INDENT_SIZE)
+        tokens[i].update({'value': value})
       return acc + tokens
     else:
       return acc + [token]
   else:
     return acc + [token]
+
+# TODO can get INDENT SIZE here
+def get_base_level(acc, token):
+  if token['type'] == 'SEPARATOR':
+    base = min(acc['base'], acc['tokens'][-1]['start_column'])
+  else:
+    base = acc['base']
+  return {
+    'tokens': acc['tokens'] + [token],
+    'base': base
+  }
+
 
 def tokenize(string):
   tokenizer = Tokenizer(string)
@@ -43,6 +55,8 @@ def tokenize(string):
   if tokens[-1]['type'] == 'SEPARATOR':
     tokens = tokens[:-1]
   tokens = reduce(decompose_indents, tokens, [])
+  base = reduce(get_base_level, tokens, {'tokens': [], 'base': 900,})['base']
+  tokens = [t for t in tokens if not (t['type'] == 'SEPARATOR' and t['value'] < base)]
   return tokens
 
 
