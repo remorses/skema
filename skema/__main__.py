@@ -2,7 +2,6 @@
 import sys
 import json
 from functools import reduce, partial
-import jsonref
 import fastjsonschema
 
 

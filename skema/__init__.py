@@ -5,7 +5,6 @@ from .make_tree import make_tree
 import sys
 import json
 from functools import reduce, partial
-import jsonref
 import fastjsonschema
 from .__main__ import main, to_jsonschema
 from .fake_data import fake_data

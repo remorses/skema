@@ -6,25 +6,25 @@ from .regex import regex
 
 
 def gen_int(prop):
-    min_value = prop.get("minimum", None)
-    max_value = prop.get("maximum", None)
+    min_value = prop.get("minimum", 0)
+    max_value = prop.get("maximum", 1000)
     return hs.integers(min_value=min_value, max_value=max_value)
 
 
 def gen_string(prop):
-    min_value = prop.get("minLength", None)
-    max_value = prop.get("maxLength", None)
-    pattern = None
-    if prop.get("pattern", None):
-        pattern = prop["pattern"]
-        if min_value is not None:
-            return hs.just(regex(pattern).filter(lambda x: min_value <= len(x)).example())
-        return hs.just(regex(pattern).example())
+    min_value = prop.get("minLength", 5)
+    max_value = prop.get("maxLength", 30)
+    pattern = prop.get('pattern', '[ A-Za-z\d]+')
+    return hs.just(regex(pattern).filter(lambda x: min_value <= len(x) and len(x) <= max_value).example())
+    # return hs.text(
+    #     hs.characters(
+    #         max_codepoint=100, 
+    #         blacklist_categories=('Cc', 'Cs')),
+    #         min_size=min_value, 
+    #         max_size=max_value
+    #     ).map(lambda s: s.strip()
+    # ).filter(lambda s: len(s) > 0)
 
-    else:
-        return hs.text(alphabet=pattern,
-                       min_size=min_value,
-                       max_size=max_value)
 
 
 def should_include(key, required_list):
@@ -35,8 +35,8 @@ def should_include(key, required_list):
 
 
 def gen_array(prop):
-    min_items = prop.get("minItems", None)
-    max_items = prop.get("maxItems", None)
+    min_items = prop.get("minItems", 0)
+    max_items = prop.get("maxItems", 5)
     if prop.get("items", {}).get("type", False) is not False:
         generator = get_generator(prop.get("items"))
         return hs.lists(elements=generator,
@@ -48,8 +48,7 @@ def gen_array(prop):
 
 
 def gen_anything():
-    return hs.one_of(hs.text(), hs.booleans(), hs.integers(), hs.none(),
-                     hs.floats())
+    return hs.one_of(gen_int({}), gen_string({}), hs.booleans(), hs.none())
 
 def gen_json_values():
     return hs.text() | hs.booleans() | hs.integers() | hs.none() | hs.floats()

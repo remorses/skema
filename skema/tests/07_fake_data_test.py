@@ -37,8 +37,8 @@ EventB:
 @pytest.mark.parametrize("string", values(schemas), ids=keys(schemas))
 def test_fake_data(string):
     json_schema = to_jsonschema(string, resolve=True)
-    print(json_schema)
+    # print(json_schema)
     fakes = fake_data(string)
     for o in fakes:
-        print(json.dumps(o, indent=4))
+        print(json.dumps(o, indent=4, ensure_ascii=False))
         validate(o, json_schema, )
