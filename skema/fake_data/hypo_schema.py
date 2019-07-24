@@ -143,7 +143,7 @@ def get_generator(prop, customs={}):
         title = prop.get('title', '').strip()
         if title in customs:
             # print(customs[title]())
-            return hs.just(customs[title]())
+            return hs.builds(customs[title])
         else:
             prop = {k:v for k,v in prop.items() if k != 'title'}
     
