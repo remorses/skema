@@ -65,7 +65,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             
         elif token['type'] == 'REGEX':
             child = Node(REGEX, node,)
-            child.pattern = token['type']
+            child.pattern = token['value']
             node.insert(child)
             node = node.parent
 

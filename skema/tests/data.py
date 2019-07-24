@@ -304,6 +304,7 @@ Event:
     x: Int
     b: Ciao
     pattern: /ciao/
+    patterns: [/cacca/]
 
 Ciao: /eiii/
 '''
