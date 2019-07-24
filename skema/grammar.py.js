@@ -3,10 +3,10 @@
         rules: [
             ['"""(?:(?!""").|\n)*"""[ ]*', `
             last = len(yytext.strip()) - 3
-            yytext = yytext[2:last]
+            yytext = yytext[3:last]
             return 'ANNOTATION'
             `],
-            
+
             ['/.*/', `
             last = len(yytext.strip()) - 1
             yytext = yytext[1:last]

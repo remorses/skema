@@ -65,7 +65,7 @@ def _lex_rule1(self):
     global __, __loc, yytext, yyleng
     
     last = len(yytext.strip()) - 3
-    yytext = yytext[2:last]
+    yytext = yytext[3:last]
     return 'ANNOTATION'
     
 
