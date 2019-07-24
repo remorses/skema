@@ -92,17 +92,17 @@ def gen_const(prop):
 def gen_bool(prop):
     return hs.booleans()
 
-def gen_one_of(prop):
+def gen_one_of(prop, customs):
     possible_values = []
     for value in prop["oneOf"]:
         possible_values.append(get_generator(value))
 
     return hs.one_of(possible_values)
 
-def gen_any_of(prop):
+def gen_any_of(prop, customs):
     possible_values = []
     for value in prop["anyOf"]:
-        possible_values.append(get_generator(value))
+        possible_values.append(get_generator(value, customs))
 
     return hs.one_of(possible_values)
 
@@ -153,11 +153,11 @@ def get_generator(prop, customs={}):
 
     one_of = prop.get("oneOf", None)
     if one_of is not None:
-        return gen_one_of(prop)
+        return gen_one_of(prop, customs)
 
     any_of = prop.get("anyOf", None)
     if any_of is not None:
-        return gen_any_of(prop)
+        return gen_any_of(prop, customs)
 
     all_of = prop.get("allOf", None)
     if all_of is not None:
