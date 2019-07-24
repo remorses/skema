@@ -1,3 +1,4 @@
 fastjsonschema
 jsonschema
 hypothesis
+bson
