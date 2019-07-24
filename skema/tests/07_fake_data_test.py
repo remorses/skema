@@ -42,6 +42,14 @@ EventB:
     
     DateTime: Any
     ObjectId: Any
+    """,
+    'const_null': """
+    Ciao:
+        n: null
+        obj:
+            any:
+                ...
+            ...
     """
 }
 
@@ -49,7 +57,7 @@ EventB:
 def test_fake_data(string):
     json_schema = to_jsonschema(string, resolve=True)
     # print(json_schema)
-    fakes = fake_data(string)
+    fakes = fake_data(string, amount=30)
     for o in fakes:
         print(json.dumps(o, indent=4, ensure_ascii=False))
         validate(o, json_schema, )

@@ -55,11 +55,11 @@ def gen_anything():
     return hs.one_of(gen_int({}), gen_string({}), hs.booleans(), hs.none())
 
 def gen_json_values():
-    return hs.text() | hs.booleans() | hs.integers() | hs.none() | hs.floats()
+    return gen_string({}) | hs.booleans() | gen_int({}) | hs.none() | hs.floats(allow_nan=False, allow_infinity=False)
 
 def gen_any_obj():
-    return hs.recursive(hs.dictionaries(hs.text(), gen_json_values()),
-                        lambda children: hs.dictionaries(hs.text(), children),
+    return hs.recursive(hs.dictionaries(gen_string({}), gen_json_values()),
+                        lambda children: hs.dictionaries(gen_string({}), children),
                         max_leaves=10)
 
 def gen_object(prop, customs):
@@ -68,16 +68,15 @@ def gen_object(prop, customs):
     output = {}
     prop_key = "properties"
     if prop.get("properties", None) is None:
-        if prop["additionalProperties"] is True or prop["additionalProperties"] == {}:
+        if prop["additionalProperties"]:
             return gen_any_obj()
-        return hs.dictionaries(hs.text(min_size=1),
-                               get_generator(prop["additionalProperties"]))
 
     for k in prop[prop_key].keys():
         json_prop = prop[prop_key][k]
 
         if should_include(k, required):
             output[k] = get_generator(json_prop, customs)
+
 
     return hs.fixed_dictionaries(output)
 
@@ -88,7 +87,7 @@ def gen_enum(prop):
 
 def gen_const(prop):
     const = prop["const"]
-    return hs.sampled_from([const])
+    return hs.just(const)
 
 def gen_bool(prop):
     return hs.booleans()
