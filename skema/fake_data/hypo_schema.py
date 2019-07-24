@@ -58,7 +58,7 @@ def gen_any_obj():
                         lambda children: hs.dictionaries(hs.text(), children),
                         max_leaves=10)
 
-def gen_object(prop):
+def gen_object(prop, customs):
 
     required = prop.get("required", [])
     output = {}
@@ -73,7 +73,7 @@ def gen_object(prop):
         json_prop = prop[prop_key][k]
 
         if should_include(k, required):
-            output[k] = get_generator(json_prop)
+            output[k] = get_generator(json_prop, customs)
 
     return hs.fixed_dictionaries(output)
 
@@ -103,7 +103,7 @@ def gen_any_of(prop):
 
     return hs.one_of(possible_values)
 
-def gen_all_of(prop):
+def gen_all_of(prop, customs):
     dicts = prop["allOf"]
     if not all([d['type'] == 'object' for d in dicts]):
         raise Exception('allOf is supported as array of object types')
@@ -117,19 +117,26 @@ def gen_all_of(prop):
         result['properties'] = {**result['properties'], **(obj.get('properties', {}) or {})}
         result['required'] = result['required'] + (obj.get('required', [])  or [])
     result['required'] = list(set(result['required']))
-    return gen_object(result)
+    return gen_object(result, customs)
 
 
 
 
-def get_generator(prop):
+def get_generator(prop, customs={}):
     disp = {"string": gen_string,
             "integer": gen_int,
             "number": gen_int,
             "boolean": gen_bool,
-            "object": gen_object,
             "array": gen_array,
     }
+    if prop.get('title'):
+        title = prop.get('title', '').strip()
+        if title in customs:
+            print(customs[title]())
+            return hs.just(customs[title]())
+        else:
+            prop = {k:v for k,v in prop.items() if k != 'title'}
+    
     if not prop:
         return gen_anything()
 
@@ -151,7 +158,11 @@ def get_generator(prop):
 
     all_of = prop.get("allOf", None)
     if all_of is not None:
-        return gen_all_of(prop)
+        return gen_all_of(prop, customs)
+
+    t = prop.get("type", None)
+    if t == 'object':
+        return gen_object(prop, customs)
 
     json_type = prop.get("type", None)
     if json_type is None:
@@ -159,8 +170,8 @@ def get_generator(prop):
 
     return disp[json_type](prop)
 
-def generate_from_schema(json_schema):
-    example_data = get_generator(json_schema)
+def generate_from_schema(json_schema, customs={}):
+    example_data = get_generator(json_schema, customs)
     return example_data
 
 

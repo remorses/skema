@@ -1,9 +1,9 @@
-
+import json
 import inspect
 from operator import methodcaller
 from functools import reduce
 
-
+log = lambda x: print(json.dumps(x, indent=4, default=str, ensure_ascii=False))
 def compose(*fs):
     """Composes passed functions."""
     if fs:

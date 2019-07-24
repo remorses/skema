@@ -50,7 +50,7 @@ def _make_schema(node, definitions):
         return { 'type': 'string', 'pattern': node.children[0].pattern }
 
     elif node.children[0].value == ANY:
-        return {}
+        return { 'title': node.value }
 
     elif node.children[0].value == BOOL:
         return { 'type': 'boolean' }

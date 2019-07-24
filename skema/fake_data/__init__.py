@@ -11,10 +11,10 @@ from .hypo_schema import generate_from_schema
 
 
 
-def fake_data(schema: str, amount=5) -> List[dict]:
+def fake_data(schema: str, amount=5, cutom_types={}) -> List[dict]:
     json_schema=to_jsonschema(schema, resolve=True)
     examples = []
-    @given(generate_from_schema(json_schema))
+    @given(generate_from_schema(json_schema, cutom_types))
     @settings(max_examples=amount)
     def generate(example_data):
         examples.append(example_data)
