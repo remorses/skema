@@ -181,9 +181,6 @@ def get_generator(prop, customs={}):
 
     return disp[json_type](prop)
 
-def generate_from_schema(json_schema, customs={}):
-    example_data = get_generator(json_schema, customs)
-    return example_data
 
 
 class JsonTypeError(Exception):

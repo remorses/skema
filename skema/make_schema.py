@@ -44,7 +44,7 @@ def _make_schema(node, definitions):
             'items': _make_schema(node.children[0], definitions)
         }
 
-    elif node.children[0].value == STR:
+    elif node.children[0].value == STR or node.children[0].value == STRING:
         return { 'type': 'string', 'title': node.value, }
 
     elif node.children[0].value == REGEX:
