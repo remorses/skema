@@ -21,6 +21,7 @@ def _make_schema(node, definitions):
         value = value[0]
         return {
             'const': value,
+            'title': node.value,
         }
 
     elif node.children[0].value == OR:
@@ -44,28 +45,28 @@ def _make_schema(node, definitions):
         }
 
     elif node.children[0].value == STR:
-        return { 'type': 'string' }
+        return { 'type': 'string', 'title': node.value, }
 
     elif node.children[0].value == REGEX:
-        return { 'type': 'string', 'pattern': node.children[0].pattern }
+        return { 'type': 'string', 'pattern': node.children[0].pattern, 'title': node.value, }
 
     elif node.children[0].value == ANY:
         return { 'title': node.value }
 
     elif node.children[0].value == BOOL:
-        return { 'type': 'boolean' }
+        return { 'type': 'boolean', 'title': node.value, }
 
     elif node.children[0].value == NULL:
         return { 'const': None }
 
     elif node.children[0].value == FLOAT:
-        return { 'type': 'number' }
+        return { 'type': 'number', 'title': node.value, }
 
     elif node.children[0].value == INT:
-        return { 'type': 'number', "multipleOf": 1.0 }
+        return { 'type': 'number', "multipleOf": 1.0, 'title': node.value, }
 
     elif node.children[0].value == ELLIPSIS:
-        return { 'type': 'object', 'additionalProperties': True }
+        return { 'type': 'object', 'additionalProperties': True, 'title': node.value, }
 
     else: # object
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
