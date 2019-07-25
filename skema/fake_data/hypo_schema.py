@@ -169,10 +169,10 @@ def get_generator(prop, customs={}):
     if all_of is not None:
         return gen_all_of(prop, customs)
 
-    if 'object' in prop:
+    if 'object' == prop.get('type'):
         return gen_object(prop, customs)
 
-    if 'array' in prop:
+    if 'array' == prop.get('type'):
         return gen_array(prop, customs)
 
     json_type = prop.get("type", None)
