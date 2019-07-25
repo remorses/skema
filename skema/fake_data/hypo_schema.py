@@ -137,7 +137,7 @@ def get_generator(prop, customs={}):
             "integer": gen_int,
             "number": gen_int,
             "boolean": gen_bool,
-            "array": gen_array,
+            
     }
     if prop.get('title'):
         title = prop.get('title', '').strip()
@@ -154,7 +154,6 @@ def get_generator(prop, customs={}):
     if enum is not None:
         return gen_enum(prop)
 
-    
     if 'const' in prop:
         return gen_const(prop)
 
@@ -170,9 +169,11 @@ def get_generator(prop, customs={}):
     if all_of is not None:
         return gen_all_of(prop, customs)
 
-    t = prop.get("type", None)
-    if t == 'object':
+    if 'object' in prop:
         return gen_object(prop, customs)
+
+    if 'array' in prop:
+        return gen_array(prop, customs)
 
     json_type = prop.get("type", None)
     if json_type is None:
