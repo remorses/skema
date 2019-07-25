@@ -14,7 +14,7 @@ def gen_int(prop):
 def gen_string(prop):
     min_value = prop.get("minLength", 5)
     max_value = prop.get("maxLength", 30)
-    pattern = prop.get('pattern', '[ A-Za-z\d]+')
+    pattern = prop.get('pattern', r'[ A-Za-z\d]+')
     return hs.just(regex(pattern)\
         .filter(lambda x: min_value <= len(x) and len(x) <= max_value)\
         .map(lambda x: x.rstrip('\x00'))\
@@ -38,11 +38,11 @@ def should_include(key, required_list):
         return bool(randint(0, 1))
 
 
-def gen_array(prop):
+def gen_array(prop, customs):
     min_items = prop.get("minItems", 0)
     max_items = prop.get("maxItems", 5)
     if prop.get("items", {}).get("type", False) is not False:
-        generator = get_generator(prop.get("items"))
+        generator = get_generator(prop.get("items"), customs)
         return hs.lists(elements=generator,
                         min_size=min_items,
                         max_size=max_items)
@@ -95,7 +95,7 @@ def gen_bool(prop):
 def gen_one_of(prop, customs):
     possible_values = []
     for value in prop["oneOf"]:
-        possible_values.append(get_generator(value))
+        possible_values.append(get_generator(value), customs)
 
     return hs.one_of(possible_values)
 
