@@ -35,8 +35,9 @@
             ["\\]", "return ']'"],
 
     
-            [`[a-zA-Z0-9_&\\| "]+`, `
+            [`[a-zA-Z0-9_&\\| !"]+`, `
             # print('token_start_column', self.token_start_column)
+            yytext = yytext.replace('!', '')
             if self.token_start_column == 0:
                 last = len(yytext.strip()) - 1
                 yytext = yytext[1:last]
