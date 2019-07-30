@@ -2,35 +2,7 @@
 
 <!---[bump]--->
 ## last version: 0.0.27
-## example
-
-todo
-- add string patterns
-```yaml
-Object:
-    regex: /\w*/
-    string: Str
-```
-- add descriptions
-
-```yaml
-"The event type"
-Event:
-    type: "trigger" | "unknown"
-    data:
-        ...
-    by: User
-
-"""
-The annotation will be put in json schema description,
-can also be used to write the type to use in fake_data:
-:type datetime.datetime
-The faker will try tu use this Class
-"""
-User:
-    name: Str
-    phone: Int
-```
+## example
 
 
 this skema snippet
@@ -140,17 +112,40 @@ generates the less readable json schema
 
 - all root properties are references and can be used as types
 - types can be object whose properties are expressed as key: value or other primitive types like 
-    - Str, 
-    - Int, 
-    - Bool, 
+    - Str,
+    - Int,
+    - Bool,
     - Float
+    - /regex/
 - type inside [ ] is an array type
 - types can be mixed together: 
     - `Str | Int` means one of string and int
     - `Object1 & Object2` means "all the properties of object 1 and 2"
-    - `Object1 | Object2` means "properties of object 1 and not 2 or 2 and not 1"
+    - `Object1 | Object2` means "properties of object 1 and 2"
+- types can be annotated writing annotations inside " or """ quotes
+```yaml
+"The event type"
+Event:
+    type: "trigger" | "unknown"
+    data:
+        ...
+    by: User
 
-TODO:
-- make `compile(schema, definition='Root')
+"""
+The annotation will be put in json schema description,
+can also be used to write the type to use in fake_data:
+:type datetime.datetime
+The faker will try tu use this Class
+"""
+User:
+    name: Str
+    phone: Int
+```
+
+## todo:
+- | and & don't work with [], because VAl is split with ARRAY and smaller VAL during tokenization, is hould add a rule during tokenization to exclude | and & in array tokens and add array logic inside VAL handling
+- the same for regex
+- better handling of comments and white space
+- dynamic indentation (now is set as 4 spaces)
 
 
