@@ -37,6 +37,8 @@ setup(
         'Programming Language :: Python :: 3.7',
     ],
     packages=['skema', 'skema.fake_data'],
+    scripts=['bin/skema-generate-python'],
+
 )
 
 

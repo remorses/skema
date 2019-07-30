@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+import os.path
+import sys
+import json
+import skema
+import subprocess
+import os, random
+
+class temporary_write:
+        def __init__(self,  data, path=str(random.random())[3:]):
+                self.path = os.path.abspath(path)
+                self.data = data
+                f = open(self.path, 'w')
+                f.write(self.data)
+                f.close()
+
+        __enter__ = lambda self: self.path
+        __exit__ = lambda self, a, b, c: os.remove(self.path)
+
+def get_result_file(skema_path):
+    result_dir = os.path.dirname(skema_path)
+    name, _ = os.path.splitext(skema_path)
+    name = name.split('/')[-1]
+    result_file = os.path.join(result_dir, name + '.py')
+    return result_file
+
+def main(skema_path):
+    with open(skema_path) as f:
+        data = f.read()
+        json_schema = skema.to_jsonschema(data,)
+    json_schema = json.dumps(json_schema, indent=4, default=str)
+    print(json_schema)
+    result_file = get_result_file(skema_path)
+    with temporary_write(json_schema) as schema_path:
+            command = f'quicktype {schema_path} -o {result_file} --src-lang schema -o example.py --python-version 3.7 --just-types'
+            print(command)
+            try:
+                res = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE)
+                print(res.stdout.decode())
+            except subprocess.CalledProcessError as e:
+                print(e.stderr)
+
+if len(sys.argv) != 2:
+    print('needs exactly 1 argument, path')
+main(sys.argv[-1])
+# main('example.skema')

@@ -112,7 +112,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             return node
         
         elif token['type'] == 'ANNOTATION':
-            node.child_annotation = token['value']
+            node.child_annotations += [token['value']]
             # return node
 
         else:

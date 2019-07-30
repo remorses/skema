@@ -1,0 +1,21 @@
+#!/usr/bin/env skema-generate-python
+
+"ciao"
+Event:
+    a: Int
+    b: Bo
+
+
+Bo:
+    ciao: Int
+    xxx?: X & Y
+
+X:
+    sd?: /adsf/
+    ...
+
+Y:
+    zz: Int
+    ciao: "sss" | "sdf" | "sdg"
+    ...
+

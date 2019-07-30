@@ -154,3 +154,9 @@ TODO:
 - make `compile(schema, definition='Root')
 
 
+
+
+bugs:
+- if key name is equal to another type name then fuck it up
+- can't write `key: [Str] | Int`
+- 

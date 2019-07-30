@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Event",
+    "description": "ciao",
+    "type": "object",
+    "required": [
+        "a",
+        "b"
+    ],
+    "properties": {
+        "a": {
+            "type": "number",
+            "multipleOf": 1.0,
+            "title": "a"
+        },
+        "b": {
+            "title": "Bo",
+            "description": "ciao",
+            "type": "object",
+            "required": [
+                "ciao",
+                "xxx"
+            ],
+            "properties": {
+                "ciao": {
+                    "type": "number",
+                    "multipleOf": 1.0,
+                    "title": "ciao"
+                },
+                "xxx": {
+                    "allOf": [
+                        {
+                            "title": "X",
+                            "description": "ciao",
+                            "type": "object",
+                            "required": [],
+                            "properties": {
+                                "sd": {
+                                    "type": "number",
+                                    "multipleOf": 1.0,
+                                    "title": "sd"
+                                }
+                            }
+                        },
+                        {
+                            "title": "Y",
+                            "description": "ciao",
+                            "type": "object",
+                            "required": [
+                                "zz"
+                            ],
+                            "properties": {
+                                "zz": {
+                                    "type": "number",
+                                    "multipleOf": 1.0,
+                                    "title": "zz"
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}

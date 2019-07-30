@@ -15,7 +15,7 @@ class Node:
         self.children = []
         self.parent = parent
         self.required = required
-        self.child_annotation = ''
+        self.child_annotations = []
         self.pattern = ''
     
     def insert(self, *nodes):
@@ -27,6 +27,8 @@ class Node:
     
     def __str__(self, indent=''):
         res = (indent + str(self.value) or '""')
+        annotations = self.parent.child_annotations if self.parent else []
+        res += ' (' + annotations.pop(0) + ')' if len(annotations) else ''
         res += ':' if len(self.children) else ''
         for c in self.children:
             res += '\n' + Node.__str__(c, indent + '\t')

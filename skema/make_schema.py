@@ -72,9 +72,10 @@ def _make_schema(node, definitions):
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
         # if any(ellipses):
         #     _type = ellipses[0].children[0] if len(ellipses[0].children) else None # TODO don't know what is this
+        annotations = node.parent.child_annotations
         return {
             'title': node.value,
-            'description': node.parent.child_annotation,
+            'description': annotations.pop(0) if len(annotations) else '',
             'type': 'object',
             'required': [child.value for child in node.children if child.required and not child.value in to_skip],
             'properties': {
