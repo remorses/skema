@@ -1,30 +1,24 @@
-from enum import Enum
 from dataclasses import dataclass
-from typing import Optional, Union
-
-
-class Ciao(Enum):
-    SDF = "sdf"
-    SDG = "sdg"
-    SSS = "sss"
+from typing import Optional
 
 
 @dataclass
 class Xxx:
-    sd: Optional[str]
-    ciao: Ciao
-    ints: Union[float, int]
+    """ciao"""
+    sd: Optional[float]
     zz: float
 
 
 @dataclass
 class Bo:
+    """ciao"""
     ciao: float
-    xxx: Optional[Xxx]
+    xxx: Xxx
 
 
 @dataclass
-class Event:
-    """evento del sistema"""
+class Example:
+    """ciao"""
     a: float
+    """ciao"""
     b: Bo

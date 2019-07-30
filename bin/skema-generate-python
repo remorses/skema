@@ -36,7 +36,7 @@ def main(skema_path):
     print(json_schema)
     result_file = get_result_file(skema_path)
     with temporary_write(json_schema) as schema_path:
-            command = f'quicktype {schema_path} -o {result_file}  --top-level {root_name} --src-lang schema  --python-version 3.7 --just-types'
+            command = f'quicktype "{schema_path}#/definitions/" -o {result_file}  --top-level {root_name} --src-lang schema  --python-version 3.7 --just-types'
             print(command)
             try:
                 res = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE)

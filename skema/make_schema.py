@@ -20,7 +20,7 @@ def _make_schema(node, definitions):
         value = [x.strip() for x in value if x.strip()] or ['']
         value = value[0]
         return {
-            'const': value,
+            'enum': [value],
             'title': node.value,
         }
 

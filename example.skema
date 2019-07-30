@@ -1,4 +1,4 @@
-
+#!/usr/bin/env skema-generate-python
 
 """ 
 evento del sistema
@@ -21,6 +21,7 @@ X:
 Y:
     zz: Int
     ciao: "sss" | "sdf" | "sdg"
+    const: "const"
     ints: 0 | 1
 
 
