@@ -24,12 +24,11 @@ def to_jsonschema(schema, ref=None, resolve=False):
         raise Exception(f'can\'t find definition {ref}')
 
     reference = result['$ref'] if not ref else '#/definitions/' + ref
-
+    result['$ref'] = reference
     if resolve:
         resolve_refs(result)
         return result
     else:
-        result['$ref'] = reference
         return result
 
 def main(schema, ref=None, resolve=False):
