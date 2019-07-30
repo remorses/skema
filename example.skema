@@ -12,10 +12,11 @@ Bo:
 
 X:
     sd?: /adsf/
-    ...
+
 
 Y:
     zz: Int
     ciao: "sss" | "sdf" | "sdg"
-    ...
+
+
 

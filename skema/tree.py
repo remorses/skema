@@ -46,7 +46,7 @@ def tree_from_dict(obj: dict, key='root'):
     return node
 
 
-def map_tree(f, node, result=Node('_')):
+def map_tree(f, node, result=Node('')):
     if not node.children:
         f(node)
     else:

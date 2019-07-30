@@ -4,7 +4,6 @@ from typing import Optional, Any
 
 @dataclass
 class Xxx:
-    """ciao"""
     sd: Optional[str]
     ciao: Any
     zz: float
@@ -12,14 +11,12 @@ class Xxx:
 
 @dataclass
 class Bo:
-    """ciao"""
     ciao: float
     xxx: Optional[Xxx]
 
 
 @dataclass
-class Example:
+class Event:
     """ciao"""
     a: float
-    """ciao"""
     b: Bo

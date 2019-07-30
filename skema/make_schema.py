@@ -26,11 +26,11 @@ def _make_schema(node, definitions):
 
     elif node.children[0].value == OR:
         return {
-            'anyOf': [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
+            'anyOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
         }
 
     elif node.children[0].value == AND:
-        options = [_make_schema(Node('_').insert(c), definitions) for c in node.children[0].children]
+        options = [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
         # strip = lambda opt: {**opt,'additionalProperties':True} if (isinstance(opt, dict) and not opt.get('additionalProperties', True)) else opt
         # options = [strip(opt) for opt in options]
         return {
@@ -81,7 +81,7 @@ def _make_schema(node, definitions):
             'properties': {
                 child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
             },
-            'additionalProperties': True if len(ellipses) else False,
+            # 'additionalProperties': True if len(ellipses) else False,
             # 'additionalProperties': _make_schema(_type, definitions) if _type else True 
         }
 

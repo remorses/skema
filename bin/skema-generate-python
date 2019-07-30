@@ -29,11 +29,12 @@ def main(skema_path):
     with open(skema_path) as f:
         data = f.read()
         json_schema = skema.to_jsonschema(data,)
+    root_name = json_schema.get('$ref').split('/')[-1]
     json_schema = json.dumps(json_schema, indent=4, default=str)
     print(json_schema)
     result_file = get_result_file(skema_path)
     with temporary_write(json_schema) as schema_path:
-            command = f'quicktype {schema_path} -o {result_file} --src-lang schema -o example.py --python-version 3.7 --just-types'
+            command = f'quicktype {schema_path} -o {result_file}  --top-level {root_name} --src-lang schema -o example.py --python-version 3.7 --just-types'
             print(command)
             try:
                 res = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE)

@@ -159,4 +159,11 @@ TODO:
 bugs:
 - if key name is equal to another type name then fuck it up
 - can't write `key: [Str] | Int`
-- 
+- objects get additionalProps: true by default even if they haven't ... at the end like:
+```
+Object:
+    a: Str
+    b: Int
+    ...
+```
+this is because i always forget to put them when doing `Object1 & Object2` so i just removed it
