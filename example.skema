@@ -1,6 +1,8 @@
 #!/usr/bin/env skema-generate-python
 
-"ciao"
+""" 
+evento del sistema
+"""
 Event:
     a: Int
     b: Bo
@@ -8,7 +10,10 @@ Event:
 
 Bo:
     ciao: Int
-    xxx?: X & Y
+    # sldfhksdf
+    # adsf
+
+    xxx?: X & Y # asasfafs
 
 X:
     sd?: /adsf/

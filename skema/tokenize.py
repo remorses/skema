@@ -14,7 +14,12 @@ def remove_duplicates(acc, token):
     return acc
   else:
     return acc + [token]
-   
+
+def remove_very_sames(acc, token):
+  if acc and acc[-1]['type'] == 'SEPARATOR' and token['type'] == 'SEPARATOR' and acc[-1]['value'] == token['value']:
+    return acc
+  else:
+    return acc + [token]
 
 INDENT_SIZE = 4
 def decompose_indents(acc, token):
@@ -57,7 +62,9 @@ def tokenize(string):
   tokens = reduce(decompose_indents, tokens, [])
   base = reduce(get_base_level, tokens, {'tokens': [], 'base': 900,})['base']
   tokens = [t for t in tokens if not (t['type'] == 'SEPARATOR' and t['value'] < base)]
+  tokens = reduce(remove_very_sames, tokens, [])
   return tokens
+
 
 
 if __name__ == "__main__":

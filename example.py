@@ -25,6 +25,6 @@ class Bo:
 
 @dataclass
 class Event:
-    """ciao"""
+    """evento del sistema"""
     a: float
     b: Bo
