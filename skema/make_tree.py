@@ -26,7 +26,6 @@ def make_value_tree(ast, node = Node('root')):
         op, rest = ast
         child = Node(op, node)
         node.insert(child)
-        # node = child
         for t in rest:
             make_value_tree(t, child)
     else:

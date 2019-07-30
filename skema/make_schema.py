@@ -25,9 +25,18 @@ def _make_schema(node, definitions):
         }
 
     elif node.children[0].value == OR:
-        return {
-            'anyOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
-        }
+        if all(['"' in node.value for node in node.children[0].children]):
+            return {
+                'enum': [c.value.replace('"', '', 2) for c in node.children[0].children],
+            }
+        elif all([node.value.isdigit() for node in node.children[0].children]):
+            return {
+                'enum': [int(c.value) for c in node.children[0].children],
+            }
+        else:
+            return {
+                'anyOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+            }
 
     elif node.children[0].value == AND:
         options = [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
