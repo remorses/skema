@@ -1,24 +1,15 @@
 from dataclasses import dataclass
-from typing import Optional
+from datetime import datetime
 
 
 @dataclass
 class Xxx:
-    """ciao"""
-    sd: Optional[float]
-    zz: float
+    x: str
 
 
 @dataclass
-class Bo:
-    """ciao"""
-    ciao: float
-    xxx: Xxx
-
-
-@dataclass
-class Example:
-    """ciao"""
+class Event:
+    """evento del sistema"""
     a: float
-    """ciao"""
-    b: Bo
+    b: datetime
+    xxx: Xxx

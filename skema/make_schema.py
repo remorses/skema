@@ -54,7 +54,14 @@ def _make_schema(node, definitions):
         }
 
     elif node.children[0].value == STR or node.children[0].value == STRING:
-        return { 'type': 'string', 'title': node.value, }
+        obj = { 'type': 'string', 'title': node.value, }
+        # print(node.value)
+        format = get_format(node.value)
+        if format:
+            obj.update({
+                'format': format,
+            })
+        return obj
 
     elif node.children[0].value == REGEX:
         return { 'type': 'string', 'pattern': node.children[0].pattern, 'title': node.value, }
@@ -110,3 +117,19 @@ def make_schema(root):
         schema['definitions'][child.value] = _make_schema(child, definitions)
 
     return schema
+
+
+def get_format(name):
+    if name == 'DateTime':
+        return 'date-time'
+    if name == 'Date':
+        return 'date'
+    if name == 'Time':
+        return 'time'
+    if name == 'Email':
+        return 'email'
+    if name == 'Uri':
+        return 'uri'
+    if name == 'Iri':
+        return 'iri'
+    return None
