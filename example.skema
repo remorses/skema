@@ -1,4 +1,4 @@
-#!/usr/bin/env skema-generate-python
+
 
 """ 
 evento del sistema
@@ -12,7 +12,6 @@ Bo:
     ciao: Int
     # sldfhksdf
     # adsf
-
     xxx?: X & Y # asasfafs
 
 X:

@@ -19,10 +19,12 @@ class temporary_write:
         __exit__ = lambda self, a, b, c: os.remove(self.path)
 
 def get_result_file(skema_path):
+    skema_path = os.path.abspath(skema_path)
     result_dir = os.path.dirname(skema_path)
     name, _ = os.path.splitext(skema_path)
     name = name.split('/')[-1]
     result_file = os.path.join(result_dir, name + '.py')
+    print(result_file)
     return result_file
 
 def main(skema_path):
@@ -34,7 +36,7 @@ def main(skema_path):
     print(json_schema)
     result_file = get_result_file(skema_path)
     with temporary_write(json_schema) as schema_path:
-            command = f'quicktype {schema_path} -o {result_file}  --top-level {root_name} --src-lang schema -o example.py --python-version 3.7 --just-types'
+            command = f'quicktype {schema_path} -o {result_file}  --top-level {root_name} --src-lang schema  --python-version 3.7 --just-types'
             print(command)
             try:
                 res = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE)
