@@ -73,7 +73,7 @@ def _make_schema(node, definitions):
         # if any(ellipses):
         #     _type = ellipses[0].children[0] if len(ellipses[0].children) else None # TODO don't know what is this
         annotations = node.parent.child_annotations
-        return {
+        obj = {
             'title': node.value,
             'description': annotations.pop(0) if len(annotations) else '',
             'type': 'object',
@@ -81,10 +81,11 @@ def _make_schema(node, definitions):
             'properties': {
                 child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
             },
-            # 'additionalProperties': True if len(ellipses) else False,
             # 'additionalProperties': _make_schema(_type, definitions) if _type else True 
         }
-
+        if len(ellipses):
+            obj.update({'additionalProperties': True,})
+        return obj
 
 
 # TODO
