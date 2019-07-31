@@ -304,12 +304,14 @@ Event:
     """descripzione 1"""
     x: Int
     """descripzione 2"""
-    b: Ciao
+    b: [Ciao & Int]
 
 """
 qualcosa
 """
-Ciao: Any
+Ciao: Any | Altro
+Altro: Int
+
 '''
 
 with_regex = '''

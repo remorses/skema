@@ -12,10 +12,11 @@ def _make_schema(node, definitions):
 
     elif any([node.children[0].value == x for x in definitions]): # custom definition
         return {
-            '$ref': f'#/definitions/{node.children[0].value}'
+            '$ref': f'#/definitions/{node.children[0].value}',
+            'description': get_annotation(node),
         }
     elif node.children[0].value == ELLIPSIS:
-        return { 'type': 'object', 'additionalProperties': True, 'title': node.value, }
+        return { 'type': 'object', 'additionalProperties': True, 'title': node.value, 'description': get_annotation(node),}
 
     elif '..' in node.children[0].value:
         return make_range_schema(node)
@@ -27,20 +28,24 @@ def _make_schema(node, definitions):
         return {
             'enum': [value],
             'title': node.value,
+            'description': get_annotation(node),
         }
 
     elif node.children[0].value == OR:
         if all(['"' in node.value for node in node.children[0].children]):
             return {
                 'enum': [c.value.replace('"', '', 2) for c in node.children[0].children],
+                'description': get_annotation(node),
             }
         elif all([node.value.isdigit() for node in node.children[0].children]):
             return {
                 'enum': [int(c.value) for c in node.children[0].children],
+                'description': get_annotation(node),
             }
         else:
             return {
-                'anyOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+                'anyOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children],
+                'description': get_annotation(node),
             }
 
     elif node.children[0].value == AND:
@@ -49,17 +54,19 @@ def _make_schema(node, definitions):
         # options = [strip(opt) for opt in options]
         return {
             'allOf': options,
+            'description': get_annotation(node),
         }
 
     elif node.children[0].value == LIST:
         return {
             'type': 'array',
             # 'title': node.value,
-            'items': _make_schema(node.children[0], definitions)
+            'items': _make_schema(node.children[0], definitions),
+            'description': get_annotation(node),
         }
 
     elif node.children[0].value == STR or node.children[0].value == STRING:
-        obj = { 'type': 'string', 'title': node.value, }
+        obj = { 'type': 'string', 'title': node.value, 'description': get_annotation(node),}
         format = get_format(node.value)
         if format:
             obj.update({
@@ -68,32 +75,31 @@ def _make_schema(node, definitions):
         return obj
 
     elif node.children[0].value == REGEX:
-        return { 'type': 'string', 'pattern': node.children[0].pattern, 'title': node.value, }
+        return { 'type': 'string', 'pattern': node.children[0].pattern, 'title': node.value, 'description': get_annotation(node),}
 
     elif node.children[0].value == ANY:
-        return { 'title': node.value }
+        return { 'title': node.value, 'description': get_annotation(node), }
 
     elif node.children[0].value == BOOL:
-        return { 'type': 'boolean', 'title': node.value, }
+        return { 'type': 'boolean', 'title': node.value, 'description': get_annotation(node),}
 
     elif node.children[0].value == NULL:
         return { 'const': None }
 
     elif node.children[0].value == FLOAT:
-        return { 'type': 'number', 'title': node.value, }
+        return { 'type': 'number', 'title': node.value, 'description': get_annotation(node),}
 
     elif node.children[0].value == INT:
-        return { 'type': 'number', "multipleOf": 1.0, 'title': node.value, }
+        return { 'type': 'number', "multipleOf": 1.0, 'title': node.value, 'description': get_annotation(node),}
 
 
     else: # object
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
         # if any(ellipses):
         #     _type = ellipses[0].children[0] if len(ellipses[0].children) else None # TODO don't know what is this
-        annotations = node.parent.child_annotations
         obj = {
             'title': node.value,
-            'description': annotations.pop(0) if len(annotations) else '',
+            'description': get_annotation(node),
             'type': 'object',
             'required': [child.value for child in node.children if child.required and not child.value in to_skip],
             'properties': {
@@ -105,6 +111,14 @@ def _make_schema(node, definitions):
             obj.update({'additionalProperties': True,})
         return obj
 
+
+def get_annotation(node):
+    if node.parent:
+        annotations = node.parent.child_annotations
+        return annotations.pop(0) if len(annotations) else ''
+    else:
+        print(f'{node.value} has no parent')
+        return ''
 
 # TODO
 def make_schema(root):
@@ -144,6 +158,7 @@ def make_range_schema(node):
     obj = {
         'title': node.value,
         'type': 'number',
+        'description': get_annotation(node),
     }
     if all([s.isdigit() for s in boundaries]):
         obj.update({

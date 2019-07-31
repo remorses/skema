@@ -144,7 +144,7 @@ def get_generator(prop, customs={}):
             # print(customs[title]())
             return hs.builds(lambda x: customs[title](), hs.integers())
         else:
-            prop = {k:v for k,v in prop.items() if k != 'title'}
+            prop = {k:v for k,v in prop.items() if k != 'title' and k != 'description'}
     
     if not prop:
         return gen_anything()
