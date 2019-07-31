@@ -117,6 +117,8 @@ generates the less readable json schema
     - Bool,
     - Float
     - /regex/
+    - 0..100 (int range)
+    - .0..1 (float range)
 - type inside [ ] is an array type
 - types can be mixed together: 
     - `Str | Int` means one of string and int

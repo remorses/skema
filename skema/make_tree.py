@@ -59,6 +59,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             
         elif token['type'] == 'VAL':
             ast = next(extract_ast(token['value']))
+            # print(ast)
             root = make_value_tree(ast, node)
             node = node.parent
             

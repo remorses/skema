@@ -14,6 +14,11 @@ def _make_schema(node, definitions):
         return {
             '$ref': f'#/definitions/{node.children[0].value}'
         }
+    elif node.children[0].value == ELLIPSIS:
+        return { 'type': 'object', 'additionalProperties': True, 'title': node.value, }
+
+    elif '..' in node.children[0].value:
+        return make_range_schema(node)
 
     elif '"' in node.children[0].value:
         value = node.children[0].value.split('"')
@@ -55,7 +60,6 @@ def _make_schema(node, definitions):
 
     elif node.children[0].value == STR or node.children[0].value == STRING:
         obj = { 'type': 'string', 'title': node.value, }
-        # print(node.value)
         format = get_format(node.value)
         if format:
             obj.update({
@@ -81,8 +85,6 @@ def _make_schema(node, definitions):
     elif node.children[0].value == INT:
         return { 'type': 'number', "multipleOf": 1.0, 'title': node.value, }
 
-    elif node.children[0].value == ELLIPSIS:
-        return { 'type': 'object', 'additionalProperties': True, 'title': node.value, }
 
     else: # object
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
@@ -133,3 +135,40 @@ def get_format(name):
     if name == 'Iri':
         return 'iri'
     return None
+
+def make_range_schema(node):
+    value = node.children[0].value
+    boundaries = value.split('..')
+    boundaries = [b.strip() for b in boundaries]
+    boundaries = [b for b in boundaries if b]
+    obj = {
+        'title': node.value,
+        'type': 'number',
+    }
+    if all([s.isdigit() for s in boundaries]):
+        obj.update({
+            'multipleOf': 1,
+        })
+        boundaries = [int(b) for b in boundaries]
+    else:
+        boundaries = [float(b) for b in boundaries]
+    if len(boundaries) == 0:
+        raise Exception('range must contain at least one bounding: 0.. ..100 0..100')
+    elif len(boundaries) <= 1:
+        if value.index('..') == 0:
+            obj.update({
+                'type': 'number',
+                'exclusiveMaximum': boundaries[0],
+            })
+        else:
+            obj.update({
+                'type': 'number',
+                'minimum': boundaries[0],
+            })
+    else:
+        obj.update({
+            'type': 'number',
+            'minimum': boundaries[0],
+            'exclusiveMaximum': boundaries[1],
+        })
+    return obj

@@ -298,6 +298,20 @@ qualcosa
 Ciao: Any
 '''
 
+with_annotation_in_props = '''
+"evento del sistema"
+Event:
+    """descripzione 1"""
+    x: Int
+    """descripzione 2"""
+    b: Ciao
+
+"""
+qualcosa
+"""
+Ciao: Any
+'''
+
 with_regex = '''
 """evento del sistema"""
 Event:
@@ -318,6 +332,35 @@ Event:
     patterns: [/cacca/]
 
 Ciao: /eiii/
+'''
+
+with_range_int = '''
+"""evento del sistema"""
+Event:
+    x: Int # un int
+    range: 0..100
+'''
+
+with_range_float_1 = '''
+"""evento del sistema"""
+Event:
+    x: Int # un int
+    range: .0..1
+'''
+
+with_range_float_2 = '''
+"""evento del sistema"""
+Event:
+    x: Int # un int
+    range: 0..1.
+'''
+
+with_range_unbounded = '''
+"""evento del sistema"""
+Event:
+    x: Int # un int
+    range: 0..
+    range1: ..0
 '''
 
 # failing = """
