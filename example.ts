@@ -6,7 +6,7 @@ export interface Example {
     /**
      * ciao
      */
-    bCiaoComeVa?: BoCiao;
+    CiaoComeVa?: BoCiao;
 }
 
 /**

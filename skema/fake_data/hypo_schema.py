@@ -1,6 +1,7 @@
 from random import randint
 
 from hypothesis import strategies as hs
+# from hypothesis._strategies import from_regex as regex
 import json
 from .regex import regex
 
@@ -15,11 +16,9 @@ def gen_string(prop):
     min_value = prop.get("minLength", 5)
     max_value = prop.get("maxLength", 30)
     pattern = prop.get('pattern', r'[ A-Za-z\d]+')
-    return hs.just(regex(pattern)\
-        .filter(lambda x: min_value <= len(x) and len(x) <= max_value)\
-        .map(lambda x: x.rstrip('\x00'))\
-        .example()
-    )
+    return regex(pattern, )\
+            .filter(lambda x: min_value <= len(x) and len(x) <= max_value)\
+            .map(lambda x: x.rstrip('\x00'))
     # return hs.text(
     #     hs.characters(
     #         max_codepoint=100, 
@@ -139,7 +138,7 @@ def get_generator(prop, customs={}):
             "boolean": gen_bool,
             
     }
-    if prop.get('title'):
+    if prop.get('title') != None:
         title = prop.get('title', '').strip()
         if title in customs:
             # print(customs[title]())
