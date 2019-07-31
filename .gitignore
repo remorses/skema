@@ -3,3 +3,4 @@ play*
 .pytest_cache
 play*
 js
+.mypy_cache

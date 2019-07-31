@@ -3,26 +3,21 @@
     "title": "Event",
     "description": "ciao",
     "type": "object",
-    "required": [
-        "a",
-        "b"
-    ],
     "properties": {
-        "a": {
+        "a_come_stai": {
             "type": "number",
             "multipleOf": 1.0,
             "title": "a"
         },
-        "b": {
-            "title": "Bo",
+        "CiaoComeVa": {
+            "title": "Bo_ciao",
             "description": "ciao",
             "type": "object",
-            "required": [
-                "ciao",
-                "xxx"
-            ],
             "properties": {
-                "ciao": {
+                "enum": {
+                    "enum": ["sdf_adf", "ciaoComeVa"]
+                },
+                "ciaoComeVa": {
                     "type": "number",
                     "multipleOf": 1.0,
                     "title": "ciao"

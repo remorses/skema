@@ -8,6 +8,6 @@ if len(sys.argv) != 2:
 
 generate_types(
     sys.argv[-1], 
-    '.py', 
-    '--python-version 3.7 --just-types -no-nice-property-names'
+    '.ts', 
+    '--just-types'
 )
