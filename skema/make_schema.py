@@ -117,7 +117,7 @@ def get_annotation(node):
         annotations = node.parent.child_annotations
         return annotations.pop(0) if len(annotations) else ''
     else:
-        print(f'{node.value} has no parent')
+        # print(f'{node.value} has no parent')
         return ''
 
 # TODO
