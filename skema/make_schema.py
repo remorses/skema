@@ -27,6 +27,7 @@ def _make_schema(node, definitions):
         value = value[0]
         return {
             'enum': [value],
+            'type': 'string',
             'title': node.value,
             'description': get_annotation(node),
         }
@@ -35,11 +36,14 @@ def _make_schema(node, definitions):
         if all(['"' in node.value for node in node.children[0].children]):
             return {
                 'enum': [c.value.replace('"', '', 2) for c in node.children[0].children],
+                'type': 'string',
                 'description': get_annotation(node),
             }
         elif all([node.value.isdigit() for node in node.children[0].children]):
             return {
                 'enum': [int(c.value) for c in node.children[0].children],
+                'type': 'number',
+                'multipleOf': 1,
                 'description': get_annotation(node),
             }
         else:

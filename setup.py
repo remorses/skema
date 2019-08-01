@@ -39,7 +39,8 @@ setup(
     packages=['skema', 'skema.fake_data', 'skema.generate'],
     scripts=[
         'bin/skema-generate-python',
-        'bin/skema-generate-typescript'
+        'bin/skema-generate-typescript',
+        'bin/skema-generate-jsonschema'
     ],
 
 )
