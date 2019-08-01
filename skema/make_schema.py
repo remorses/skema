@@ -13,6 +13,7 @@ def _make_schema(node, definitions):
     elif any([node.children[0].value == x for x in definitions]): # custom definition
         return {
             '$ref': f'#/definitions/{node.children[0].value}',
+            'title': node.value,
             'description': get_annotation(node),
         }
     elif node.children[0].value == ELLIPSIS:
@@ -37,12 +38,14 @@ def _make_schema(node, definitions):
             return {
                 'enum': [c.value.replace('"', '', 2) for c in node.children[0].children],
                 'type': 'string',
+                'title': node.value,
                 'description': get_annotation(node),
             }
         elif all([node.value.isdigit() for node in node.children[0].children]):
             return {
                 'enum': [int(c.value) for c in node.children[0].children],
                 'type': 'number',
+                'title': node.value,
                 'multipleOf': 1,
                 'description': get_annotation(node),
             }
@@ -64,7 +67,7 @@ def _make_schema(node, definitions):
     elif node.children[0].value == LIST:
         return {
             'type': 'array',
-            # 'title': node.value,
+            'title': node.value,
             'items': _make_schema(node.children[0], definitions),
             'description': get_annotation(node),
         }
