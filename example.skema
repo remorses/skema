@@ -1,33 +1,7 @@
 #!/usr/bin/env skema-generate-python
 
 
-""" 
-evento del sistema
-"""
-Event:
-    a: Int
-    b: DateTime
-    xxx:
-        x: Qualcosa
 
-DateTime: Str
-Qualcosa: Str
-
-# Bo:
-#     ciao: Int
-#     # sldfhksdf
-#     # adsf
-#     xxx?: X & Y # asasfafs
-
-# X:
-#     sd?: /adsf/
-
-
-# Y:
-#     zz: Int
-#     ciao: "sss" | "sdf" | "sdg"
-#     const: "const"
-#     ints: 0 | 1
-
-
-
+Object:
+    a?: Int
+    b: Str
