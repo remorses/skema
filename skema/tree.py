@@ -56,7 +56,7 @@ class Node:
                 if is_end_key(self) and self.children[0].value != ELLIPSIS:
                     res += '[' + Node.to_skema(c, '', bucket) + ']'
                 else:
-                    print(c.value)
+                    # print(c.value)
                     # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                     obj = '\n' + Node.to_skema(c, indent + tab,)
                     res += '[' + obj + '\n' + indent + ']'

@@ -71,9 +71,9 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
                 raise NotImplementedError(str(subset))
         node = node.insert(child,)
 
-    elif schema.anyOf or schema.oneOf:
-        child = Node(OR, node)
-        items = schema.oneOf or schema.anyOf
+    elif schema.anyOf or schema.oneOf or schema.allOf:
+        child = Node(AND if schema.allOf else OR, node)
+        items = schema.oneOf or schema.anyOf or schema.allOf
         i = 0
         for subset in items:
             subset = SchemaBlock.make(subset)
