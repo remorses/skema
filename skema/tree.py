@@ -45,7 +45,7 @@ class Node:
         return res
 
 
-    def to_skema(self, indent='', bucket=[]):
+    def to_skema(self, indent='', bucket=[]): # TODO remove bucket arg
         if self.value not in [LIST, OR, AND]:
             res = (indent + str(self.value) or '""')
             annotations = self.parent.child_annotations if self.parent else []
