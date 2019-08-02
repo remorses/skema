@@ -151,14 +151,42 @@ def is_scalar(value):
     if '..' in value:
         return True
     return False
-    
+
+
+def get_scalar_union(node):
+    new_type = reduce(stronger_type, node.children[0].children,)
+    return {node.value: new_type}
+
+def merge_scalar_unions(references):
+    to_delete = {}
+    for node in references:
+        if is_or_key(node) and all([is_scalar(c.value) for c in node.children[0].children]):
+            obj = get_scalar_union(node)
+            print('new_type', obj)
+            to_delete.update(obj)
+    print('to_delete', to_delete)
+    for ref in references:
+        replace_occurrences(ref, to_delete)
+    return [r for r in references if not r.value in to_delete]
+
+def replace_occurrences(ref, to_delete):
+    for c in ref.children:
+        if c.value in to_delete.keys():
+            c.value = to_delete[c.value]
+        replace_occurrences(c, to_delete)
+
 
 def to_graphql(self: Node, indent='',):
     res = ''
-    if is_or_key(self):
-        if all([is_scalar(c.value) for c in self.children]):
-            new_self = Node(self.value, reduce(stronger_type, self.children,))
-            res += to_graphql(new_self)
+    if is_or_key(self) and all(['"' in c.value for c in self.children[0].children]):
+        res += 'enum '
+        res += str(self.value)
+        res += ' {'
+        for c in self.children[0].children:
+            value = c.value.replace('"', '')
+            res += '\n' + tab + value # TODO enum values should get namespace
+        res += '\n}'
+    elif is_or_key(self):
         res += 'union '
         res += str(self.value)
         res += ' = '
@@ -173,7 +201,7 @@ def to_graphql(self: Node, indent='',):
             res += '\n' + Node.to_skema(c, indent + tab, )
         res += '\n}'
     else:
-        raise NotImplementedError('no valid graphql')
+        raise NotImplementedError(f'no valid graphql\n{str(self)}')
     return res
 
 
@@ -223,6 +251,10 @@ def replace_types(node: Node,):
         return
     if node.value in map_types_to_graphql:
         node.value = map_types_to_graphql[node.value]
+    if '..' in node.value:
+        node.value = 'Float'
+    if '"' in node.value:
+        node.value = 'String' # TODO make enums
     for c in node.children:
         replace_types(c)
     return node

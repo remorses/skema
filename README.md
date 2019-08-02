@@ -164,3 +164,40 @@ Object:
     ...
 ```
 this is because i always forget to put them when doing `Object1 & Object2` so i just removed it
+
+
+
+
+
+
+
+grpahlq todos:
+- object nested in lists needs to be dereferenced in extract_references
+```
+type Root {
+    Array: [
+        cosa: Int
+        object:
+            ciao: Str
+        another: [
+            cose: Str
+            altre: Int
+        ]
+        types: [Type]
+    ]
+    Type: Type
+}
+```
+- alias references `name: String` ... needs to be dereferenced as original type, now are ignored and left as types
+- scalar unions needs to be removed and substituted with stronger type
+- "const values" needs to be interpreted as enums, in to_graphql
+- remove ... nodes, keys that have only ... as child gets Any type
+```
+type RemovedTodo {
+    type: "removed_todo"
+    payload:
+        ...
+    todo_id: Int
+}
+```
+- 
