@@ -1,5 +1,6 @@
 from dataclasses import fields
-from skema.infer import SchemaBlock, schema_to_tree, infer_schema
+from skema.infer import SchemaBlock, infer_schema
+from skema.schema_to_tree import schema_to_tree
 from skema.support import pretty
 from skema.make_schema import make_schema
 
