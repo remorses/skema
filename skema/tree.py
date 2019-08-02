@@ -35,6 +35,15 @@ class Node:
         for c in self.children:
             res += '\n' + Node.__str__(c, indent + tab)
         return res
+    
+    def parent_relation(self, indent=''):
+        res = ''
+        res += indent + (self.parent.value if self.parent else 'None') + ' -> '
+        res += (str(self.value) or '""')
+        res += ':' if len(self.children) else ''
+        for c in self.children:
+            res += '\n' + Node.parent_relation(c, indent + tab)
+        return res
 
     def to_skema(self, indent='', ): # TODO remove bucket arg
         res = ''

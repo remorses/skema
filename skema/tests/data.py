@@ -371,7 +371,7 @@ Camp:
     oggetto:
         x: Int
         y: Float
-    union: A & B
+    union: A | B
     array: [Float]
 
 A:

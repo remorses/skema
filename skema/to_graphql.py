@@ -39,10 +39,12 @@ from .constants import *
 from .constants import constants
 from .support import capitalize
 
-def extract_references(node: Node, references=[]):
-    print('is_object', repr(node), is_object(node))
+def extract_references(node: Node, references=[], root=None):
+    if root is None:
+        root = node
+    # print('is_object', repr(node), is_object(node))
     if is_and_key(node) or is_or_key(node):
-        print('OR AND', repr(node))
+        # print('OR AND', repr(node))
         children = node.children[0].children
         OP = AND if is_and_key(node) else OR
     elif is_object(node):
@@ -58,25 +60,71 @@ def extract_references(node: Node, references=[]):
         if is_end_key(child):
             child = copy(child)
             if OP:
-                child.parent = reference.children[0]
+                child.value = search_cascaded_name(root, child.value)
+                # child.parent = reference.children[0]
                 reference.children[0].insert(child)
             else:
-                child.parent = reference
+                # child.parent = reference
                 reference = reference.insert(child)
         else:
-            parent_name = capitalize(node.value) # if node.value != 'root' else ''
-            reference_child_name = parent_name + capitalize(child.value)
+            reference_child_name = compute_camel_cascaded_name(child)
             reference_key = Node(child.value, child.parent)
-            reference_key = reference_key.insert(Node(reference_child_name, reference_key))
+            reference_key = reference_key.insert(Node(reference_child_name, child))
             reference = reference.insert(reference_key)
 
-            child_reference = Node(reference_child_name, child.parent)
+            child_reference = Node(reference_child_name, child)
             # child_reference = child_reference.insert(Node(OP, child_reference)) if OP else child_reference
             child_reference.insert(*[copy(c) for c in child.children])
             ref_values = [ref.value for ref in references]
-            references += [ref for ref in extract_references(child_reference) if not ref.value in ref_values]
+            references += [ref for ref in extract_references(child_reference, root=root) if not ref.value in ref_values]
     return references + [reference]
 
+def compute_camel_cascaded_name(child):
+    parent = child.parent
+    parent_names = []
+    while isinstance(parent, Node):
+        parent_names += [capitalize(parent.value)]
+        parent = parent.parent
+    parent_name = ''.join(reversed(parent_names))
+    print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
+    return parent_name + capitalize(child.value)
+
+# def compute_camel_cascaded_name(child):
+#     parent = child.parent
+#     parent_name = ''
+#     while isinstance(parent, Node):
+#         parent_name += capitalize(parent.value) # if node.value != 'root' else ''
+#         parent = parent.parent
+#     print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
+#     return parent_name + capitalize(child.value)
+
+def search_cascaded_name(root, original):
+    queue = []
+    queue.append(root)
+    while len(queue):
+        node = queue.pop()
+        for child in node.children:
+            queue.append(child)
+            if original == child.value:
+                return compute_camel_cascaded_name(child)
+    raise Exception('not found')
+
+def all_nodes_have_parent(root,):
+    misses = []
+    queue = []
+    ok = True
+    queue.append(root)
+    while len(queue):
+        node = queue.pop()
+        if not node.parent:
+            ok = False 
+            misses += [node.value]
+        for child in node.children:
+            queue.append(child)
+    return ok, misses
+            
+    
+    
 
 def is_object(node: Node):
     return (
@@ -127,3 +175,27 @@ def stronger_type(a, b):
     if BOOL in [a, b]:
         return BOOL
     return STR
+
+
+
+tab = '    '
+
+def to_graphql(self: Node, indent=''):
+    res = ''
+    if is_or_key(self):
+        res += 'union '
+        res += str(self.value)
+        res += ' = '
+        for c in self.children:
+            res += Node.to_skema(c, indent + tab, )
+        res += '\n'
+    elif is_object(self):
+        res += 'type '
+        res += str(self.value)
+        res += ' {'
+        for c in self.children:
+            res += '\n' + Node.to_skema(c, indent + tab, )
+        res += '\n}'
+    else:
+        raise NotImplementedError('no valid graphql')
+    return res
