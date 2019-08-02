@@ -3,7 +3,7 @@ from functools import reduce
 from .constants import *
 import json
 
-
+tab = '    '
 
 class Node:
     def __init__(self, value, parent=None, required=True): 
@@ -31,7 +31,7 @@ class Node:
         res += ' (' + annotations.pop(0) + ')' if len(annotations) else ''
         res += ':' if len(self.children) else ''
         for c in self.children:
-            res += '\n' + Node.__str__(c, indent + '\t')
+            res += '\n' + Node.__str__(c, indent + tab)
         return res
     
     def str(self,):
@@ -61,37 +61,31 @@ class Node:
                     res += '[' + Node.to_skema(c, '', bucket) + ']'
                 else: # make reference for object (more than 1 children)
                     raise NotImplementedError(repr(c.children))
-                    res += '[\n' + Node.to_skema(c, indent + '\t\t', bucket) + '\n' + indent + '\t' + ']' # TODO
+                    # res += '[\n' + Node.to_skema(c, indent + tab*2, bucket) + '\n' + indent + tab + ']' # TODO
             else: # key: Node
                 if len(c.children) == 0 or c.value in [AND, OR, LIST]: # dont go \n
-                    res += '' + Node.to_skema(c, ' ', bucket)
+                    res += ' ' + Node.to_skema(c, '', bucket)
                 else:
-                    res += '\n' + Node.to_skema(c, indent + '\t', bucket)
+                    res += '\n' + Node.to_skema(c, indent + tab, bucket)
         else:
             if self.value in [OR, AND]: # Node | Node
                 children = self.children[:]
                 for i, c in enumerate(self.children):
                     if len(c.children):
-                        reference = make_references(c)
-                        children[i] = Node(reference.value, c.parent)
-                        # print('inserting ' + repr(reference))
-                        bucket.append(reference)
-                    else:
-                        children[i] = c
-
+                        raise Exception('can\'t handle object inside or, and')
                 symbol = ' | ' if self.value == OR else ' & '
                 for c in children[:-1]:
                     res += '' + Node.to_skema(c, '', bucket) + symbol
                 res += '' + Node.to_skema(children[-1], '', bucket)
             elif self.value == LIST: # [ object ]
                 obj = ''
-                indent += '\t'
+                indent += tab
                 for c in self.children:
-                    obj += '\n' + Node.to_skema(c, indent + '\t', bucket)
+                    obj += '\n' + Node.to_skema(c, indent + tab, bucket)
                 res += '[' + obj + '\n' + indent + ']' # TODO
             else: # object
                 for c in self.children:
-                    res += '\n' + Node.to_skema(c, indent + '\t', bucket)
+                    res += '\n' + Node.to_skema(c, indent + tab, bucket)
         return res
 
 def make_references(node: Node): # TODO assert name does nort already exist

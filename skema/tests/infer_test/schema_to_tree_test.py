@@ -1,6 +1,7 @@
 from dataclasses import fields
 from skema.infer import SchemaBlock, schema_to_tree, infer_schema
 from skema.support import pretty
+from skema.make_schema import make_schema
 
 def test_1():
     x = infer_schema([
@@ -14,7 +15,8 @@ def test_1():
     ])
     pretty(x)
     schema = SchemaBlock.make(x)
-    t = schema_to_tree(schema)
-    print(t)
-    print()
-    print(t.str())
+    references = []
+    t = schema_to_tree(schema, references=references)
+    print(t.to_skema())
+    for ref in references:
+        print(ref.to_skema())

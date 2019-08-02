@@ -19,7 +19,7 @@ class SchemaBlock:
         x = {k:v for k, v in x.items() if k in p}
         return cls(**x)
 
-def schema_to_tree(schema: SchemaBlock, node=Node('root')):
+def schema_to_tree(schema: SchemaBlock, node=Node('root'), references=[]):
     """
     type == integer -> node.insert(Node(INT, node))
     type == number -> node.insert(Node(FLOAT, node))
@@ -35,7 +35,7 @@ def schema_to_tree(schema: SchemaBlock, node=Node('root')):
                 v = SchemaBlock.make(v)
                 required = k in (schema.required or [])
                 child = Node(k, node, required=required)
-                child = schema_to_tree(v, child)
+                child = schema_to_tree(v, child, references)
                 node = node.insert(child)
         else:
             child = Node(ANY, node)
@@ -44,7 +44,7 @@ def schema_to_tree(schema: SchemaBlock, node=Node('root')):
     elif schema.type == 'array':
         subset = v = SchemaBlock.make(schema.items or {})
         child = Node(LIST, node)
-        child = schema_to_tree(subset, child)
+        child = schema_to_tree(subset, child, references)
         node = node.insert(child)
         
     elif schema.type == 'string':
@@ -62,10 +62,10 @@ def schema_to_tree(schema: SchemaBlock, node=Node('root')):
         for subset in schema.type:
             if 'type' in subset:
                 subset = SchemaBlock.make(subset)
-                child = schema_to_tree(subset, child)
+                child = schema_to_tree(subset, child, references)
             elif isinstance(subset, str):
                 subset = SchemaBlock(type=subset)
-                child = schema_to_tree(subset, child)
+                child = schema_to_tree(subset, child, references)
             else:
                 raise NotImplementedError(str(subset))
         node = node.insert(child,)
@@ -73,9 +73,15 @@ def schema_to_tree(schema: SchemaBlock, node=Node('root')):
     elif schema.anyOf or schema.oneOf:
         child = Node(OR, node)
         items = schema.oneOf or schema.anyOf
-        for subset in items:
-                subset = SchemaBlock.make(subset)
-                child = schema_to_tree(subset, child)
+        for i, subset in enumerate(items):
+            subset = SchemaBlock.make(subset)
+            reference_name = node.value.capitalize() + str(i)
+            reference_root = Node(reference_name,)
+            reference_root = schema_to_tree(subset, reference_root, references)
+            references.append(reference_root)
+
+            child = child.insert(Node(reference_name, child))
+
         node = node.insert(child,)
         
     else:
