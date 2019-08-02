@@ -378,8 +378,20 @@ A:
     z: Int
 B:
     t: Int
+'''
 
+splittable_references_and = '''
+Camp:
+    oggetto:
+        x: Int
+        y: Float
+    union: A & B
+    array: [Float]
 
+A:
+    z: Int
+B:
+    t: Int
 '''
 
 # failing = """
