@@ -34,7 +34,18 @@ class Node:
             res += '\n' + Node.__str__(c, indent + '\t')
         return res
     
-    def to_skema(self, indent=''):
+    def str(self,):
+        reference_bucket = []
+        res = self.to_skema(bucket=reference_bucket)
+        # print(reference_bucket)
+        while len(reference_bucket):
+            reference = reference_bucket.pop()
+            res += '\n\n'
+            res += reference.to_skema(bucket=reference_bucket)
+        return res
+
+
+    def to_skema(self, indent='', bucket=[]):
         if self.value not in [LIST, OR, AND]:
             res = (indent + str(self.value) or '""')
             annotations = self.parent.child_annotations if self.parent else []
@@ -46,36 +57,52 @@ class Node:
         if len(self.children) == 1: # key
             c = self.children[0]
             if self.value == LIST: # key: [Node]
-                if not len(c.children):
-                    res += '[' + Node.to_skema(c, '') + ']'
+                if 1: # not len(c.children):
+                    res += '[' + Node.to_skema(c, '', bucket) + ']'
                 else: # make reference for object (more than 1 children)
                     raise NotImplementedError(repr(c.children))
-                    res += '[\n' + Node.to_skema(c, indent + '\t\t') + '\n' + indent + '\t' + ']' # TODO
+                    res += '[\n' + Node.to_skema(c, indent + '\t\t', bucket) + '\n' + indent + '\t' + ']' # TODO
             else: # key: Node
                 if len(c.children) == 0 or c.value in [AND, OR, LIST]: # dont go \n
-                    res += '' + Node.to_skema(c, ' ')
+                    res += '' + Node.to_skema(c, ' ', bucket)
                 else:
-                    res += '\n' + Node.to_skema(c, indent + '\t')
+                    res += '\n' + Node.to_skema(c, indent + '\t', bucket)
         else:
             if self.value in [OR, AND]: # Node | Node
-                # TODO make indenpendant skemas for children that are not objects
-                # replace these nodes with Node(reference_name, c.parent)
+                children = self.children[:]
+                for i, c in enumerate(self.children):
+                    if len(c.children):
+                        reference = make_references(c)
+                        children[i] = Node(reference.value, c.parent)
+                        # print('inserting ' + repr(reference))
+                        bucket.append(reference)
+                    else:
+                        children[i] = c
+
                 symbol = ' | ' if self.value == OR else ' & '
-                for c in self.children[:-1]:
-                    res += '' + Node.to_skema(c, '') + symbol
-                res += '' + Node.to_skema(self.children[-1], '')
+                for c in children[:-1]:
+                    res += '' + Node.to_skema(c, '', bucket) + symbol
+                res += '' + Node.to_skema(children[-1], '', bucket)
             elif self.value == LIST: # [ object ]
                 obj = ''
                 indent += '\t'
                 for c in self.children:
-                    obj += '\n' + Node.to_skema(c, indent + '\t')
+                    obj += '\n' + Node.to_skema(c, indent + '\t', bucket)
                 res += '[' + obj + '\n' + indent + ']' # TODO
             else: # object
                 for c in self.children:
-                    res += '\n' + Node.to_skema(c, indent + '\t')
+                    res += '\n' + Node.to_skema(c, indent + '\t', bucket)
         return res
 
-
+def make_references(node: Node): # TODO assert name does nort already exist
+    reference_name = node.value.capitalize()
+    reference = Node(reference_name, node.parent)
+    reference_body = Node(node.value, node.parent)
+    for c in node.children:
+        reference_body = reference_body.insert(c)
+    reference = reference.insert(reference_body)
+    return reference
+    
 
 def tree_from_dict(obj: dict, key='root'):
     node = Node(key)
