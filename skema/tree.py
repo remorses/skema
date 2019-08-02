@@ -25,7 +25,7 @@ class Node:
         return self
     
     def __repr__(self, ):
-        return str(self.value) + ':' if len(self.children) else ''
+        return 'Node(value=' + (str(self.value) + ':' if len(self.children) else '') + ')'
     
     def __str__(self, indent=''):
         res = (indent + str(self.value) or '""')

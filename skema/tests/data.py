@@ -75,7 +75,7 @@ Type:
 
 events = """
 A:
-    x: "Int"
+    x: Int
     payload:
         cosa: Int
 
@@ -364,6 +364,22 @@ Event:
     x: Int # un int
     range: 0..
     range1: ..0
+'''
+
+splittable_references = '''
+Camp:
+    oggetto:
+        x: Int
+        y: Flo
+    union: A & B
+    array: [Float]
+
+A:
+    z: Int
+B:
+    t: Int
+
+
 '''
 
 # failing = """

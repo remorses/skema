@@ -12,4 +12,3 @@ BOOL = 'Bool'
 ELLIPSIS = '...'
 
 constants = [globals()[v] for v in globals() if not v.startswith('_')]
-print(constants)
