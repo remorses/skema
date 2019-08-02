@@ -2,6 +2,7 @@ from dataclasses import dataclass, fields
 from .tree import Node
 from .constants import *
 from typing import Union, List
+from .resolve_refs import resolve_refs
 
 @dataclass
 class SchemaBlock:
@@ -19,7 +20,7 @@ class SchemaBlock:
         x = {k:v for k, v in x.items() if k in p}
         return cls(**x)
 
-def schema_to_tree(schema: SchemaBlock, node=Node('root'), references=[]):
+def schema_to_tree(schema: SchemaBlock, node, references=[]):
     """
     type == integer -> node.insert(Node(INT, node))
     type == number -> node.insert(Node(FLOAT, node))
@@ -89,15 +90,19 @@ def schema_to_tree(schema: SchemaBlock, node=Node('root'), references=[]):
         node = node.insert(child,)
         
     else:
-        raise NotImplementedError(str(schema))
+        child = Node(ANY, node)
+        node = node.insert(child)
+        # raise NotImplementedError(str(schema))
     
     return node
 
 
 def from_jsonschema(schema):
+    schema = {**schema}
+    resolve_refs(schema)
     schema = SchemaBlock.make(schema)
     references = []
-    t = schema_to_tree(schema, references=references)
+    t = schema_to_tree(schema, node=Node('root'), references=references)
     res = ''
     res += t.to_skema()
     for ref in references:

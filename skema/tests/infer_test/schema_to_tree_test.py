@@ -1,8 +1,9 @@
 from dataclasses import fields
 from skema.infer import SchemaBlock, infer_schema
-from skema.schema_to_tree import schema_to_tree
 from skema.support import pretty
 from skema.make_schema import make_schema
+from skema.tree import Node
+from skema.from_jsonschema import schema_to_tree
 
 def test_1():
     x = infer_schema([
@@ -15,7 +16,7 @@ def test_1():
     pretty(x)
     schema = SchemaBlock.make(x)
     references = []
-    t = schema_to_tree(schema, references=references)
+    t = schema_to_tree(schema, node=Node('root'), references=references)
     print(t.to_skema())
     for ref in references:
         print(ref.to_skema())

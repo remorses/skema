@@ -27,6 +27,8 @@ def _resolve(schema, definitions):
 
             
 def resolve_refs(schema):
+    if not 'definitions' in schema:
+        return
     definitions = schema['definitions']
     # for definition in definitions: 
     _resolve(schema, definitions)   

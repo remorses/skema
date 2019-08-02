@@ -1,7 +1,9 @@
 
 from functools import reduce
 from .constants import *
+from .constants import constants
 import json
+
 
 tab = '    '
 
@@ -34,27 +36,33 @@ class Node:
             res += '\n' + Node.__str__(c, indent + tab)
         return res
 
-    def to_skema(self, indent='', bucket=[]): # TODO remove bucket arg
-        if self.value not in [LIST, OR, AND]:
-            annotations = self.parent.child_annotations if self.parent else []
-            res = ''
-            res += indent + '"""' + annotations.pop(0) + '"""\n' if len(annotations) else ''
-            res += (indent + str(self.value) or '""')
+    def to_skema(self, indent='', bucket=[], ): # TODO remove bucket arg
+        res = ''
+        if self.value in [AND, OR, LIST]:
+            res += ''
+        elif not self.children and self.value != ELLIPSIS:
+            res += str(self.value)
             res += ':' if len(self.children) else ''
         else:
-            res = indent + ''
+            annotations = self.parent.child_annotations if self.parent else []
+            # res += indent + '"""' + annotations.pop(0) + '"""\n' if len(annotations) else ''
+            res += (indent + str(self.value) or '""')
+            res += ':' if len(self.children) else ''
+
         
-        if len(self.children) == 1: # key
+        if is_key(self): # is_key(self): # key
             c = self.children[0]
             if self.value == LIST: # key: [Node]
-                if 1: # not len(c.children):
+                if is_end_key(self) and self.children[0].value != ELLIPSIS:
                     res += '[' + Node.to_skema(c, '', bucket) + ']'
-                else: # make reference for object (more than 1 children)
-                    raise NotImplementedError(repr(c.children))
-                    # res += '[\n' + Node.to_skema(c, indent + tab*2, bucket) + '\n' + indent + tab + ']' # TODO
+                else:
+                    print(c.value)
+                    # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
+                    obj = '\n' + Node.to_skema(c, indent + tab,)
+                    res += '[' + obj + '\n' + indent + ']'
             else: # key: Node
-                if len(c.children) == 0 or c.value in [AND, OR, LIST]: # dont go \n
-                    res += ' ' + Node.to_skema(c, '', bucket)
+                if (len(c.children) == 0 and c.value != ELLIPSIS) or c.value in [AND, OR, LIST]: # dont go \n
+                    res += ' ' + Node.to_skema(c, indent, bucket)
                 else:
                     res += '\n' + Node.to_skema(c, indent + tab, bucket)
         else:
@@ -69,7 +77,7 @@ class Node:
                 res += '' + Node.to_skema(children[-1], '', bucket)
             elif self.value == LIST: # [ object ]
                 obj = ''
-                indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
+                # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                 for c in self.children:
                     obj += '\n' + Node.to_skema(c, indent + tab, bucket)
                 res += '[' + obj + '\n' + indent + ']' # TODO
@@ -113,3 +121,19 @@ def traverse_tree(f, node, result=[]):
         for child in node.children:
             traverse_tree(f, child, result)
     return result
+
+def is_key(node):
+    return len(node.children) == 1
+
+def is_end_key(node):
+    if len(node.children) == 1:
+        child = node.children[0]
+        return (
+            (is_end_type(child)) or
+            (child.value in [LIST, OR, AND] and all([is_end_type(x) for x in child.children]))
+        )
+    else:
+        return False
+
+def is_end_type(node):
+    return not node.children
