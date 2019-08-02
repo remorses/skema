@@ -2,3 +2,4 @@ fastjsonschema
 jsonschema
 hypothesis
 bson
+genson

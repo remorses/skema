@@ -79,7 +79,7 @@ class Node:
                 res += '' + Node.to_skema(children[-1], '', bucket)
             elif self.value == LIST: # [ object ]
                 obj = ''
-                indent += tab
+                indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                 for c in self.children:
                     obj += '\n' + Node.to_skema(c, indent + tab, bucket)
                 res += '[' + obj + '\n' + indent + ']' # TODO

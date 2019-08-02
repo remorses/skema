@@ -8,7 +8,12 @@ def test_1():
         {
             'tipo': 'experss',
             'cucchiaini': 34,
-            'note': ['sdf', 'asd']
+            'note': ['sdf', 'asd'],
+            'camerieri': 34,
+            'cosa': [{
+                'ciao': 'sd',
+                'sd': 9
+            }]
         },
         {
             'tipo': 234,
@@ -18,11 +23,13 @@ def test_1():
             }]
         }
     ]
+    skema.tree.tab = '.   '
     x = infer_skema(data)
     print()
     print()
     print()
     print(x)
+    x = x.replace('.', ' ')
     schema = skema.to_jsonschema(x)
     # pretty(infer_schema(data))
     # pretty(schema)

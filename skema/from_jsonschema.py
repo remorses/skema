@@ -73,14 +73,18 @@ def schema_to_tree(schema: SchemaBlock, node=Node('root'), references=[]):
     elif schema.anyOf or schema.oneOf:
         child = Node(OR, node)
         items = schema.oneOf or schema.anyOf
-        for i, subset in enumerate(items):
+        i = 0
+        for subset in items:
             subset = SchemaBlock.make(subset)
-            reference_name = node.value.capitalize() + str(i)
-            reference_root = Node(reference_name,)
-            reference_root = schema_to_tree(subset, reference_root, references)
-            references.append(reference_root)
-
-            child = child.insert(Node(reference_name, child))
+            if subset.type in ['string', 'integer', 'number']:
+                child = schema_to_tree(subset, child, references)
+            else:
+                reference_name = node.value.capitalize() + str(i)
+                reference_root = Node(reference_name,)
+                reference_root = schema_to_tree(subset, reference_root, references)
+                references.append(reference_root)
+                child = child.insert(Node(reference_name, child))
+                i += 1
 
         node = node.insert(child,)
         
