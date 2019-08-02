@@ -81,7 +81,7 @@ def extract_references(node: Node, references=[]):
 def is_object(node: Node):
     return (
         len(node.children) >= 1 and 
-        all([len(c.children) for c in node.children]) and 
+        all([len(c.children) for c in node.children if c.value != ELLIPSIS]) and 
         node.value not in [AND, OR, LIST,] # and 
         # node.children[0] not in [c for c in constants if c != ELLIPSIS]
     )

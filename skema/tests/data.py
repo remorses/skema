@@ -232,7 +232,7 @@ req:
 """
 
 indented = """
-    Root: EventA & EventB
+    Radice: EventA & EventB
     EventA:
         type: Str
         fields:
@@ -251,7 +251,7 @@ indented = """
 
 indented_badly = """
 
-    Root: EventA & EventB
+    Radice: EventA & EventB
     EventA:
         type: Str
         fields:
@@ -270,7 +270,7 @@ indented_badly = """
     """
 
 allOf = """
-Root: EventA & EventB
+Radice: EventA & EventB
 EventA:
     type: Str
     fields: Other & Str
@@ -370,7 +370,7 @@ splittable_references = '''
 Camp:
     oggetto:
         x: Int
-        y: Flo
+        y: Float
     union: A & B
     array: [Float]
 

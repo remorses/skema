@@ -36,7 +36,7 @@ class Node:
             res += '\n' + Node.__str__(c, indent + tab)
         return res
 
-    def to_skema(self, indent='', bucket=[], ): # TODO remove bucket arg
+    def to_skema(self, indent='', ): # TODO remove bucket arg
         res = ''
         if self.value in [AND, OR, LIST]:
             res += ''
@@ -48,13 +48,11 @@ class Node:
             # res += indent + '"""' + annotations.pop(0) + '"""\n' if len(annotations) else ''
             res += (indent + str(self.value) or '""')
             res += ':' if len(self.children) else ''
-
-        
         if is_key(self): # is_key(self): # key
             c = self.children[0]
             if self.value == LIST: # key: [Node]
                 if is_end_key(self) and self.children[0].value != ELLIPSIS:
-                    res += '[' + Node.to_skema(c, '', bucket) + ']'
+                    res += '[' + Node.to_skema(c, '', ) + ']'
                 else:
                     # print(c.value)
                     # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
@@ -62,9 +60,9 @@ class Node:
                     res += '[' + obj + '\n' + indent + ']'
             else: # key: Node
                 if (len(c.children) == 0 and c.value != ELLIPSIS) or c.value in [AND, OR, LIST]: # dont go \n
-                    res += ' ' + Node.to_skema(c, indent, bucket)
+                    res += ' ' + Node.to_skema(c, indent, )
                 else:
-                    res += '\n' + Node.to_skema(c, indent + tab, bucket)
+                    res += '\n' + Node.to_skema(c, indent + tab, )
         else:
             if self.value in [OR, AND]: # Node | Node
                 children = self.children[:]
@@ -73,17 +71,17 @@ class Node:
                         raise Exception('can\'t handle object inside or, and')
                 symbol = ' | ' if self.value == OR else ' & '
                 for c in children[:-1]:
-                    res += '' + Node.to_skema(c, '', bucket) + symbol
-                res += '' + Node.to_skema(children[-1], '', bucket)
+                    res += '' + Node.to_skema(c, '', ) + symbol
+                res += '' + Node.to_skema(children[-1], '', )
             elif self.value == LIST: # [ object ]
                 obj = ''
                 # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                 for c in self.children:
-                    obj += '\n' + Node.to_skema(c, indent + tab, bucket)
+                    obj += '\n' + Node.to_skema(c, indent + tab, )
                 res += '[' + obj + '\n' + indent + ']' # TODO
             else: # object
                 for c in self.children:
-                    res += '\n' + Node.to_skema(c, indent + tab, bucket)
+                    res += '\n' + Node.to_skema(c, indent + tab, )
         return res
 
 def make_references(node: Node): # TODO assert name does nort already exist
