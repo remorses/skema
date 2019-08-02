@@ -85,8 +85,9 @@ def compute_camel_cascaded_name(child):
     while isinstance(parent, Node):
         parent_names += [capitalize(parent.value)]
         parent = parent.parent
+    parent_names = [x for x in parent_names if not x.lower() == 'root']
     parent_name = ''.join(reversed(parent_names))
-    print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
+    # print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
     return parent_name + capitalize(child.value)
 
 # def compute_camel_cascaded_name(child):
@@ -180,7 +181,7 @@ def stronger_type(a, b):
 
 tab = '    '
 
-def to_graphql(self: Node, indent=''):
+def to_graphql(self: Node, indent='',):
     res = ''
     if is_or_key(self):
         res += 'union '
@@ -188,7 +189,7 @@ def to_graphql(self: Node, indent=''):
         res += ' = '
         for c in self.children:
             res += Node.to_skema(c, indent + tab, )
-        res += '\n'
+        # res += '\n'
     elif is_object(self):
         res += 'type '
         res += str(self.value)

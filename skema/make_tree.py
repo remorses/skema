@@ -129,7 +129,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
 
 
 
-def make_tree(tokens) -> Node:
+def make_tree(tokens, ) -> Node:
     root = Node('root',)
     log(tokens)
     separators = list(filter(lambda x: x['type'] == 'SEPARATOR', tokens))

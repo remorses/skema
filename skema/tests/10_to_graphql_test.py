@@ -26,10 +26,10 @@ def test_extract_references(string):
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
 def test_to_graphql(string):
     tokens = tokenize(string)
-    tree = make_tree(tokens)
+    tree = make_tree(tokens, )
     print()
-    # print(tree)
+    print(tree)
     refs = extract_references(tree, [])
-    res = '\n\n'.join([to_graphql(r, '') for r in refs])
+    res = '\n\n'.join([to_graphql(r, ) for r in refs])
     print(res)
     print()
