@@ -1,6 +1,6 @@
 
 from functools import reduce
-
+from .constants import *
 import json
 
 
@@ -35,21 +35,44 @@ class Node:
         return res
     
     def to_skema(self, indent=''):
-        res = (indent + str(self.value) or '""')
-        annotations = self.parent.child_annotations if self.parent else []
-        res += ' (' + annotations.pop(0) + ')' if len(annotations) else ''
-
-        res += ':' if len(self.children) else ''
+        if self.value not in [LIST, OR, AND]:
+            res = (indent + str(self.value) or '""')
+            annotations = self.parent.child_annotations if self.parent else []
+            res += ' (' + annotations.pop(0) + ')' if len(annotations) else ''
+            res += ':' if len(self.children) else ''
+        else:
+            res = indent + ''
+        
         if len(self.children) == 1: # key
             c = self.children[0]
-            if not len(c.children):
-                res += '' + Node.to_skema(c, ' ')
-            else:
-                res += '\n' + Node.to_skema(c, indent + '\t')
-        # elif len(self.children) == 0:
+            if self.value == LIST: # key: [Node]
+                if not len(c.children):
+                    res += '[' + Node.to_skema(c, '') + ']'
+                else: # make reference for object (more than 1 children)
+                    raise NotImplementedError(repr(c.children))
+                    res += '[\n' + Node.to_skema(c, indent + '\t\t') + '\n' + indent + '\t' + ']' # TODO
+            else: # key: Node
+                if len(c.children) == 0 or c.value in [AND, OR, LIST]: # dont go \n
+                    res += '' + Node.to_skema(c, ' ')
+                else:
+                    res += '\n' + Node.to_skema(c, indent + '\t')
         else:
-            for c in self.children:
-                res += '\n' + Node.to_skema(c, indent + '\t')
+            if self.value in [OR, AND]: # Node | Node
+                # TODO make indenpendant skemas for children that are not objects
+                # replace these nodes with Node(reference_name, c.parent)
+                symbol = ' | ' if self.value == OR else ' & '
+                for c in self.children[:-1]:
+                    res += '' + Node.to_skema(c, '') + symbol
+                res += '' + Node.to_skema(self.children[-1], '')
+            elif self.value == LIST: # [ object ]
+                obj = ''
+                indent += '\t'
+                for c in self.children:
+                    obj += '\n' + Node.to_skema(c, indent + '\t')
+                res += '[' + obj + '\n' + indent + ']' # TODO
+            else: # object
+                for c in self.children:
+                    res += '\n' + Node.to_skema(c, indent + '\t')
         return res
 
 
