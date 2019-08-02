@@ -1,6 +1,6 @@
 from dataclasses import dataclass, fields
-from ..tree import Node
-from ..constants import *
+from .tree import Node
+from .constants import *
 from typing import Union, List
 
 @dataclass
