@@ -33,23 +33,13 @@ class Node:
         for c in self.children:
             res += '\n' + Node.__str__(c, indent + tab)
         return res
-    
-    def str(self,):
-        reference_bucket = []
-        res = self.to_skema(bucket=reference_bucket)
-        # print(reference_bucket)
-        while len(reference_bucket):
-            reference = reference_bucket.pop()
-            res += '\n\n'
-            res += reference.to_skema(bucket=reference_bucket)
-        return res
-
 
     def to_skema(self, indent='', bucket=[]): # TODO remove bucket arg
         if self.value not in [LIST, OR, AND]:
             annotations = self.parent.child_annotations if self.parent else []
+            res = ''
             res += indent + '"""' + annotations.pop(0) + '"""\n' if len(annotations) else ''
-            res = (indent + str(self.value) or '""')
+            res += (indent + str(self.value) or '""')
             res += ':' if len(self.children) else ''
         else:
             res = indent + ''
