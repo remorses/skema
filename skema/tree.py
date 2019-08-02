@@ -33,6 +33,24 @@ class Node:
         for c in self.children:
             res += '\n' + Node.__str__(c, indent + '\t')
         return res
+    
+    def to_skema(self, indent=''):
+        res = (indent + str(self.value) or '""')
+        annotations = self.parent.child_annotations if self.parent else []
+        res += ' (' + annotations.pop(0) + ')' if len(annotations) else ''
+
+        res += ':' if len(self.children) else ''
+        if len(self.children) == 1: # key
+            c = self.children[0]
+            if not len(c.children):
+                res += '' + Node.to_skema(c, ' ')
+            else:
+                res += '\n' + Node.to_skema(c, indent + '\t')
+        # elif len(self.children) == 0:
+        else:
+            for c in self.children:
+                res += '\n' + Node.to_skema(c, indent + '\t')
+        return res
 
 
 

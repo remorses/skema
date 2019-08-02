@@ -10,4 +10,4 @@ def test_1():
     pretty(x)
     schema = SchemaBlock.make(x)
     t = schema_to_tree(schema)
-    print(t)
+    print(t.to_skema())
