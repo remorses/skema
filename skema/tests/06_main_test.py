@@ -6,7 +6,7 @@ import pytest
 from .data import strings
 from .support import keys, values
 from .. import compile
-from .. import main
+from ..__main__ import main
 
 
 

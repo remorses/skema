@@ -7,11 +7,14 @@ import sys
 import json
 from functools import reduce, partial
 import fastjsonschema
-from .__main__ import main, to_jsonschema
+from .to_jsonschema import to_jsonschema
+from .support import rcompose
 from .fake_data import fake_data
-rcompose = lambda *arr: reduce(lambda f, g: lambda *a, **kw: f(g(*a, **kw)), reversed(arr))
 
 
 def compile(definition,) -> Callable[[dict], Any]:
     jsonschema = to_jsonschema(definition)
     return compile_(jsonschema)
+
+def validate(schema, instance, **kwargs):
+    return compile(schema)(instance, **kwargs)
