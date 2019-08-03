@@ -45,6 +45,17 @@ def remove_objects_inside_lists(root: Node):
     pass
 
 
+def remove_ellipses(node: Node):
+    if not node.children:
+        return
+    for c in node.children:
+        if len(node.children) == 1 and node.children[0].value == ELLIPSIS:
+            node.children = [Node(ANY, node)]
+        else:
+            node.children = [x for x in node.children if x.value != ELLIPSIS]
+            remove_ellipses(c)
+    return node
+
 def is_valid_as_reference(key: Node):
     def is_valid_list_key(key):
         if not is_key(key):
@@ -69,17 +80,17 @@ def is_valid_as_reference(key: Node):
 
 FORBIDDEN_TYPE_NAMES = ['root', OR, AND, LIST]
 
-def replace_forbidden_names(s: str):
-    if OR in s:
-        return s.replace(OR, 'Union')
-    elif AND in s:
-        return s.replace(AND, 'Glued')
-    elif LIST in s:
-        return s.replace(LIST, 'List')
-    elif 'root' in s:
-        return ''
-    else:
-        raise Exception('should not be here')
+# def replace_forbidden_names(s: str):
+#     if OR in s:
+#         return s.replace(OR, 'Union')
+#     elif AND in s:
+#         return s.replace(AND, 'Glued')
+#     elif LIST in s:
+#         return s.replace(LIST, 'List')
+#     elif 'root' in s:
+#         return ''
+#     else:
+#         raise Exception('should not be here')
 
 def is_leaf(node):
     return (
@@ -120,22 +131,34 @@ def breadth_first_traversal(root: Node, operation=lambda x: x):
 
 
 
-def search_cascaded_name(root, original):
+def search_cascaded_name(root, target):
     """
     always find node in a tree if it is taken from himself
     """
-    if is_scalar(original):
-        return original
+    # if is_scalar(target.value):
+    #     return target.value
     def operation(node: Node):
-        if original == node.value:
-            return compute_camel_cascaded_name(node)
+        if target.value == node.value:
+            if same_parents(node, target):
+                return compute_camel_cascaded_name(node)
     results = list(breadth_first_traversal(root, operation))
     results = filter(bool, results)
     results = list(results)
     if not results:
-        raise Exception(f'{original} not found')
+        raise Exception(f'{target.value} not found')
     return results[0]
 
+
+def same_parents(a, b, count=0):
+    if count < 5:
+        if a.parent and b.parent and a.parent == b.parent:
+            return same_parents(a.parent, b.parent, count + 1)
+        elif a.parent or b.parent:
+            return False
+        else:
+            return True
+    else:
+        return True
 
 def compute_camel_cascaded_name(child):
     parent = child.parent
@@ -144,9 +167,10 @@ def compute_camel_cascaded_name(child):
         parent_names += [capitalize(parent.value)]
         parent = parent.parent
     parent_names = [x for x in parent_names if all([not s in x.lower() for s in FORBIDDEN_TYPE_NAMES])]
+    parent_names = [x for x in parent_names if not is_scalar(x)]
     parent_name = ''.join(reversed(parent_names))
     # print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
-    end_name = child.value if child.value not in FORBIDDEN_TYPE_NAMES else replace_forbidden_names(child.value)
+    end_name = child.value if (child.value not in FORBIDDEN_TYPE_NAMES and not is_scalar(child.value)) else ''
     return parent_name + capitalize(end_name)
 
 
