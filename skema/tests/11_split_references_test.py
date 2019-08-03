@@ -9,7 +9,8 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     search_cascaded_name,
                                     remove_ellipses,
                                     is_scalar,
-                                    dereference_objects_inside_lists
+                                    dereference_objects_inside_lists,
+                                    split_references
                                     )
 from skema.tree import Node
 
@@ -60,6 +61,20 @@ def test_dereference_objects_inside_lists(string):
     refs = list(dereference_objects_inside_lists(node))
     print('\n'.join(map(repr, refs)))
     print(node)
+    print('refs')
+    for r in refs:
+        print(r)
+
+@pytest.mark.parametrize("string", values(strings), ids=keys(strings))
+def test_split_references(string):
+    node = make_tree(tokenize(string))
+    remove_ellipses(node)
+    print(node)
+    refs = []
+    refs += list(dereference_objects_inside_lists(node))
+    refs += list(split_references(node))
+    print('\n'.join(map(repr, refs)))
+    print()
     print('refs')
     for r in refs:
         print(r)

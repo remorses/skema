@@ -48,10 +48,24 @@ def replace_with_anchor(key):
 def make_reference(key):
     # if is_list_key(key):
     #     return Node(compute_camel_cascaded_name(key), key.parent).append(key.children[0].children)
-    if is_or_key(key) or is_and_key(key): 
-        return Node(key, key.parent).append(key.children)
+    if is_or_key(key) or is_and_key(key):
+        return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
     else:
         return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
+
+
+def split_references(root: Node):
+    nodes = breadth_first_traversal(root,)
+    nodes = filter(is_valid_as_reference, nodes)
+    nodes = reversed(list(nodes))
+    for key in nodes:
+        ref = make_reference(key)
+        replace_with_anchor(key)
+        yield ref
+        print(f'after {repr(ref)}')
+        print(root)
+
+
 
 def dereference_objects_inside_lists(root: Node):
     def is_big_list(node):
@@ -188,6 +202,8 @@ def same_parents(a, b, count=0):
         return True
 
 def compute_camel_cascaded_name(child):
+    if is_scalar(child.value):
+        return child.value
     parent = child.parent
     parent_names = []
     while isinstance(parent, Node):
