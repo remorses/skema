@@ -4,7 +4,7 @@ from .constants import *
 from .constants import constants
 from .support import capitalize
 
-HIDDEN_TYPE_NAMES = ['root', OR, AND,]
+HIDDEN_TYPE_NAMES = ['root', OR, AND, LIST]
 
 
 
@@ -54,7 +54,7 @@ def compute_camel_cascaded_name(child):
     while isinstance(parent, Node):
         parent_names += [capitalize(parent.value)]
         parent = parent.parent
-    parent_names = [x for x in parent_names if not x.lower() in ['root', OR, AND,]]
+    parent_names = [x for x in parent_names if not x.lower() in HIDDEN_TYPE_NAMES]
     parent_name = ''.join(reversed(parent_names))
     # print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
     return parent_name + capitalize(child.value)
@@ -121,7 +121,11 @@ def is_end_key(node):
         return True
     if not len(node.children):
         return True
-    if len(node.children) == 1 and node.children[0].value == LIST:
+    if (
+        len(node.children) == 1 and 
+        node.children[0].value == LIST 
+        and len(node.children[0].children) == 1 # TODO nested objects in list gets split badly
+    ):
         return True
     if is_key(node) and not len(node.children[0].children):
         return True
