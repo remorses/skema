@@ -168,9 +168,6 @@ this is because i always forget to put them when doing `Object1 & Object2` so i 
 
 
 
-
-
-
 grpahlq todos:
 - object nested in lists needs to be dereferenced in extract_references
 ```
