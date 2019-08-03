@@ -53,17 +53,23 @@ def make_reference(key):
     else:
         return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
 
-
-def split_references(root: Node):
+def get_current_subtypes(root: Node):
     nodes = breadth_first_traversal(root,)
     nodes = filter(is_valid_as_reference, nodes)
     nodes = reversed(list(nodes))
-    for key in nodes:
+    nodes = list(nodes)
+    return nodes
+    
+def split_references(root: Node):
+    nodes = get_current_subtypes(root)
+    while nodes:
+        key = nodes.pop(0)
         ref = make_reference(key)
         replace_with_anchor(key)
         yield ref
         print(f'after {repr(ref)}')
         print(root)
+        nodes = get_current_subtypes(root)
 
 
 

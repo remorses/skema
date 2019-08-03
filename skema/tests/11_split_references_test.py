@@ -78,6 +78,7 @@ def test_split_references(string):
     print('refs')
     for r in refs:
         print(r)
+        print()
 
 
 def test_if_im_dumb():
