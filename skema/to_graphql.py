@@ -12,30 +12,23 @@ def extract_references(node: Node, references=[], root=None):
     if root is None:
         root = node
     # print('is_object', repr(node), is_object(node))
-    if is_and_key(node) or is_or_key(node):
-        # print('OR AND', repr(node))
-        children = node.children[0].children
-        OP = AND if is_and_key(node) else OR
-    elif is_object(node):
-        children = node.children
-        OP = None
-    else:
-        raise NotImplementedError(('unknown' + repr(node)))
+    # print('OR AND', repr(node))
         
     reference = Node(capitalize(node.value,), node.parent)
-    reference = reference.insert(Node(OP, reference)) if OP else reference
+    # reference = reference.insert(Node(OP, reference)) if OP else reference
     # reference = reference.children[0] if OP else reference
-    for child in children:
+    
+    for child in node.children:
         if is_end_key(child):
             child = copy(child)
-            if OP:
-                child.value = search_cascaded_name(root, child.value)
-                # child.parent = reference.children[0]
-                reference.children[0].insert(child)
-            else:
-                # child.parent = reference
-                reference = reference.insert(child)
-        else:
+            child.value = search_cascaded_name(root, child.value)
+            reference = reference.insert(child)
+        elif child.value in HIDDEN_TYPE_NAMES:
+            dummy_reference = reference     
+            dummy_reference.insert(Node(child.value, dummy_reference))
+            dummy_reference = dummy_reference.children[0]
+            dummy_reference.insert(*child.children)
+        else:   
             reference_child_name = compute_camel_cascaded_name(child)
             reference_key = Node(child.value, child.parent)
             reference_key = reference_key.insert(Node(reference_child_name, child))
@@ -46,6 +39,7 @@ def extract_references(node: Node, references=[], root=None):
             child_reference.insert(*[copy(c) for c in child.children])
             ref_values = [ref.value for ref in references]
             references += [ref for ref in extract_references(child_reference, root=root) if not ref.value in ref_values]
+
     return references + [reference]
 
 def compute_camel_cascaded_name(child):
@@ -262,3 +256,17 @@ def replace_types(node: Node,):
     for c in node.children:
         replace_types(c)
     return node
+
+
+
+def remove_ellipses(node: Node):
+    if not node.children:
+        return
+    for c in node.children:
+        if len(node.children) == 1 and node.children[0].value == ELLIPSIS:
+            node.children = [Node(ANY, node)]
+        else:
+            node.children = [x for x in node.children if x.value != ELLIPSIS]
+            remove_ellipses(c)
+    return node
+
