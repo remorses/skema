@@ -13,7 +13,8 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     dereference_objects_inside_lists,
                                     split_references,
                                     merge_ands,
-                                    merge_scalar_unions
+                                    merge_scalar_unions,
+                                    replace_aliases
                                     )
 from skema.tree import Node
 from ..to_graphql import to_graphql, replace_types
@@ -88,10 +89,12 @@ def test_split_references(string):
 def test_to_gql(string):
     node = make_tree(tokenize(string))
     remove_ellipses(node)
+    replace_aliases(node)
     print(node)
     refs = []
-    refs += list(split_references(node))
     refs += list(dereference_objects_inside_lists(node))
+    print('after deref list' + str(refs))
+    refs += list(split_references(node))
     refs = [merge_ands(r, refs) for r in refs]
     refs = merge_scalar_unions(refs)
     refs = [replace_types(t) for t in refs]
@@ -101,6 +104,3 @@ def test_to_gql(string):
     build_schema(schema)
     
 
-
-def test_if_im_dumb():
-    assert is_scalar('"ciao"')

@@ -190,7 +190,10 @@ def to_graphql(self: Node, indent='',):
             res += '\n' + Node.to_skema(c, indent + tab, )
         res += '\n}'
     else:
-        raise NotImplementedError(f'no valid graphql\n{str(self)}')
+        err = f'no valid graphql\n{str(self)}'
+        print(err)
+        return ''
+        raise NotImplementedError(err)
     return res
 
 

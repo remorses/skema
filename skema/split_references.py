@@ -69,6 +69,7 @@ def split_references(root: Node):
         ref = make_reference(key)
         replace_with_anchor(key)
         yield ref
+        # yield from dereference_objects_inside_lists(ref)
         print(f'after {repr(ref)}')
         print(root)
         nodes = get_current_subtypes(root)
@@ -79,7 +80,7 @@ def dereference_objects_inside_lists(root: Node):
     def is_big_list(node):
         return (
             node.value == LIST 
-            and (len(node.children) > 1 or is_big_list(node.children[0]))
+            and (len(node.children) >= 1 or is_big_list(node.children[0]))
         )
     nodes = breadth_first_traversal(root,)
     nodes = filter(is_big_list, nodes)
@@ -264,8 +265,8 @@ def merge_ands(node, references):
         for child in items:
             ref = next((ref for ref in references if ref.value == child.value), None)
             if not ref:
+                print(f'WARNING: {child.value} not found in references: {[r.value for r in references]}')
                 return node
-                raise Exception(f'{child.value} not found in references: {[r.value for r in references]}')
             ref = merge_ands(ref, references)
             result_children_values = [c.value for c in result.children]
             children = [c for c in ref.children if c.value not in result_children_values]
@@ -278,7 +279,7 @@ def merge_ands(node, references):
 def merge_scalar_unions(references):
     to_delete = {}
     for node in references:
-        if is_or_key(node) and any([is_scalar(c.value) for c in node.children[0].children]):
+        if (is_or_key(node) or is_and_key(node)) and any([is_scalar(c.value) for c in node.children[0].children]):
             new_type = reduce(stronger_type, node.children[0].children,)
             obj = {node.value: new_type}
             print('new_type', obj)
@@ -313,3 +314,21 @@ def replace_occurrences(ref, to_delete):
         if c.value in to_delete.keys():
             c.value = to_delete[c.value]
         replace_occurrences(c, to_delete)
+
+
+def get_aliases(node: Node):
+    res = {}
+    for c in node.children: # TODO this presume tree has Root
+        if is_leaf_key(c):
+            res.update({'alias': c.value, 'value': c.children[0].value})
+    return res
+
+def replace_aliases(node: Node, aliases=None):
+    if not aliases:
+        aliases = get_aliases(node)
+    for leaf in get_leaves(node, ):
+        if leaf.value in aliases.keys():
+            leaf.children = [aliases[leaf.value]]
+    return node
+
+
