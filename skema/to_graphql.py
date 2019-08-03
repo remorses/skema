@@ -124,7 +124,7 @@ def is_end_key(node):
     if (
         len(node.children) == 1 and 
         node.children[0].value == LIST 
-        and len(node.children[0].children) == 1 # TODO nested objects in list gets split badly
+        # and len(node.children[0].children) == 1 # TODO nested objects in list gets split badly
     ):
         return True
     if is_key(node) and not len(node.children[0].children):
