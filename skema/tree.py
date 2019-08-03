@@ -23,7 +23,12 @@ class Node:
     def insert(self, *nodes):
         [self.children.append(n) for n in nodes]
         return self
-    
+    def append(self, nodes):
+        for n in nodes:
+            n = copy(n)
+            n.parent = self
+            self.children.append(n)
+        return self
     def __repr__(self, ):
         return 'Node(value=' + (str(self.value) + (':' if len(self.children) else '')) + ')'
     
@@ -144,3 +149,9 @@ def is_end_key(node):
 
 def is_end_type(node):
     return not node.children
+
+def copy(node: Node):
+    res = Node(node.value, node.parent)
+    if len(node.children):
+        res.insert(*[copy(c) for c in node.children])
+    return res

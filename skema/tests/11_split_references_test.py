@@ -7,9 +7,9 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,
                                     search_cascaded_name,
-                                    remove_objects_inside_lists,
                                     remove_ellipses,
                                     is_scalar,
+                                    dereference_objects_inside_lists
                                     )
 from skema.tree import Node
 
@@ -52,6 +52,17 @@ def test_is_valid_as_reference(string):
         return is_valid_as_reference(node), repr(node)
     nodes = list(breadth_first_traversal(node, op))
     print('\n'.join(map(repr, nodes)))
+
+@pytest.mark.parametrize("string", values(strings), ids=keys(strings))
+def test_dereference_objects_inside_lists(string):
+    node = make_tree(tokenize(string))
+    remove_ellipses(node)
+    refs = list(dereference_objects_inside_lists(node))
+    print('\n'.join(map(repr, refs)))
+    print(node)
+    print('refs')
+    for r in refs:
+        print(r)
 
 
 def test_if_im_dumb():

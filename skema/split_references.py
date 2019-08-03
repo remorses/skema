@@ -3,7 +3,7 @@ queue di tutte le foglie
 prendi una fogliq dalla queue e sali al parent, fino a quando `not is_valid_reference(key)`, se arriva al root senza trovarne una, muova la foglia in fondo alla lista e continua con un'altra foglia
     trovata una key valida chiama reference = `make_reference(key)` (prende i fifgli della key e li rende figli di una reference_anchor,)
     yield reference
-    chiama `anchor` = `replace_with_anchor(key)` sulla key (sostituisce i figli della key con una compia della reference anchor senza figli)
+    chiama `anchor` = `replace_with_anchor(key)` sulla key (sostituisce i figli della key con una copia della reference anchor senza figli)
     aggiunge quasta anchor (con key come parent) alla queue di fogie
     rimuovi n foglie dalla queue di foglie, dove n è  `len(get_leaves(reference))`
 continua con la prossima foglia nella queue
@@ -40,9 +40,36 @@ from .tree import Node
 from .support import capitalize
 from .constants import *
 
+def replace_with_anchor(key):
+    anchor = Node(compute_camel_cascaded_name(key), key)
+    key.children = [anchor]
+    return anchor
 
-def remove_objects_inside_lists(root: Node):
-    pass
+def make_reference(key):
+    # if is_list_key(key):
+    #     return Node(compute_camel_cascaded_name(key), key.parent).append(key.children[0].children)
+    if is_or_key(key) or is_and_key(key): 
+        return Node(key, key.parent).append(key.children)
+    else:
+        return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
+
+def dereference_objects_inside_lists(root: Node):
+    def is_big_list(node):
+        return (
+            node.value == LIST 
+            and (len(node.children) > 1 or is_big_list(node.children[0]))
+        )
+    nodes = breadth_first_traversal(root,)
+    nodes = filter(is_big_list, nodes)
+    nodes = reversed(list(nodes))
+    for big_list in nodes:
+        ref = make_reference(big_list)
+        yield ref
+        replace_with_anchor(big_list)
+
+
+        
+
 
 
 def remove_ellipses(node: Node):
