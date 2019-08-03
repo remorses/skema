@@ -1,3 +1,4 @@
+from graphql import build_schema
 import json
 import random
 
@@ -10,10 +11,12 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     remove_ellipses,
                                     is_scalar,
                                     dereference_objects_inside_lists,
-                                    split_references
+                                    split_references,
+                                    merge_ands,
+                                    merge_scalar_unions
                                     )
 from skema.tree import Node
-
+from ..to_graphql import to_graphql, replace_types
 from ..make_schema import make_schema
 from ..make_tree import make_tree
 from ..tokenize import tokenize
@@ -33,7 +36,7 @@ def test_bfs(string):
     node = make_tree(tokenize(string))
     print(node)
     nodes = list(breadth_first_traversal(node, ))
-    print(nodes)
+    print('\n'.join(map(repr, nodes)))
     nodes = [n for n in nodes if not is_scalar(n.value) and not n.value in FORBIDDEN_TYPE_NAMES]
     names = []
     for i in range(1, len(nodes)):
@@ -71,14 +74,32 @@ def test_split_references(string):
     remove_ellipses(node)
     print(node)
     refs = []
-    refs += list(dereference_objects_inside_lists(node))
+    # refs += list(dereference_objects_inside_lists(node))
     refs += list(split_references(node))
+    refs += list(dereference_objects_inside_lists(node))
     print('\n'.join(map(repr, refs)))
     print()
     print('refs')
     for r in refs:
         print(r)
         print()
+
+@pytest.mark.parametrize("string", values(strings), ids=keys(strings))
+def test_to_gql(string):
+    node = make_tree(tokenize(string))
+    remove_ellipses(node)
+    print(node)
+    refs = []
+    refs += list(split_references(node))
+    refs += list(dereference_objects_inside_lists(node))
+    refs = [merge_ands(r, refs) for r in refs]
+    refs = merge_scalar_unions(refs)
+    refs = [replace_types(t) for t in refs]
+    types = [to_graphql(t) for t in refs]
+    schema = '\n\n'.join(types)
+    print(schema)
+    build_schema(schema)
+    
 
 
 def test_if_im_dumb():

@@ -4,6 +4,7 @@ from ..make_schema import make_schema
 from ..make_tree import make_tree
 import pytest
 from graphql import build_schema
+from graphql import build_schema
 from .data import strings
 from .support import keys, values
 from skema.to_graphql import extract_references, to_graphql, merge_ands, replace_types, merge_scalar_unions, remove_ellipses

@@ -36,6 +36,7 @@ def replace_with_anchor(key):
     return anchor
 
 """
+from functools import reduce
 from .tree import Node
 from .support import capitalize
 from .constants import *
@@ -58,6 +59,7 @@ def get_current_subtypes(root: Node):
     nodes = filter(is_valid_as_reference, nodes)
     nodes = reversed(list(nodes))
     nodes = list(nodes)
+    print(f'valid refs are {nodes}')
     return nodes
     
 def split_references(root: Node):
@@ -150,6 +152,9 @@ def is_leaf_key(node):
         and is_leaf(node.children[0])
     )
 
+# def is_object_key(node: Node):
+#     return is_key(node) and is_object(node.children[0])
+
 def is_object(node):
     return (
         len(node.children) >= 1
@@ -219,7 +224,7 @@ def compute_camel_cascaded_name(child):
     parent_names = [x for x in parent_names if not is_scalar(x)]
     parent_name = ''.join(reversed(parent_names))
     # print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
-    end_name = child.value if (child.value not in FORBIDDEN_TYPE_NAMES and not is_scalar(child.value)) else ''
+    end_name = child.value if (child.value not in [LIST, AND, OR] and not is_scalar(child.value)) else ''
     return parent_name + capitalize(end_name)
 
 
@@ -231,6 +236,8 @@ def is_scalar(value):
     if '"' in value:
         return True
     if '..' in value:
+        return True
+    if '//' in value:
         return True
     return False
 
@@ -247,3 +254,62 @@ def is_or_key(node):
 
 def is_list_key(node):
     return is_key(node) and node.children[0].value in [LIST,]
+
+
+
+def merge_ands(node, references):
+    if is_and_key(node):
+        result = Node(node.value, node.parent)
+        items = node.children[0].children
+        for child in items:
+            ref = next((ref for ref in references if ref.value == child.value), None)
+            if not ref:
+                return node
+                raise Exception(f'{child.value} not found in references: {[r.value for r in references]}')
+            ref = merge_ands(ref, references)
+            result_children_values = [c.value for c in result.children]
+            children = [c for c in ref.children if c.value not in result_children_values]
+            result.insert(*children) # TODO dont add props already present
+        return result
+    else:
+        return node
+
+
+def merge_scalar_unions(references):
+    to_delete = {}
+    for node in references:
+        if is_or_key(node) and any([is_scalar(c.value) for c in node.children[0].children]):
+            new_type = reduce(stronger_type, node.children[0].children,)
+            obj = {node.value: new_type}
+            print('new_type', obj)
+            to_delete.update(obj)
+    print('to_delete', to_delete)
+    for ref in references:
+        replace_occurrences(ref, to_delete)
+    return [r for r in references if not r.value in to_delete.keys()]
+
+
+
+    
+
+
+def stronger_type(a, b):
+    if STR in [a, b] or STRING in [a, b] or REGEX in [a, b]:
+        return STR
+    if ANY in [a, b]:
+        return ANY # will be converted to Json scalar
+    if FLOAT in [a, b]:
+        return FLOAT
+    if INT in [a, b]:
+        return INT
+    if BOOL in [a, b]:
+        return BOOL
+    return STR
+
+
+
+def replace_occurrences(ref, to_delete):
+    for c in ref.children:
+        if c.value in to_delete.keys():
+            c.value = to_delete[c.value]
+        replace_occurrences(c, to_delete)

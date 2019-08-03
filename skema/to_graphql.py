@@ -156,17 +156,7 @@ def get_scalar_union(node):
     new_type = reduce(stronger_type, node.children[0].children,)
     return {node.value: new_type}
 
-def merge_scalar_unions(references):
-    to_delete = {}
-    for node in references:
-        if is_or_key(node) and all([is_scalar(c.value) for c in node.children[0].children]):
-            obj = get_scalar_union(node)
-            print('new_type', obj)
-            to_delete.update(obj)
-    print('to_delete', to_delete)
-    for ref in references:
-        replace_occurrences(ref, to_delete)
-    return [r for r in references if not r.value in to_delete]
+
 
 def replace_occurrences(ref, to_delete):
     for c in ref.children:
@@ -205,22 +195,6 @@ def to_graphql(self: Node, indent='',):
 
 
 
-def merge_ands(node, references):
-    if is_and_key(node):
-        result = Node(node.value, node.parent)
-        items = node.children[0].children
-        for child in items:
-            ref = next((ref for ref in references if ref.value == child.value), None)
-            if not ref:
-                return node
-                raise Exception(f'{child.value} not found in references: {[r.value for r in references]}')
-            ref = merge_ands(ref, references)
-            result_children_values = [c.value for c in result.children]
-            children = [c for c in ref.children if c.value not in result_children_values]
-            result.insert(*children) # TODO dont add props already present
-        return result
-    else:
-        return node
 
 
 def stronger_type(a, b):
@@ -242,6 +216,7 @@ map_types_to_graphql = {
     ANY: 'String', # TODO make scalar Json
     BOOL: 'Boolean',
     NULL: 'String', # TODO remove them
+    REGEX: 'String',
 }
 
 
