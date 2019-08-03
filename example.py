@@ -4,5 +4,5 @@ from typing import Optional
 
 @dataclass
 class Object:
-    b: str
-    a: Optional[float] = None
+    b_com: str
+    a_ciao: Optional[float] = None

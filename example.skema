@@ -3,5 +3,5 @@
 
 
 Object:
-    a?: Int
-    b: Str
+    aCiao?: Int
+    bCom: Str

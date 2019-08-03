@@ -33,9 +33,9 @@ def test_to_graphql(string):
     refs = extract_references(tree, [])
     refs = [merge_ands(r, refs) for r in refs]
     refs = merge_scalar_unions(refs)
-    # refs = [replace_types(r,) for r in refs]
+    refs = [replace_types(r,) for r in refs]
     refs = [to_graphql(r, ) for r in refs]
     res = '\n\n'.join(refs)
     print(res)
-    # build_schema(res)
+    build_schema(res)
     print()
