@@ -6,3 +6,4 @@ from typing import Optional
 class Object:
     b_com: str
     a_ciao: Optional[float] = None
+    sdf: Optional[float] = None

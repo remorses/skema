@@ -68,11 +68,12 @@ def search_cascaded_name(root, original):
     queue = []
     queue.append(root)
     while len(queue):
-        node = queue.pop()
+        node = queue.pop(0)
+        if original == node.value:
+            return compute_camel_cascaded_name(node)
         for child in node.children:
             queue.append(child)
-            if original == child.value:
-                return compute_camel_cascaded_name(child)
+
     raise Exception('not found')
 
 def all_nodes_have_parent(root,):
@@ -81,7 +82,7 @@ def all_nodes_have_parent(root,):
     ok = True
     queue.append(root)
     while len(queue):
-        node = queue.pop()
+        node = queue.pop(0)
         if not node.parent:
             ok = False 
             misses += [node.value]

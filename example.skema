@@ -4,4 +4,5 @@
 
 Object:
     aCiao?: Int
+    sdf?: Int
     bCom: Str
