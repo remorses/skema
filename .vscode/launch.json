@@ -10,6 +10,13 @@
             "request": "launch",
             "module": "skema.infer.infer_schema",
             "console": "externalTerminal"
+        },
+        {
+            "type": "python",
+            "request": "test",
+            "name": "testing",
+            "console": "integratedTerminal",
+            "redirectOutput": true
         }
     ]
 }

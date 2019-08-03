@@ -80,7 +80,10 @@ def dereference_objects_inside_lists(root: Node):
     def is_big_list(node):
         return (
             node.value == LIST 
-            and (len(node.children) >= 1 or is_big_list(node.children[0]))
+            and (
+                len(node.children) > 1
+                or (len(node.children) == 1 and node.children[0].value != LIST)
+            )
         )
     nodes = breadth_first_traversal(root,)
     nodes = filter(is_big_list, nodes)
