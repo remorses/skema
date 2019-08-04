@@ -214,7 +214,7 @@ def get_aliases(node: Node):
     res = {}
     for c in node.children: # TODO this presume tree has Root
         if is_leaf_key(c):
-            res.update({c.value: c.children[0]})
+            res.update({c.value: c.children[0].value})
     return res
 
 def replace_aliases(node: Node, ):
@@ -222,7 +222,7 @@ def replace_aliases(node: Node, ):
     # print('aliases', aliases)
     for leaf in get_leaves(node, ):
         if leaf.value in aliases.keys():
-            leaf.children = [aliases[leaf.value]]
+            leaf.value = aliases[leaf.value]
     return Node(node.value, node.parent).append([c for c in node.children if c.value not in aliases])
 
 def is_enumeration(node):

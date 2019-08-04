@@ -17,6 +17,7 @@ def to_graphql(string):
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
     node = replace_aliases(node)
+    print(node)
     refs = list(split_references(node))
     refs = [merge_ands(r, refs) for r in refs]
     refs = merge_scalar_unions(refs)

@@ -4,6 +4,3 @@ type Object {
     bCom: String
 }
 
-type Root {
-    Object: Object
-}

@@ -1,0 +1,428 @@
+enum MessageThreadMessagesMediasType {
+    IMAGE
+    POST
+    VIDEO
+}
+
+type MessageThreadMessagesMedias {
+    src: String
+    type: MessageThreadMessagesMediasType
+}
+
+type BusinessUserAccreditHistory {
+    amountInCents: Int
+    madeAt: String
+    paypalOrderId: String
+}
+
+type BusinessUserPaypalData {
+    email: String
+}
+
+type MessageThreadMessages {
+    text: String
+    sentAt: String
+    from: String
+    isPr: Boolean
+    medias: [MessageThreadMessagesMedias]
+}
+
+type StoryCampaignOwnPropertiesStories {
+    src: String
+    authorInstagramPk: String
+    publishedAt: String
+}
+
+type PostCampaignOwnPropertiesPosts {
+    url: String
+    src: String
+    authorInstagramPk: String
+    authorInstagramUsername: String
+    publishedAt: String
+}
+
+type BotEventMetadata {
+    pk: String
+    script_name: String
+}
+
+type VariablesSettings {
+    cookies: String
+}
+
+enum TaskCampaignType {
+    MESSAGE
+    POST
+    STORY
+}
+
+type PrAccountStats {
+    followers: String
+    following: Int
+    avgLikes: Int
+    postsCount: Int
+}
+
+enum BotSystemStatusStatus {
+    OK
+    ERROR
+}
+
+enum BaseBotPrivacy {
+    private
+    public
+}
+
+type BaseBotSettings {
+    cookies: String
+}
+
+type StoryCampaignOwnPropertiesStats {
+    publishedStoriesCount: Int
+    publishedStoriesCountWindows: [Window]
+    totalReach: Int
+    totalReachWindows: [Window]
+}
+
+type PostCampaignOwnPropertiesStats {
+    publishedPostsCount: Int
+    publishedPostsCountWindows: [Window]
+    likesToAllPosts: Int
+    likesToAllPostsWindows: [Window]
+    totalReach: Int
+    totalReachWindows: [Window]
+}
+
+type MessageCampaignOwnPropertiesStats {
+    messagesSent: Int
+    messagesSentWindows: [Window]
+    messagesSentVector: [Float]
+    peopleInteracted: Int
+    peopleInteractedWindows: [Window]
+    peopleInteractedVector: [Float]
+    peopleRepliedCount: Int
+    peopleRepliedCountWindows: [Window]
+    peopleRepliedCountVector: [Float]
+}
+
+enum MessageCampaignOwnPropertiesTargetType {
+    competitor
+    location
+}
+
+type BaseCampaignCampaignPrFilter {
+    maxFollowers: Int
+    maxFollowing: Int
+    minFollowers: Int
+    minFollowing: Int
+    minPostsCount: Int
+}
+
+enum BaseCampaignStatus {
+    ACTIVE
+    COMPLETED
+}
+
+type Window {
+    value: Float
+    start: String
+}
+
+enum BotType {
+    DEFAULT
+    DEVELOPER
+    REAL_USER
+    INJECTED
+}
+
+enum CampaignType {
+    POST
+    MESSAGE
+    STORY
+}
+
+type SystemStatusWindow {
+    botsNumber: Int
+    botsActive: Int
+    timestamp: Int
+}
+
+type StarterPackInQueue {
+    packName: String
+    replacements: String
+    addedAt: String
+}
+
+type BusinessUser {
+    _id: String
+    name: String
+    surname: String
+    loginType: String
+    facebookToken: String
+    creditInCents: Int
+    activeCampaigns: [String]
+    completedCampaigns: [String]
+    subscribedAt: String
+    paypalData: [BusinessUserPaypalData]
+    accreditHistory: [BusinessUserAccreditHistory]
+}
+
+type MessageThread {
+    instagramThreadId: String
+    prInstagramPk: String
+    campaignId: String
+    targetInstagramPk: String
+    targetInstagramUsername: String
+    targetProfilePicture: String
+    startedAt: String
+    messages: [MessageThreadMessages]
+}
+
+type BotEvent {
+    taskId: String
+    campaignId: String
+    type: String
+    metadata: BotEventMetadata
+    args: String
+    node: String
+    timestamp: Float
+}
+
+type Variables {
+    username: String
+    password: String
+    lastRun: String
+    runsCount: Int
+    totalRunsCount: Int
+    settings: VariablesSettings
+}
+
+type Task {
+    _id: String
+    botPk: String
+    deadline: String
+    cron: String
+    script: String
+    variables: String
+    name: String
+    runsCount: Int
+    timeOffset: Int
+    lastRun: String
+    campaignName: String
+    campaignId: String
+    campaignType: TaskCampaignType
+}
+
+type PrAccount {
+    activeCampaigns: [String]
+    completedCampaigns: [String]
+    instagramPk: String
+    instagramUsername: String
+    profilePicture: String
+    tags: [String]
+    stats: PrAccountStats
+}
+
+type BotSystemStatus {
+    prId: String
+    createdAt: String
+    messageCampaignCapacity: Int
+    status: BotSystemStatusStatus
+    error: String
+    lastRun: String
+    totalRunsCount: Int
+    failedRepairs: Int
+}
+
+type Bot {
+    botType: BotType
+    pk: String
+    username: String
+    password: String
+    settings: BaseBotSettings
+    timezoneSecondsOffset: Int
+    proxy: String
+    lat: Float
+    lng: Float
+    language: String
+    fullName: String
+    state: String
+    city: String
+    phone: String
+    hashtags: [String]
+    geotags: [String]
+    captions: [String]
+    competitors: [String]
+    biography: String
+    externalUrl: String
+    gender: String
+    email: String
+    profilePicture: String
+    privacy: BaseBotPrivacy
+    prId: String
+    createdAt: String
+    messageCampaignCapacity: Int
+    status: BotSystemStatusStatus
+    error: String
+    lastRun: String
+    totalRunsCount: Int
+    failedRepairs: Int
+}
+
+type BaseBot {
+    botType: BotType
+    pk: String
+    username: String
+    password: String
+    settings: BaseBotSettings
+    timezoneSecondsOffset: Int
+    proxy: String
+    lat: Float
+    lng: Float
+    language: String
+    fullName: String
+    state: String
+    city: String
+    phone: String
+    hashtags: [String]
+    geotags: [String]
+    captions: [String]
+    competitors: [String]
+    biography: String
+    externalUrl: String
+    gender: String
+    email: String
+    profilePicture: String
+    privacy: BaseBotPrivacy
+}
+
+type StoryCampaignOwnProperties {
+    type: String
+    storiesToPublish: Int
+    stories: [StoryCampaignOwnPropertiesStories]
+    stats: StoryCampaignOwnPropertiesStats
+}
+
+type StoryCampaign {
+    _id: String
+    status: BaseCampaignStatus
+    botsCount: Int
+    byBusinessUserId: String
+    name: String
+    cron: String
+    deadline: String
+    daysDuration: Int
+    startedAt: String
+    prPartecipants: [String]
+    campaignPrFilter: BaseCampaignCampaignPrFilter
+    tasks: [String]
+    type: String
+    storiesToPublish: Int
+    stories: [StoryCampaignOwnPropertiesStories]
+    stats: StoryCampaignOwnPropertiesStats
+}
+
+type PostCampaignOwnProperties {
+    postsToPublish: Int
+    type: String
+    posts: [PostCampaignOwnPropertiesPosts]
+    stats: PostCampaignOwnPropertiesStats
+}
+
+type PostCampaign {
+    _id: String
+    status: BaseCampaignStatus
+    botsCount: Int
+    byBusinessUserId: String
+    name: String
+    cron: String
+    deadline: String
+    daysDuration: Int
+    startedAt: String
+    prPartecipants: [String]
+    campaignPrFilter: BaseCampaignCampaignPrFilter
+    tasks: [String]
+    postsToPublish: Int
+    type: String
+    posts: [PostCampaignOwnPropertiesPosts]
+    stats: PostCampaignOwnPropertiesStats
+}
+
+type MessageCampaignOwnProperties {
+    messagesToSend: Int
+    type: String
+    targetType: MessageCampaignOwnPropertiesTargetType
+    competitor: String
+    location: String
+    hashtag: String
+    messages: [String]
+    threads: [String]
+    stats: MessageCampaignOwnPropertiesStats
+}
+
+type MessageCampaign {
+    _id: String
+    status: BaseCampaignStatus
+    botsCount: Int
+    byBusinessUserId: String
+    name: String
+    cron: String
+    deadline: String
+    daysDuration: Int
+    startedAt: String
+    prPartecipants: [String]
+    campaignPrFilter: BaseCampaignCampaignPrFilter
+    tasks: [String]
+    messagesToSend: Int
+    type: String
+    targetType: MessageCampaignOwnPropertiesTargetType
+    competitor: String
+    location: String
+    hashtag: String
+    messages: [String]
+    threads: [String]
+    stats: MessageCampaignOwnPropertiesStats
+}
+
+type BaseCampaign {
+    _id: String
+    status: BaseCampaignStatus
+    botsCount: Int
+    byBusinessUserId: String
+    name: String
+    cron: String
+    deadline: String
+    daysDuration: Int
+    startedAt: String
+    prPartecipants: [String]
+    campaignPrFilter: BaseCampaignCampaignPrFilter
+    tasks: [String]
+}
+
+union Campaign = MessageCampaign | PostCampaign | StoryCampaign
+
+type Root {
+    Campaign: Campaign
+    BaseCampaign: BaseCampaign
+    MessageCampaign: MessageCampaign
+    MessageCampaignOwnProperties: MessageCampaignOwnProperties
+    PostCampaign: PostCampaign
+    PostCampaignOwnProperties: PostCampaignOwnProperties
+    StoryCampaign: StoryCampaign
+    StoryCampaignOwnProperties: StoryCampaignOwnProperties
+    BaseBot: BaseBot
+    Bot: Bot
+    BotSystemStatus: BotSystemStatus
+    PrAccount: PrAccount
+    Task: Task
+    Variables: Variables
+    BotEvent: BotEvent
+    MessageThread: MessageThread
+    BusinessUser: BusinessUser
+    StarterPackInQueue: StarterPackInQueue
+    SystemStatusWindow: SystemStatusWindow
+    CampaignType: CampaignType
+    BotType: BotType
+    Window: Window
+    Coordinates: [Float]
+}
