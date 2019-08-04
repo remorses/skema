@@ -13,13 +13,28 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     replace_types
                                     )
 
+
+def remove_ands(refs): 
+    refs_and_indexes = [merge_ands(r, refs) for r in refs]
+    refs = [ref for ref, indexes in refs_and_indexes]
+    # [print(repr(r)) for r in refs]
+    leaves = [leaf for r in refs for leaf in get_leaves(r) if r.value.lower() != 'root'] # TODO presume no root
+    indexes = set([i for ref, indexes in refs_and_indexes for i in indexes])
+    indexes = sorted(indexes, reverse=True)
+    for i in indexes:
+        if not [l for l in leaves if l.value == refs[i].value]:
+            refs.pop(i)
+    return refs
+
+
 def to_graphql(string):
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
     node = replace_aliases(node)
     print(node)
     refs = list(split_references(node))
-    refs = [merge_ands(r, refs) for r in refs]
+    refs = [r for r in refs if r.value.lower() != 'root'] # TODO presume root
+    refs = remove_ands(refs)
     refs = merge_scalar_unions(refs)
     refs = [replace_types(t) for t in refs]
     types = [t.to_graphql() for t in refs]

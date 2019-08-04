@@ -159,6 +159,7 @@ def compute_camel_cascaded_name(child):
 
 
 def merge_ands(node, references):
+    ref_indexes_to_delete = []
     if is_and_key(node):
         result = Node(node.value, node.parent)
         items = node.children[0].children
@@ -166,14 +167,17 @@ def merge_ands(node, references):
             ref = next((ref for ref in references if ref.value == child.value), None)
             if not ref:
                 print(f'WARNING: {child.value} not found in references: {[r.value for r in references]}')
-                return node
-            ref = merge_ands(ref, references)
+                return node, []
+            ref, new_indexes = merge_ands(ref, references)
+            ref_indexes_to_delete += new_indexes
             result_children_values = [c.value for c in result.children]
             children = [c for c in ref.children if c.value not in result_children_values]
             result.insert(*children) # TODO dont add props already present
-        return result
+            # deletes reference
+            ref_indexes_to_delete += [i for i, r in enumerate(references) if ref.value == r.value]
+        return result, ref_indexes_to_delete
     else:
-        return node
+        return node, ref_indexes_to_delete
 
 
 def merge_scalar_unions(references):

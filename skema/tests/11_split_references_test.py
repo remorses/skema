@@ -4,6 +4,7 @@ import random
 
 import pytest
 from graphql import build_schema
+from skema.to_graphql import to_graphql
 from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,
@@ -89,19 +90,21 @@ def test_split_references(string):
 
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
 def test_to_gql(string):
-    node = make_tree(tokenize(string))
-    node = remove_ellipses(node)
-    node = replace_aliases(node)
-    print(node)
-    # refs += list(dereference_objects_inside_lists(node))
-    # print('after deref list' + str(refs))
-    refs = list(split_references(node))
-    refs = [merge_ands(r, refs) for r in refs]
-    refs = merge_scalar_unions(refs)
-    refs = [replace_types(t) for t in refs]
-    types = [t.to_graphql() for t in refs]
-    schema = '\n\n'.join(types)
+    schema = to_graphql(string)
     print(schema)
     build_schema(schema)
+    # node = make_tree(tokenize(string))
+    # node = remove_ellipses(node)
+    # node = replace_aliases(node)
+    # print(node)
+    # # refs += list(dereference_objects_inside_lists(node))
+    # # print('after deref list' + str(refs))
+    # refs = list(split_references(node))
+    # refs = [merge_ands(r, refs) for r in refs]
+    # refs = merge_scalar_unions(refs)
+    # refs = [replace_types(t) for t in refs]
+    # types = [t.to_graphql() for t in refs]
+    # schema = '\n\n'.join(types)
+
     
 
