@@ -2,6 +2,7 @@
 from functools import reduce
 from .constants import *
 from .constants import constants
+from .support import capitalize, is_and_key, is_or_key, is_object
 import json
 
 
@@ -96,6 +97,36 @@ class Node:
             else: # object
                 for c in self.children:
                     res += '\n' + Node.to_skema(c, indent + tab, )
+        return res
+    def to_graphql(self, indent='',):
+        res = ''
+        if is_or_key(self) and all(['"' in c.value for c in self.children[0].children]):
+            res += 'enum '
+            res += str(self.value)
+            res += ' {'
+            for c in self.children[0].children:
+                value = c.value.replace('"', '')
+                res += '\n' + tab + value # TODO enum values should get namespace
+            res += '\n}'
+        elif is_or_key(self):
+            res += 'union '
+            res += str(self.value)
+            res += ' = '
+            for c in self.children:
+                res += Node.to_skema(c, indent + tab, )
+            # res += '\n'
+        elif is_object(self):
+            res += 'type '
+            res += str(self.value)
+            res += ' {'
+            for c in self.children:
+                res += '\n' + Node.to_skema(c, indent + tab, )
+            res += '\n}'
+        else:
+            err = f'no valid graphql\n{str(self)}'
+            print(err)
+            return ''
+            raise NotImplementedError(err)
         return res
 
 def make_references(node: Node): # TODO assert name does nort already exist

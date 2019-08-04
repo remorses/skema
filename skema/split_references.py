@@ -1,45 +1,11 @@
-"""
-queue di tutte le foglie
-prendi una fogliq dalla queue e sali al parent, fino a quando `not is_valid_reference(key)`, se arriva al root senza trovarne una, muova la foglia in fondo alla lista e continua con un'altra foglia
-    trovata una key valida chiama reference = `make_reference(key)` (prende i fifgli della key e li rende figli di una reference_anchor,)
-    yield reference
-    chiama `anchor` = `replace_with_anchor(key)` sulla key (sostituisce i figli della key con una copia della reference anchor senza figli)
-    aggiunge quasta anchor (con key come parent) alla queue di fogie
-    rimuovi n foglie dalla queue di foglie, dove n è  `len(get_leaves(reference))`
-continua con la prossima foglia nella queue
-fino a quando la queue non è vuota
 
-
-
-
-is_valid_reference
-true se è un oggetto con solo leaf_key oppure con piccole liste come figli
-if is_object(key) and all([is_leaf_key(c) or (is_list_key(c) and is_leaf(c.children[0])) for c in key.children])
-
-ture se è list con leaf come figlio
-if is_list_key(key) and is_leaf(key.children[0])
-
-true se è key di una unione
-if is_or_key(key) or is_and_key(key)
-
-def make_reference(key):
-    if is_object(key): 
-        return Node(computed_name(key), key.parent).append(key.children)
-    if is_list_key: 
-        return Node(computed_name(key), key.parent).append(key.children[0].children)
-    if is_or_key(key) or is_and_key(key): 
-        return Node(key, key.parent).append(key.children)
-
-def replace_with_anchor(key):
-    anchor = Node(computed_name(key), key)
-    key.children = anchor
-    return anchor
-
-"""
 from functools import reduce
-from .tree import Node
-from .support import capitalize
+
 from .constants import *
+from .support import (capitalize, is_and_key, is_enum_key, is_key, is_list_key,
+                      is_object, is_or_key, is_scalar, is_leaf, is_leaf_key)
+from .tree import Node
+
 
 def replace_with_anchor(key):
     anchor = Node(compute_camel_cascaded_name(key), key)
@@ -119,39 +85,11 @@ def remove_ellipses(node: Node):
 
 FORBIDDEN_TYPE_NAMES = ['root', OR, AND, LIST]
 
-# def replace_forbidden_names(s: str):
-#     if OR in s:
-#         return s.replace(OR, 'Union')
-#     elif AND in s:
-#         return s.replace(AND, 'Glued')
-#     elif LIST in s:
-#         return s.replace(LIST, 'List')
-#     elif 'root' in s:
-#         return ''
-#     else:
-#         raise Exception('should not be here')
 
-def is_leaf(node):
-    return (
-        not node.children
-    )
-
-def is_leaf_key(node):
-    return (
-        len(node.children) == 1
-        and is_leaf(node.children[0])
-    )
 
 # def is_object_key(node: Node):
 #     return is_key(node) and is_object(node.children[0])
 
-def is_object(node):
-    return (
-        len(node.children) >= 1
-        and all([len(c.children) for c in node.children if c.value != ELLIPSIS])
-        and node.value not in [AND, OR, LIST,]
-        # node.children[0] not in [c for c in constants if c != ELLIPSIS]
-    )
 
 def get_leaves(node):
     if is_leaf(node):
@@ -218,33 +156,6 @@ def compute_camel_cascaded_name(child):
     return parent_name + capitalize(end_name)
 
 
-def is_scalar(value):
-    value = value.lower()
-    scalars = [STR, STRING, INT, FLOAT, REGEX, ANY, NULL, BOOL]
-    if value in [x.lower() for x in scalars]:
-        return True
-    if '"' in value:
-        return True
-    if '..' in value:
-        return True
-    if '//' in value:
-        return True
-    return False
-
-
-def is_key(node):
-    """opoosto di leaf o di oggetto"""
-    return len(node.children) == 1
-
-def is_and_key(node):
-    return is_key(node) and node.children[0].value in [AND,]
-
-def is_or_key(node):
-    return is_key(node) and node.children[0].value in [OR,]
-
-def is_list_key(node):
-    return is_key(node) and node.children[0].value in [LIST,]
-
 
 
 def merge_ands(node, references):
@@ -264,9 +175,6 @@ def merge_ands(node, references):
     else:
         return node
 
-
-def is_enum_key(node):
-    return is_or_key(node) and all(['"' in c.value for c in node.children[0].children])
 
 def merge_scalar_unions(references):
     to_delete = {}
@@ -311,7 +219,7 @@ def get_aliases(node: Node):
 
 def replace_aliases(node: Node, ):
     aliases = get_aliases(node)
-    print('aliases', aliases)
+    # print('aliases', aliases)
     for leaf in get_leaves(node, ):
         if leaf.value in aliases.keys():
             leaf.children = [aliases[leaf.value]]
@@ -319,6 +227,7 @@ def replace_aliases(node: Node, ):
 
 def is_enumeration(node):
     return node.parent and node.parent.parent and is_enum_key(node.parent.parent)
+
 
 def replace_types(node: Node,):
     if not node:
@@ -341,5 +250,3 @@ map_types_to_graphql = {
     NULL: 'String', # TODO remove them
     REGEX: 'String',
 }
-
-

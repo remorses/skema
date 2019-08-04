@@ -40,7 +40,8 @@ setup(
     scripts=[
         'bin/skema-generate-python',
         'bin/skema-generate-typescript',
-        'bin/skema-generate-jsonschema'
+        'bin/skema-generate-jsonschema',
+        'bin/skema-generate-graphql',
     ],
 
 )

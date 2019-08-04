@@ -18,7 +18,6 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     replace_types
                                     )
 from skema.tree import Node
-from ..to_graphql import to_graphql
 from ..make_schema import make_schema
 from ..make_tree import make_tree
 from ..tokenize import tokenize
@@ -100,7 +99,7 @@ def test_to_gql(string):
     refs = [merge_ands(r, refs) for r in refs]
     refs = merge_scalar_unions(refs)
     refs = [replace_types(t) for t in refs]
-    types = [to_graphql(t) for t in refs]
+    types = [t.to_graphql() for t in refs]
     schema = '\n\n'.join(types)
     print(schema)
     build_schema(schema)

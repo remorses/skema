@@ -1,29 +1,9 @@
-type CampOggetto {
-    x: Int
-    y: Float
-}
-
-type CampUnion {
-    z: Int
-    t: Boolean
-}
-
-type Camp {
-    oggetto: CampOggetto
-    union: CampUnion
-    array: [Float]
-}
-
-type A {
-    z: Int
-}
-
-type B {
-    t: Int
+type Object {
+    aCiao: Int
+    sdf: Int
+    bCom: String
 }
 
 type Root {
-    Camp: Camp
-    A: A
-    B: B
+    Object: Object
 }
