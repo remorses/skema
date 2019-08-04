@@ -47,8 +47,6 @@ def replace_with_anchor(key):
     return anchor
 
 def make_reference(key):
-    # if is_list_key(key):
-    #     return Node(compute_camel_cascaded_name(key), key.parent).append(key.children[0].children)
     if is_or_key(key) or is_and_key(key):
         return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
     else:
@@ -63,10 +61,6 @@ def is_valid_as_reference(key: Node):
     # true se è un oggetto con solo leaf_key oppure con piccole liste come figli
     if is_object(key) and not is_list_key(key) and all([is_leaf_key(c) or is_valid_list_key(c) for c in key.children]):
         return True
-    # ture se è list con leaf come figlio
-    # if is_valid_list_key(key):
-    #     return True
-    # true se è key di una unione
     if is_or_key(key) or is_and_key(key):
         return True
     return False
@@ -76,7 +70,7 @@ def get_current_subtypes(root: Node):
     nodes = filter(lambda x: is_valid_as_reference(x) or is_big_list(x), nodes)
     nodes = reversed(list(nodes))
     nodes = list(nodes)
-    print(f'valid refs are {nodes}')
+    # print(f'valid refs are {nodes}')
     return nodes
     
 def split_references(root: Node):
@@ -87,8 +81,8 @@ def split_references(root: Node):
         replace_with_anchor(key)
         yield ref
         # yield from dereference_objects_inside_lists(ref)
-        print(f'after {repr(ref)}')
-        print(root)
+        # print(f'after {repr(ref)}')
+        # print(root)
         nodes = get_current_subtypes(root)
 
 
@@ -97,34 +91,15 @@ def is_big_list(node):
         node.value == LIST 
         and (
             len(node.children) > 1
-            or (len(node.children) == 1 and not is_leaf(node.children[0]))
+            or (
+                len(node.children) == 1 
+                and (
+                    (node.children[0].value != LIST and not is_leaf(node.children[0]))
+                    or (node.children[0].value == LIST and is_big_list(node.children[0]))
+                )
+            )
         )
     )
-
-def dereference_objects_inside_lists(root: Node):
-    nodes = breadth_first_traversal(root,)
-    nodes = filter(is_big_list, nodes)
-    nodes = reversed(list(nodes))
-    nodes = list(nodes)
-    # while nodes:
-    #     key = nodes.pop(0)
-    #     ref = make_reference(key)
-    #     replace_with_anchor(key)
-    #     yield ref
-    #     nodes = get_current_subtypes(root)
-    while nodes:
-        big_list = nodes.pop(0)
-        ref = make_reference(big_list)
-        replace_with_anchor(big_list)
-        yield ref
-        nodes = breadth_first_traversal(root,)
-        nodes = filter(is_big_list, nodes)
-        nodes = reversed(list(nodes))
-        nodes = list(nodes)
-        print('after', repr(ref), nodes)
-
-
-        
 
 
 
@@ -290,22 +265,21 @@ def merge_ands(node, references):
         return node
 
 
+def is_enum_key(node):
+    return is_or_key(node) and all(['"' in c.value for c in node.children[0].children])
+
 def merge_scalar_unions(references):
     to_delete = {}
     for node in references:
-        if (is_or_key(node) or is_and_key(node)) and any([is_scalar(c.value) for c in node.children[0].children]):
+        if (is_or_key(node) or is_and_key(node)) and any([is_scalar(c.value) for c in node.children[0].children]) and not is_enum_key(node):
             new_type = reduce(stronger_type, node.children[0].children,)
             obj = {node.value: new_type}
-            print('new_type', obj)
+            # print('new_type', obj)
             to_delete.update(obj)
-    print('to_delete', to_delete)
+    # print('to_delete', to_delete)
     for ref in references:
         replace_occurrences(ref, to_delete)
     return [r for r in references if not r.value in to_delete.keys()]
-
-
-
-    
 
 
 def stronger_type(a, b):
@@ -322,13 +296,11 @@ def stronger_type(a, b):
     return STR
 
 
-
 def replace_occurrences(ref, to_delete):
     for c in ref.children:
         if c.value in to_delete.keys():
             c.value = to_delete[c.value]
         replace_occurrences(c, to_delete)
-
 
 def get_aliases(node: Node):
     res = {}
@@ -344,5 +316,30 @@ def replace_aliases(node: Node, ):
         if leaf.value in aliases.keys():
             leaf.children = [aliases[leaf.value]]
     return Node(node.value, node.parent).append([c for c in node.children if c.value not in aliases])
+
+def is_enumeration(node):
+    return node.parent and node.parent.parent and is_enum_key(node.parent.parent)
+
+def replace_types(node: Node,):
+    if not node:
+        return
+    if '"' in node.value and not is_enumeration(node):
+        node.value = 'String' # TODO replace with possible enum found in references
+    if node.value in map_types_to_graphql:
+        node.value = map_types_to_graphql[node.value]
+    if '..' in node.value:
+        node.value = 'Float'
+    for c in node.children:
+        replace_types(c)
+    return node
+
+
+map_types_to_graphql = {
+    STR: 'String',
+    ANY: 'String', # TODO make scalar Json
+    BOOL: 'Boolean',
+    NULL: 'String', # TODO remove them
+    REGEX: 'String',
+}
 
 

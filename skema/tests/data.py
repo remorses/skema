@@ -101,7 +101,7 @@ Cosa:
 
 problematic = """
 AddedTodo:
-    type: "added_todo"
+    type: "added_todo" | "upserted_todo"
     payload:
         todo:
             name: Str

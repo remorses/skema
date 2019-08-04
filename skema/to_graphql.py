@@ -214,29 +214,6 @@ def stronger_type(a, b):
     return STR
 
 
-map_types_to_graphql = {
-    STR: 'String',
-    ANY: 'String', # TODO make scalar Json
-    BOOL: 'Boolean',
-    NULL: 'String', # TODO remove them
-    REGEX: 'String',
-}
-
-
-def replace_types(node: Node,):
-    if not node:
-        return
-    if node.value in map_types_to_graphql:
-        node.value = map_types_to_graphql[node.value]
-    if '..' in node.value:
-        node.value = 'Float'
-    if '"' in node.value:
-        node.value = 'String' # TODO make enums
-    for c in node.children:
-        replace_types(c)
-    return node
-
-
 
 def remove_ellipses(node: Node):
     if not node.children:
