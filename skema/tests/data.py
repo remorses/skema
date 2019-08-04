@@ -56,16 +56,18 @@ Cosa:
 """
 
 arrays = """
-Array: [
-    cosa: Int
-    object:
-        ciao: Str
-    another: [
-        cose: Str
-        altre: Int
+Radice:
+    y: Int
+    array: [
+        cosa: Int
+        object:
+            ciao: Str
+        another: [
+            cose: Str
+            altre: Int
+        ]
+        types: [Type]
     ]
-    types: [Type]
-]
 
 Type:
     x: Int

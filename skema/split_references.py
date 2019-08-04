@@ -54,6 +54,23 @@ def make_reference(key):
     else:
         return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
 
+def is_valid_as_reference(key: Node):
+    def is_valid_list_key(key):
+        if not is_key(key):
+            return False
+        list_node = key.children[0]
+        return not is_big_list(list_node)
+    # true se è un oggetto con solo leaf_key oppure con piccole liste come figli
+    if is_object(key) and not is_list_key(key) and all([is_leaf_key(c) or is_valid_list_key(c) for c in key.children]):
+        return True
+    # ture se è list con leaf come figlio
+    # if is_valid_list_key(key):
+    #     return True
+    # true se è key di una unione
+    if is_or_key(key) or is_and_key(key):
+        return True
+    return False
+
 def get_current_subtypes(root: Node):
     nodes = breadth_first_traversal(root,)
     nodes = filter(is_valid_as_reference, nodes)
@@ -75,16 +92,16 @@ def split_references(root: Node):
         nodes = get_current_subtypes(root)
 
 
+def is_big_list(node):
+    return (
+        node.value == LIST 
+        and (
+            len(node.children) > 1
+            or (len(node.children) == 1 and not is_leaf(node.children[0]))
+        )
+    )
 
 def dereference_objects_inside_lists(root: Node):
-    def is_big_list(node):
-        return (
-            node.value == LIST 
-            and (
-                len(node.children) > 1
-                or (len(node.children) == 1 and node.children[0].value != LIST)
-            )
-        )
     nodes = breadth_first_traversal(root,)
     nodes = filter(is_big_list, nodes)
     nodes = reversed(list(nodes))
@@ -109,26 +126,7 @@ def remove_ellipses(node: Node):
             remove_ellipses(c)
     return node
 
-def is_valid_as_reference(key: Node):
-    def is_valid_list_key(key):
-        if not is_key(key):
-            return False
-        list_node = key.children[0]
-        return (
-            is_key(key)
-            and is_list_key(key)
-            and (is_leaf_key(list_node) or is_valid_list_key(list_node))
-        )
-    # true se è un oggetto con solo leaf_key oppure con piccole liste come figli
-    if is_object(key) and not is_list_key(key) and all([is_leaf_key(c) or is_valid_list_key(c) for c in key.children]):
-        return True
-    # ture se è list con leaf come figlio
-    # if is_valid_list_key(key):
-    #     return True
-    # true se è key di una unione
-    if is_or_key(key) or is_and_key(key):
-        return True
-    return False
+
 
 
 FORBIDDEN_TYPE_NAMES = ['root', OR, AND, LIST]

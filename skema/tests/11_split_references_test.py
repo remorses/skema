@@ -77,8 +77,8 @@ def test_split_references(string):
     refs = []
     # refs += list(dereference_objects_inside_lists(node))
     refs += list(split_references(node))
-    refs += list(dereference_objects_inside_lists(node))
-    print('\n'.join(map(repr, refs)))
+    # refs += list(dereference_objects_inside_lists(node))
+    # print('\n'.join(map(repr, refs)))
     print()
     print('refs')
     for r in refs:
