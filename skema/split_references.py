@@ -73,7 +73,7 @@ def is_valid_as_reference(key: Node):
 
 def get_current_subtypes(root: Node):
     nodes = breadth_first_traversal(root,)
-    nodes = filter(is_valid_as_reference, nodes)
+    nodes = filter(lambda x: is_valid_as_reference(x) or is_big_list(x), nodes)
     nodes = reversed(list(nodes))
     nodes = list(nodes)
     print(f'valid refs are {nodes}')
@@ -105,10 +105,23 @@ def dereference_objects_inside_lists(root: Node):
     nodes = breadth_first_traversal(root,)
     nodes = filter(is_big_list, nodes)
     nodes = reversed(list(nodes))
-    for big_list in nodes:
+    nodes = list(nodes)
+    # while nodes:
+    #     key = nodes.pop(0)
+    #     ref = make_reference(key)
+    #     replace_with_anchor(key)
+    #     yield ref
+    #     nodes = get_current_subtypes(root)
+    while nodes:
+        big_list = nodes.pop(0)
         ref = make_reference(big_list)
-        yield ref
         replace_with_anchor(big_list)
+        yield ref
+        nodes = breadth_first_traversal(root,)
+        nodes = filter(is_big_list, nodes)
+        nodes = reversed(list(nodes))
+        nodes = list(nodes)
+        print('after', repr(ref), nodes)
 
 
         
@@ -321,15 +334,15 @@ def get_aliases(node: Node):
     res = {}
     for c in node.children: # TODO this presume tree has Root
         if is_leaf_key(c):
-            res.update({'alias': c.value, 'value': c.children[0].value})
+            res.update({c.value: c.children[0]})
     return res
 
-def replace_aliases(node: Node, aliases=None):
-    if not aliases:
-        aliases = get_aliases(node)
+def replace_aliases(node: Node, ):
+    aliases = get_aliases(node)
+    print('aliases', aliases)
     for leaf in get_leaves(node, ):
         if leaf.value in aliases.keys():
             leaf.children = [aliases[leaf.value]]
-    return node
+    return Node(node.value, node.parent).append([c for c in node.children if c.value not in aliases])
 
 

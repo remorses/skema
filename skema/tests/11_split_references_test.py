@@ -62,6 +62,7 @@ def test_is_valid_as_reference(string):
 def test_dereference_objects_inside_lists(string):
     node = make_tree(tokenize(string))
     remove_ellipses(node)
+    print(node)
     refs = list(dereference_objects_inside_lists(node))
     print('\n'.join(map(repr, refs)))
     print(node)
@@ -88,12 +89,12 @@ def test_split_references(string):
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
 def test_to_gql(string):
     node = make_tree(tokenize(string))
-    remove_ellipses(node)
-    replace_aliases(node)
+    node = remove_ellipses(node)
+    node = replace_aliases(node)
     print(node)
     refs = []
-    refs += list(dereference_objects_inside_lists(node))
-    print('after deref list' + str(refs))
+    # refs += list(dereference_objects_inside_lists(node))
+    # print('after deref list' + str(refs))
     refs += list(split_references(node))
     refs = [merge_ands(r, refs) for r in refs]
     refs = merge_scalar_unions(refs)
