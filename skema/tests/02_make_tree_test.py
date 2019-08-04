@@ -4,7 +4,6 @@ from ..make_schema import make_schema
 from ..make_tree import make_tree
 from ..tree import map_tree, traverse_tree
 import pytest
-import fastjsonschema
 from .data import strings
 from .support import keys, values
 

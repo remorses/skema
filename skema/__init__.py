@@ -6,7 +6,6 @@ from typing import Callable, Any
 import sys
 import json
 from functools import reduce, partial
-import fastjsonschema
 from .to_jsonschema import to_jsonschema
 from .support import rcompose
 from .fake_data import fake_data

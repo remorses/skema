@@ -1,5 +1,10 @@
 fastjsonschema
 jsonschema
-hypothesis
 bson
 genson
+# for fake_data
+hypothesis
+# tests
+graphql-core==3.0.0a2
+# for generating code types
+# npm i -g quicktype
