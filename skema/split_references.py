@@ -4,7 +4,7 @@ from functools import reduce
 from .constants import *
 from .support import (capitalize, is_and_key, is_enum_key, is_key, is_list_key,
                       is_object, is_or_key, is_scalar, is_leaf, is_leaf_key)
-from .tree import Node
+from .tree import Node, copy
 
 
 def replace_with_anchor(key):
@@ -50,7 +50,6 @@ def split_references(root: Node):
         # print(f'after {repr(ref)}')
         # print(root)
         nodes = get_current_subtypes(root)
-
 
 def is_big_list(node):
     return (

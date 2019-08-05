@@ -149,7 +149,8 @@ User:
 - the same for regex
 - better handling of comments and white space
 - dynamic indentation (now is set as 4 spaces)
-- in gql remove types used in & operations, given that thay are merged
+- ~~in gql remove types used in & operations, given that thay are merged~~
+- replace removed types names from other computed names
 
 
 
