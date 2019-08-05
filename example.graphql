@@ -4,3 +4,7 @@ type Object {
     bCom: String
 }
 
+
+type Another implements Object {
+    a: String
+}

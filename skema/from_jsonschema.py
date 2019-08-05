@@ -90,7 +90,8 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
         node = node.insert(child,)
         
     else:
-        raise NotImplementedError(str(schema))
+        # raise NotImplementedError(str(schema))
+        print('!!!NotImplementedError!!!', (str(schema)))
         child = Node(ANY, node)
         node = node.insert(child)
         

@@ -16,7 +16,8 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     merge_ands,
                                     merge_scalar_unions,
                                     replace_aliases,
-                                    replace_types
+                                    replace_types,
+                                    merge_ands,
                                     )
 from skema.tree import Node
 from ..make_schema import make_schema
@@ -79,6 +80,11 @@ def test_split_references(string):
     refs = []
     # refs += list(dereference_objects_inside_lists(node))
     refs += list(split_references(node))
+    for r in refs:
+        print(r)
+        print()
+    refs = [merge_ands(n, refs) for n in refs]
+    refs = [n for n, _ in refs]
     # refs += list(dereference_objects_inside_lists(node))
     # print('\n'.join(map(repr, refs)))
     print()

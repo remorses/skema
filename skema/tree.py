@@ -20,6 +20,8 @@ class Node:
         self.required = required
         self.child_annotations = []
         self.pattern = ''
+        self.implements = []
+        self.is_interface = False
     
     def insert(self, *nodes):
         [self.children.append(n) for n in nodes]
@@ -51,8 +53,7 @@ class Node:
             res += '\n' + Node.parent_relation(c, indent + tab)
         return res
 
-    def to_skema(self, indent='', ): # TODO remove bucket arg
-        res = ''
+    def to_skema(self, indent='', res = ''): # TODO remove bucket arg
         if self.value in [AND, OR, LIST]:
             res += ''
         elif not self.children and self.value != ELLIPSIS:
@@ -75,13 +76,13 @@ class Node:
                     res += '[' + obj + '\n' + indent + ']'
             elif self.value in [AND]: # interface
                 print(repr(self))
-                using_interfaces_in_new_line = True
+                using_interfaces_in_new_line = False
                 if using_interfaces_in_new_line:
                     res += indent + Node.to_skema(c, '', ) + ' &'
                 else:
-                    past_line = len(indent)+1
-                    print(repr(res))
-                    res += '' + Node.to_skema(c, '\b' * past_line, ) + ' &'
+                    past_line = len(indent)
+                    res = res[:-1]
+                    res += ' ' + Node.to_skema(c, '\b' * past_line, ) + ' &'
             else: # key: Node
                 if (len(c.children) == 0 and c.value != ELLIPSIS) or c.value in [AND, OR, LIST]: # dont go \n
                     res += ' ' + Node.to_skema(c, indent, )
@@ -106,7 +107,7 @@ class Node:
                 res += '[' + obj + '\n' + indent + ']' # TODO
             else: # object
                 for c in self.children:
-                    res += '\n' + Node.to_skema(c, indent + tab, )
+                    res = Node.to_skema(c, indent + tab, res=res + '\n')
         return res
     def to_graphql(self, indent='',):
         res = ''
@@ -126,8 +127,9 @@ class Node:
                 res += Node.to_skema(c, indent + tab, )
             # res += '\n'
         elif is_object(self):
-            res += 'type '
+            res += 'type ' if not self.is_interface else 'interface '
             res += str(self.value)
+            res += (' implements ' + ' & '.join(self.implements)) if self.implements else ''
             res += ' {'
             for c in self.children:
                 res += '\n' + Node.to_skema(c, indent + tab, )

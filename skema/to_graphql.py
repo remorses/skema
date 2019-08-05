@@ -1,4 +1,5 @@
 from skema import tokenize, make_tree
+from skema.tree import copy, Node
 from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,
@@ -10,21 +11,27 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     merge_ands,
                                     merge_scalar_unions,
                                     replace_aliases,
-                                    replace_types
+                                    replace_types,
+                                    INTERFACE_END_KEYWORD
                                     )
+
 
 
 def remove_ands(refs): 
     refs_and_indexes = [merge_ands(r, refs) for r in refs]
     refs = [ref for ref, indexes in refs_and_indexes]
-    # [print(repr(r)) for r in refs]
-    leaves = [leaf for r in refs for leaf in get_leaves(r) if r.value.lower() != 'root'] # TODO presume no root
+    # use them as implements
     indexes = set([i for ref, indexes in refs_and_indexes for i in indexes])
     indexes = sorted(indexes, reverse=True)
+    interfaces = [copy(refs[i]) for i in indexes]
+    for node in interfaces:
+        node.value = node.value + INTERFACE_END_KEYWORD
+        node.is_interface = True
+    leaves = [leaf for r in refs for leaf in get_leaves(r) if r.value.lower() != 'root'] # TODO presume no root
     for i in indexes:
         if not [l for l in leaves if l.value == refs[i].value]:
             refs.pop(i)
-    return refs
+    return refs + interfaces
 
 
 def to_graphql(string):

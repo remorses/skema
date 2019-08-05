@@ -414,6 +414,20 @@ B:
     y: Int
 '''
 
+
+inline_and_2 = '''
+"""interface"""
+Obj: A & B &
+    a: Str
+    b: Int
+
+A:
+    x: Int
+
+B:
+    y: Int
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """

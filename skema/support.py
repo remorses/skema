@@ -39,6 +39,9 @@ def is_key(node):
 def is_and_key(node):
     return is_key(node) and node.children[0].value in [AND,]
 
+def is_and_object(node):
+    return is_object(node) and node.children[0].value in [AND,]
+
 def is_or_key(node):
     return is_key(node) and node.children[0].value in [OR,]
 

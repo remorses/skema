@@ -1,9 +1,9 @@
-
+import operator
 from functools import reduce
 
 from .constants import *
 from .support import (capitalize, is_and_key, is_enum_key, is_key, is_list_key,
-                      is_object, is_or_key, is_scalar, is_leaf, is_leaf_key)
+                      is_object, is_or_key, is_scalar, is_leaf, is_leaf_key, is_and_object)
 from .tree import Node, copy
 
 
@@ -27,7 +27,7 @@ def is_valid_as_reference(key: Node):
     # true se è un oggetto con solo leaf_key oppure con piccole liste come figli
     if is_object(key) and not is_list_key(key) and all([is_leaf_key(c) or is_valid_list_key(c) for c in key.children]):
         return True
-    if is_or_key(key) or is_and_key(key):
+    if is_or_key(key) or is_and_key(key) or is_and_object(key):
         return True
     return False
 
@@ -139,7 +139,7 @@ def same_parents(a, b, count=0):
     else:
         return True
 
-def compute_camel_cascaded_name(child):
+def compute_camel_cascaded_name(child): # TODO search if there are already same names
     if is_scalar(child.value):
         return child.value
     parent = child.parent
@@ -155,11 +155,11 @@ def compute_camel_cascaded_name(child):
     return parent_name + capitalize(end_name)
 
 
-
+INTERFACE_END_KEYWORD = 'Interface'
 
 def merge_ands(node, references):
     ref_indexes_to_delete = []
-    if is_and_key(node):
+    if is_and_key(node) or is_and_object(node):
         result = Node(node.value, node.parent)
         items = node.children[0].children
         for child in items:
@@ -171,9 +171,12 @@ def merge_ands(node, references):
             ref_indexes_to_delete += new_indexes
             result_children_values = [c.value for c in result.children]
             children = [c for c in ref.children if c.value not in result_children_values]
-            result.insert(*children) # TODO dont add props already present
-            # deletes reference
+            result.insert(*children)
+            result.implements += [ref.value + INTERFACE_END_KEYWORD]
             ref_indexes_to_delete += [i for i, r in enumerate(references) if ref.value == r.value]
+            if node.children[1:]:
+                result.append([n for n in node.children[1:] if n.value not in result_children_values])
+                # result.implements += [ref.value]
         return result, ref_indexes_to_delete
     else:
         return node, ref_indexes_to_delete
