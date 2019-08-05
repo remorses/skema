@@ -216,20 +216,26 @@ def replace_occurrences(ref, to_delete):
             c.value = to_delete[c.value]
         replace_occurrences(c, to_delete)
 
-def get_aliases(node: Node):
-    res = {}
+def get_alias_nodes(node: Node):
     for c in node.children: # TODO this presume tree has Root
         if is_leaf_key(c):
-            res.update({c.value: c.children[0].value})
-    return res
+            yield c
 
-def replace_aliases(node: Node, ):
-    aliases = get_aliases(node)
-    # print('aliases', aliases)
-    for leaf in get_leaves(node, ):
-        if leaf.value in aliases.keys():
-            leaf.value = aliases[leaf.value]
-    return Node(node.value, node.parent).append([c for c in node.children if c.value not in aliases])
+
+# def get_aliases(node: Node):
+#     res = {}
+#     for c in node.children: # TODO this presume tree has Root
+#         if is_leaf_key(c):
+#             res.update({c.value: c.children[0].value})
+#     return res
+
+# def replace_aliases(node: Node, ):
+#     aliases = get_aliases(node)
+#     # print('aliases', aliases)
+#     for leaf in get_leaves(node, ):
+#         if leaf.value in aliases.keys():
+#             leaf.value = aliases[leaf.value]
+#     return Node(node.value, node.parent).append([c for c in node.children if c.value not in aliases])
 
 def is_enumeration(node):
     return node.parent and node.parent.parent and is_enum_key(node.parent.parent)
@@ -238,8 +244,9 @@ def is_enumeration(node):
 def replace_types(node: Node,):
     if not node:
         return
-    if '"' in node.value and not is_enumeration(node):
-        node.value = 'String' # TODO replace with possible enum found in references
+    if '"' in node.value and node.parent.value != OR: # not is_enumeration(node):
+        print(node.value)
+        node.value = 'String'
     if node.value in map_types_to_graphql:
         node.value = map_types_to_graphql[node.value]
     if '..' in node.value:

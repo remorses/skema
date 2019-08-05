@@ -2,7 +2,7 @@
 from functools import reduce
 from .constants import *
 from .constants import constants
-from .support import capitalize, is_and_key, is_or_key, is_object, is_and_object
+from .support import capitalize, is_and_key, is_or_key, is_object, is_and_object, is_leaf_key
 import json
 
 
@@ -117,7 +117,10 @@ class Node:
         return res
     def to_graphql(self, indent='',):
         res = ''
-        if is_or_key(self) and all(['"' in c.value for c in self.children[0].children]):
+        if is_leaf_key(self): # alias
+            res += 'scalar '
+            res += str(self.value)
+        elif is_or_key(self) and all(['"' in c.value for c in self.children[0].children]):
             res += 'enum '
             res += str(self.value)
             res += ' {'

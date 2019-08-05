@@ -10,8 +10,9 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     split_references,
                                     merge_ands,
                                     merge_scalar_unions,
-                                    replace_aliases,
+                                    # replace_aliases,
                                     replace_types,
+                                    get_alias_nodes,
                                     INTERFACE_END_KEYWORD
                                     )
 
@@ -37,9 +38,12 @@ def remove_ands(refs):
 def to_graphql(string):
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
-    node = replace_aliases(node)
+    # node = replace_aliases(node)
     print(node)
-    refs = list(split_references(node))
+    refs = []
+    refs += list(get_alias_nodes(node))
+    refs += list(split_references(node))
+    print(refs)
     refs = [r for r in refs if r.value.lower() != 'root'] # TODO presume root
     refs = remove_ands(refs)
     refs = merge_scalar_unions(refs)

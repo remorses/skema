@@ -15,7 +15,7 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     split_references,
                                     merge_ands,
                                     merge_scalar_unions,
-                                    replace_aliases,
+                                    # replace_aliases,
                                     replace_types,
                                     merge_ands,
                                     )
