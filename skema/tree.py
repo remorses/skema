@@ -2,7 +2,7 @@
 from functools import reduce
 from .constants import *
 from .constants import constants
-from .support import capitalize, is_and_key, is_or_key, is_object
+from .support import capitalize, is_and_key, is_or_key, is_object, is_and_object
 import json
 
 
@@ -64,7 +64,22 @@ class Node:
             # res += indent + '"""' + annotations.pop(0) + '"""\n' if len(annotations) else ''
             res += (indent + str(self.value) or '""')
             res += ':' if len(self.children) else ''
-        if is_key(self): # is_key(self): # key
+        if is_and_object(self): # interface
+            print(repr(self))
+            for c in self.children[0].children:
+                 res += ' ' + Node.to_skema(c, '') + ' &'
+            for c in self.children[1:]:
+                    res = Node.to_skema(c, indent + tab, res=res + '\n')
+
+            # past_line = len(indent)
+            # res = res[:-1]
+
+            # using_interfaces_in_new_line = False
+            # if using_interfaces_in_new_line:
+            #     res += indent + Node.to_skema(c, '', ) + ' &'
+            # else:
+
+        elif is_key(self): # is_key(self): # key
             c = self.children[0]
             if self.value == LIST: # key: [Node]
                 if is_end_key(self) and self.children[0].value != ELLIPSIS:
@@ -74,15 +89,6 @@ class Node:
                     # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                     obj = '\n' + Node.to_skema(c, indent + tab,)
                     res += '[' + obj + '\n' + indent + ']'
-            elif self.value in [AND]: # interface
-                print(repr(self))
-                using_interfaces_in_new_line = False
-                if using_interfaces_in_new_line:
-                    res += indent + Node.to_skema(c, '', ) + ' &'
-                else:
-                    past_line = len(indent)
-                    res = res[:-1]
-                    res += ' ' + Node.to_skema(c, '\b' * past_line, ) + ' &'
             else: # key: Node
                 if (len(c.children) == 0 and c.value != ELLIPSIS) or c.value in [AND, OR, LIST]: # dont go \n
                     res += ' ' + Node.to_skema(c, indent, )
