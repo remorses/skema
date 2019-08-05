@@ -20,14 +20,18 @@ def extract_ast(text: str):
     else:
         yield (text, [])
 
-def make_value_tree(ast, node = Node('root')):
+def make_value_tree(ast, node):
     # children = next(extract_nodes(val))
     # log('ast', ast)
     op, rest = ast
     child = Node(op, node)
     node.insert(child)
-    for t in rest:
-        make_value_tree(t, child)
+    for op, rest in rest:
+        t = op, rest
+        if op == '':
+            node = node.children[0]
+        else:
+            node = make_value_tree(t, child).parent
     return node
 
 # TODO parametrize this
@@ -40,6 +44,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         raise Exception('all nodes should have parents')
 
     for (i, token) in enumerate(tokens):
+        token_value = token['value']
         log()
         log(i, token['type'], token['value'])
         log('node', node.value)
@@ -58,7 +63,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         elif token['type'] == 'VAL':
             ast = next(extract_ast(token['value']))
             # print(ast)
-            root = make_value_tree(ast, node)
+            node = make_value_tree(ast, node)
             node = node.parent
             
         elif token['type'] == 'REGEX':

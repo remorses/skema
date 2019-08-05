@@ -56,13 +56,22 @@ def _make_schema(node, definitions):
             }
 
     elif node.children[0].value == AND:
-        options = [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
-        # strip = lambda opt: {**opt,'additionalProperties':True} if (isinstance(opt, dict) and not opt.get('additionalProperties', True)) else opt
-        # options = [strip(opt) for opt in options]
-        return {
-            'allOf': options,
-            'description': get_annotation(node),
-        }
+        if (len(node.children) > 1): # inline and
+            options = []
+            options += [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+            inline_props = Node('',).append([c for c in node.children if c.value != AND])
+            options += [_make_schema(inline_props, definitions)]
+            return {
+                'type': 'object',
+                'allOf': options,
+                'description': get_annotation(node),
+            }
+        else:
+            options = [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+            return {
+                'allOf': options,
+                'description': get_annotation(node),
+            }
 
     elif node.children[0].value == LIST:
         return {

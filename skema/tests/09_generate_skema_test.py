@@ -25,7 +25,6 @@ def test_from_schema(string):
 
 @pytest.mark.parametrize("string", values(strings), ids=keys(strings))
 def test_from_tree(string):
-    
     tokens = tokenize(string)
     tree = make_tree(tokens)
     print()

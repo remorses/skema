@@ -73,6 +73,15 @@ class Node:
                     # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                     obj = '\n' + Node.to_skema(c, indent + tab,)
                     res += '[' + obj + '\n' + indent + ']'
+            elif self.value in [AND]: # interface
+                print(repr(self))
+                using_interfaces_in_new_line = True
+                if using_interfaces_in_new_line:
+                    res += indent + Node.to_skema(c, '', ) + ' &'
+                else:
+                    past_line = len(indent)+1
+                    print(repr(res))
+                    res += '' + Node.to_skema(c, '\b' * past_line, ) + ' &'
             else: # key: Node
                 if (len(c.children) == 0 and c.value != ELLIPSIS) or c.value in [AND, OR, LIST]: # dont go \n
                     res += ' ' + Node.to_skema(c, indent, )
@@ -83,7 +92,8 @@ class Node:
                 children = self.children[:]
                 for i, c in enumerate(self.children):
                     if len(c.children):
-                        raise Exception('can\'t handle object inside or, and')
+                        pass
+                        # raise Exception('can\'t handle object inside or, and')
                 symbol = ' | ' if self.value == OR else ' & '
                 for c in children[:-1]:
                     res += '' + Node.to_skema(c, '', ) + symbol

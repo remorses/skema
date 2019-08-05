@@ -396,6 +396,24 @@ B:
     t: Int
 '''
 
+or_and = '''
+R:
+    x: Int & Str | Bool
+'''
+
+inline_and = '''
+"""interface"""
+Obj: A &
+    a: Str
+    b: Int
+
+A:
+    x: Int
+
+B:
+    y: Int
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """
