@@ -8,7 +8,7 @@
 this skema snippet
 ```yaml
 AddedTodo:
-    type: "added_todo"
+    type: "added_todo" ! "ciao"
     payload:
         todo:
             name: Str
