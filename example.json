@@ -1,62 +1,181 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "Event",
-    "description": "ciao",
-    "type": "object",
-    "properties": {
-        "a_come_stai": {
-            "type": "number",
-            "multipleOf": 1.0,
-            "title": "a"
-        },
-        "CiaoComeVa": {
-            "title": "Bo_ciao",
-            "description": "ciao",
+    "$ref": "#/definitions/Object",
+    "definitions": {
+        "Object": {
+            "title": "Object",
+            "description": "",
             "type": "object",
+            "required": [
+                "bCom"
+            ],
             "properties": {
-                "enum": {
-                    "enum": ["sdf_adf", "ciaoComeVa"]
-                },
-                "ciaoComeVa": {
+                "aCiao": {
                     "type": "number",
                     "multipleOf": 1.0,
-                    "title": "ciao"
+                    "title": "aCiao",
+                    "description": ""
                 },
-                "xxx": {
-                    "allOf": [
-                        {
-                            "title": "X",
-                            "description": "ciao",
-                            "type": "object",
-                            "required": [],
-                            "properties": {
-                                "sd": {
-                                    "type": "number",
-                                    "multipleOf": 1.0,
-                                    "title": "sd"
-                                }
-                            }
-                        },
-                        {
-                            "title": "Y",
-                            "description": "ciao",
-                            "type": "object",
-                            "required": [
-                                "zz"
-                            ],
-                            "properties": {
-                                "zz": {
-                                    "type": "number",
-                                    "multipleOf": 1.0,
-                                    "title": "zz"
-                                }
-                            }
-                        }
-                    ]
+                "sdf": {
+                    "type": "number",
+                    "multipleOf": 1.0,
+                    "title": "sdf",
+                    "description": ""
+                },
+                "bCom": {
+                    "type": "string",
+                    "title": "bCom",
+                    "description": ""
                 }
-            },
-            "additionalProperties": false
+            }
+        },
+        "Campaign": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/PostCampaign",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "$ref": "#/definitions/MessageCampaign",
+                    "title": "",
+                    "description": ""
+                }
+            ],
+            "description": ""
+        },
+        "Base": {
+            "title": "Base",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x",
+                "y",
+                "label"
+            ],
+            "properties": {
+                "x": {
+                    "type": "number",
+                    "multipleOf": 1.0,
+                    "title": "x",
+                    "description": ""
+                },
+                "y": {
+                    "type": "number",
+                    "multipleOf": 1.0,
+                    "title": "y",
+                    "description": ""
+                },
+                "label": {
+                    "type": "string",
+                    "title": "label",
+                    "description": ""
+                }
+            }
+        },
+        "Node": {
+            "title": "Node",
+            "description": "",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "name",
+                    "description": ""
+                }
+            }
+        },
+        "PostCampaign": {
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Base",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "$ref": "#/definitions/Node",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "title": "",
+                    "description": "",
+                    "type": "object",
+                    "required": [
+                        "posts",
+                        "x"
+                    ],
+                    "properties": {
+                        "posts": {
+                            "type": "array",
+                            "title": "posts",
+                            "items": {
+                                "title": "posts",
+                                "description": "",
+                                "type": "object",
+                                "required": [
+                                    "name",
+                                    "url"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "title": "name",
+                                        "description": ""
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "title": "url",
+                                        "description": ""
+                                    }
+                                }
+                            },
+                            "description": ""
+                        },
+                        "x": {
+                            "type": "number",
+                            "multipleOf": 1.0,
+                            "title": "x",
+                            "description": ""
+                        }
+                    }
+                }
+            ],
+            "description": ""
+        },
+        "MessageCampaign": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Base",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "$ref": "#/definitions/MessageOwn",
+                    "title": "",
+                    "description": ""
+                }
+            ],
+            "description": ""
+        },
+        "MessageOwn": {
+            "title": "MessageOwn",
+            "description": "",
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "title": "name",
+                    "description": ""
+                }
+            }
         }
-    },
-    "additionalProperties": false
+    }
 }

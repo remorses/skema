@@ -155,7 +155,7 @@ def compute_camel_cascaded_name(child): # TODO search if there are already same 
     return parent_name + capitalize(end_name)
 
 
-INTERFACE_END_KEYWORD = 'Interface'
+INTERFACE_END_KEYWORD = '_'
 
 def merge_ands(node, references):
     ref_indexes_to_delete = []

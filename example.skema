@@ -1,4 +1,4 @@
-#!/usr/bin/env skema-generate-graphql
+#!/usr/bin/env skema-gen python typescript graphql jsonschema
 
 
 
@@ -8,11 +8,11 @@ Object:
     bCom: Str
 
 
-Campaign: PostCampaign | MessageCamapaign
+Campaign: PostCampaign | MessageCampaign
 
 Base:
     x: Int
-    y: Inf
+    y: Int
     label: Str
 
 Node:

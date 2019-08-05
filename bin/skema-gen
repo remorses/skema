@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import sys
+import enum
+from skema.generate import generate_graphql, generate_types, generate_jsonschema
+
+class languages(enum.Enum):
+    jsonschema = 'jsonschema'
+    typescript = 'typescript'
+    python = 'python'
+    graphql = 'graphql'
+
+if len(sys.argv) <= 3:
+    print('skema-gen [lang1] [lang2] [...] source_path')
+    sys.exit()
+
+path = sys.argv[-1]
+
+for lang in sys.argv[1:-1]:
+    lang = lang.strip()
+    print(lang)
+    if lang == languages.graphql.value:
+        generate_graphql(path)
+    elif lang == languages.jsonschema.value:
+        generate_jsonschema(path)
+    elif lang == languages.typescript.value:
+        generate_types(path, '.ts', '--just-types')
+    elif lang == languages.python.value:
+        generate_types(path, '.py', '--python-version 3.7 --just-types ') #--no-nice-property-names')
+    else:
+        print(f'lang {lang} not supported')

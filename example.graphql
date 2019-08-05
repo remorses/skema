@@ -1,10 +1,42 @@
+type PostCampaignPosts {
+    name: String
+    url: String
+}
+
+type MessageCampaign implements Base_ & MessageOwn_ {
+    x: Int
+    y: Int
+    label: String
+    name: String
+}
+
+type PostCampaign implements Base_ & Node_ {
+    x: Int
+    y: Int
+    label: String
+    posts: [PostCampaignPosts]
+    x: Int
+    name: String
+}
+
+union Campaign = PostCampaign | MessageCampaign
+
 type Object {
     aCiao: Int
     sdf: Int
     bCom: String
 }
 
+interface Base_ {
+    x: Int
+    y: Int
+    label: String
+}
 
-type Another implements Object {
-    a: String
+interface Node_ {
+    name: String
+}
+
+interface MessageOwn_ {
+    name: String
 }

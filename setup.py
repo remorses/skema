@@ -42,6 +42,7 @@ setup(
         'bin/skema-generate-typescript',
         'bin/skema-generate-jsonschema',
         'bin/skema-generate-graphql',
+        'bin/skema-gen',
     ],
 
 )

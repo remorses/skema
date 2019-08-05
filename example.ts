@@ -1,32 +1,47 @@
-/**
- * ciao
- */
-export interface Example {
-    a_come_stai?: number;
-    /**
-     * ciao
-     */
-    CiaoComeVa?: BoCiao;
+export interface Object {
+    aCiao?: number;
+    bCom:   string;
+    sdf?:   number;
 }
 
-/**
- * ciao
- */
-export interface BoCiao {
-    ciaoComeVa?: number;
-    enum?:       Enum;
-    xxx?:        Xxx;
+export interface Campaign {
+    label:  string;
+    x:      number;
+    y:      number;
+    name:   string;
+    posts?: Posts[];
 }
 
-export enum Enum {
-    CiaoComeVa = "ciaoComeVa",
-    SdfAdf = "sdf_adf",
+export interface Posts {
+    name: string;
+    url:  string;
 }
 
-/**
- * ciao
- */
-export interface Xxx {
-    sd?: number;
-    zz:  number;
+export interface Base {
+    label: string;
+    x:     number;
+    y:     number;
+}
+
+export interface Node {
+    name: string;
+}
+
+export interface PostCampaign {
+    label: string;
+    x:     number;
+    y:     number;
+    name:  string;
+    posts: Posts[];
+}
+
+export interface MessageCampaign {
+    label: string;
+    x:     number;
+    y:     number;
+    name:  string;
+}
+
+export interface MessageOwn {
+    name: string;
 }
