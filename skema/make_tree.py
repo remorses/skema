@@ -8,7 +8,8 @@ def dummy(iter):
 
 
 
-
+# (&, [A, B])
+# (&, [])
 def extract_ast(text: str):
     if '&' in text:
         parts = text.split('&')
@@ -17,19 +18,16 @@ def extract_ast(text: str):
         parts = text.split('|')
         yield (OR, [x for p in parts for x in tuple(extract_ast(p.strip()))])
     else:
-        yield text
+        yield (text, [])
 
 def make_value_tree(ast, node = Node('root')):
     # children = next(extract_nodes(val))
     # log('ast', ast)
-    if isinstance(ast, tuple):
-        op, rest = ast
-        child = Node(op, node)
-        node.insert(child)
-        for t in rest:
-            make_value_tree(t, child)
-    else:
-        node.insert(Node(ast, node, ))
+    op, rest = ast
+    child = Node(op, node)
+    node.insert(child)
+    for t in rest:
+        make_value_tree(t, child)
     return node
 
 # TODO parametrize this
