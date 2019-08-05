@@ -1,14 +1,14 @@
 # skema: schema sdl that compiles to json-schema
 
 <!---[bump]--->
-## last version: 0.0.30
+## last version: 0.0.34
 ## example
 
 
 this skema snippet
 ```yaml
 AddedTodo:
-    type: "added_todo"
+    type: "added_todo" ! "ciao"
     payload:
         todo:
             name: Str

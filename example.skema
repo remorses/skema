@@ -6,3 +6,36 @@ Object:
     aCiao?: Int
     sdf?: Int
     bCom: Str
+
+
+Campaign: PostCampaign | MessageCamapaign
+
+Base:
+    x: Int
+    y: Inf
+    label: Str
+
+Node:
+    name: Str
+
+# & can work with inline properties
+# in the tree representation this gets
+# in jsonschema properties gets merged before output, leaving a plain PostCampaign: {type: object, ...}
+# in grapgql this will be represented as single type that implemetns Base, Node
+# in python types this will be simply
+
+PostCampaign: Base & Node &
+    posts: [
+        name: Str
+        url: Str
+    ]
+    x: Int
+
+MessageCampaign: Base & MessageOwn
+
+MessageOwn: 
+    name: Str
+
+
+
+
