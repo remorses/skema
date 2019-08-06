@@ -4,14 +4,12 @@ type PostCampaignPosts {
 }
 
 type MessageCampaign implements Base_ & MessageOwn_ {
-    x: Int
     y: Int
     label: String
     name: String
 }
 
 type PostCampaign implements Base_ & Node_ {
-    x: Int
     y: Int
     label: String
     posts: [PostCampaignPosts]
@@ -28,7 +26,6 @@ type Object {
 }
 
 interface Base_ {
-    x: Int
     y: Int
     label: String
 }

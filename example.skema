@@ -11,11 +11,12 @@ Object:
 Campaign: PostCampaign | MessageCampaign
 
 Base:
-    x: Int
     y: Int
     label: Str
 
+"""Descrizione Node"""
 Node:
+    """Descrizione name"""
     name: Str
 
 # & can work with inline properties
@@ -23,18 +24,25 @@ Node:
 # in jsonschema properties gets merged before output, leaving a plain PostCampaign: {type: object, ...}
 # in grapgql this will be represented as single type that implemetns Base, Node
 # in python types this will be simply
-
+"""Descrizione PostCampaign"""
 PostCampaign: Base & Node &
+    """Descrizione posts"""
     posts: [
         name: Str
         url: Str
     ]
+    """Descrizione della prop"""
     x: Int
 
+"""Descrizione della camp"""
 MessageCampaign: Base & MessageOwn
 
+"""
+Descrizione MessageOwn
+"""
 MessageOwn: 
     name: Str
+
 
 
 

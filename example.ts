@@ -4,12 +4,27 @@ export interface Object {
     sdf?:   number;
 }
 
+/**
+ * Descrizione PostCampaign
+ *
+ * Descrizione Node
+ *
+ * Descrizione della camp
+ *
+ * Descrizione MessageOwn
+ */
 export interface Campaign {
-    label:  string;
-    x:      number;
-    y:      number;
+    label: string;
+    y:     number;
+    /**
+     * Descrizione name
+     */
     name:   string;
     posts?: Posts[];
+    /**
+     * Descrizione della prop
+     */
+    x?: number;
 }
 
 export interface Posts {
@@ -19,29 +34,52 @@ export interface Posts {
 
 export interface Base {
     label: string;
-    x:     number;
     y:     number;
 }
 
+/**
+ * Descrizione Node
+ */
 export interface Node {
+    /**
+     * Descrizione name
+     */
     name: string;
 }
 
+/**
+ * Descrizione PostCampaign
+ *
+ * Descrizione Node
+ */
 export interface PostCampaign {
     label: string;
-    x:     number;
     y:     number;
+    /**
+     * Descrizione name
+     */
     name:  string;
     posts: Posts[];
+    /**
+     * Descrizione della prop
+     */
+    x: number;
 }
 
+/**
+ * Descrizione della camp
+ *
+ * Descrizione MessageOwn
+ */
 export interface MessageCampaign {
     label: string;
-    x:     number;
     y:     number;
     name:  string;
 }
 
+/**
+ * Descrizione MessageOwn
+ */
 export interface MessageOwn {
     name: string;
 }

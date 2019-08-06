@@ -42,6 +42,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
     # assert None
     if not node.parent and node.value != 'root':
         raise Exception('all nodes should have parents')
+    child_annotation = ''
 
     for (i, token) in enumerate(tokens):
         token_value = token['value']
@@ -51,12 +52,16 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
         log('offset', offset)
         
         if token['type'] == 'REQUIRED_KEY':
-            child = Node(token['value'], node)    
+            child = Node(token['value'], node)
+            child.annotation = child_annotation
+            child_annotation = ''
             node = node.insert(child)
             node = child
 
         elif token['type'] == 'OPTIONAL_KEY': # TODO
-            child = Node(token['value'], node, required=False)    
+            child = Node(token['value'], node, required=False)
+            child.annotation = child_annotation
+            child_annotation = ''
             node = node.insert(child)
             node = child
             
@@ -115,7 +120,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             return node
         
         elif token['type'] == 'ANNOTATION':
-            node.child_annotations += [token['value']]
+            child_annotation = token['value']
             # return node
 
         else:

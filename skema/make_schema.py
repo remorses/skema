@@ -1,6 +1,6 @@
 
 
-from .tree import Node
+from .tree import Node, get_annotation
 from .constants import *
 
 
@@ -17,7 +17,12 @@ def _make_schema(node, definitions):
             'description': get_annotation(node),
         }
     elif node.children[0].value == ELLIPSIS:
-        return { 'type': 'object', 'additionalProperties': True, 'title': get_title(node), 'description': get_annotation(node),}
+        return { 
+            'type': 'object', 
+            'additionalProperties': True, 
+            'title': get_title(node), 
+            'description': get_annotation(node),
+        }
 
     elif '..' in node.children[0].value:
         return make_range_schema(node)
@@ -59,7 +64,7 @@ def _make_schema(node, definitions):
         if (len(node.children) > 1): # inline and
             options = []
             options += [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
-            inline_props = Node('',).append([c for c in node.children if c.value != AND])
+            inline_props = Node('',).insert(*[c for c in node.children if c.value != AND])
             options += [_make_schema(inline_props, definitions)]
             return {
                 'type': 'object',
@@ -77,12 +82,16 @@ def _make_schema(node, definitions):
         return {
             'type': 'array',
             'title': get_title(node),
-            'items': _make_schema(Node(node.value,).append(node.children[0].children), definitions),
-            'description': get_annotation(node),
+            'items': _make_schema(Node(node.value, node.parent).append(node.children[0].children), definitions),
+            # 'description': get_annotation(node),
         }
 
     elif node.children[0].value == STR or node.children[0].value == STRING:
-        obj = { 'type': 'string', 'title': get_title(node), 'description': get_annotation(node),}
+        obj = { 
+            'type': 'string', 
+            'title': get_title(node), 
+            'description': get_annotation(node),
+        }
         format = get_format(node.value)
         if format:
             obj.update({
@@ -128,8 +137,6 @@ def _make_schema(node, definitions):
             'title': get_title(node),
             'description': get_annotation(node),
         }
-
-
     else: # object
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
         # if any(ellipses):
@@ -151,13 +158,6 @@ def _make_schema(node, definitions):
 def get_title(node):
     return node.value if node.value not in [LIST, OR, AND, REGEX,] else ''
 
-def get_annotation(node):
-    if node.parent:
-        annotations = node.parent.child_annotations
-        return annotations.pop(0) if len(annotations) else ''
-    else:
-        # print(f'{node.value} has no parent')
-        return ''
 
 # TODO
 def make_schema(root):

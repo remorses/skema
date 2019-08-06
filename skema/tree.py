@@ -8,6 +8,10 @@ import json
 
 tab = '    '
 
+def get_annotation(node):
+    return node.annotation
+
+
 class Node:
     def __init__(self, value, parent=None, required=True): 
         # TODO 
@@ -18,7 +22,7 @@ class Node:
         self.children = []
         self.parent = parent
         self.required = required
-        self.child_annotations = []
+        self.annotation = ''
         self.pattern = ''
         self.implements = []
         self.is_interface = False
@@ -37,8 +41,8 @@ class Node:
     
     def __str__(self, indent=''):
         res = (indent + str(self.value) or '""')
-        annotations = self.parent.child_annotations if self.parent else []
-        res += ' (' + annotations.pop(0) + ')' if len(annotations) else ''
+        annotation = get_annotation(self)
+        res += ' (' + annotation + ')' if annotation else ''
         res += ':' if len(self.children) else ''
         for c in self.children:
             res += '\n' + Node.__str__(c, indent + tab)
@@ -60,10 +64,11 @@ class Node:
             res += str(self.value)
             res += ':' if len(self.children) else ''
         else:
-            annotations = self.parent.child_annotations if self.parent else []
-            # res += indent + '"""' + annotations.pop(0) + '"""\n' if len(annotations) else ''
+            annotation = get_annotation(self)
+            res += (indent + f'"""{annotation}"""\n' ) if annotation else ''
             res += (indent + str(self.value) or '""')
             res += ':' if len(self.children) else ''
+            
         if is_and_object(self): # interface
             print(repr(self))
             for c in self.children[0].children:
