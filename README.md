@@ -19,7 +19,7 @@ And beign somewhat creative:
 this skema snippet
 ```yaml
 AddedTodo:
-    type: "added_todo" ! "ciao"
+    type: "added_todo" | "ciao"
     payload:
         todo:
             name: Str
