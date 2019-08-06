@@ -42,7 +42,7 @@
                     "description": ""
                 }
             ],
-            "description": ""
+            "description": "Descrizione Campaign"
         },
         "Base": {
             "title": "Base",
@@ -132,7 +132,7 @@
                             "type": "number",
                             "multipleOf": 1.0,
                             "title": "x",
-                            "description": "Descrizione della prop"
+                            "description": "Descrizione x"
                         }
                     }
                 }

@@ -17,7 +17,11 @@ class Posts:
 
 @dataclass
 class Campaign:
-    """Descrizione PostCampaign
+    """Descrizione Campaign
+    
+    
+    
+    Descrizione PostCampaign
     
     Descrizione Node
     
@@ -30,7 +34,7 @@ class Campaign:
     """Descrizione name"""
     name: str
     posts: Optional[List[Posts]]
-    """Descrizione della prop"""
+    """Descrizione x"""
     x: Optional[float]
 
 
@@ -58,7 +62,7 @@ class PostCampaign:
     """Descrizione name"""
     name: str
     posts: List[Posts]
-    """Descrizione della prop"""
+    """Descrizione x"""
     x: float
 
 

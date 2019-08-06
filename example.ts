@@ -5,6 +5,10 @@ export interface Object {
 }
 
 /**
+ * Descrizione Campaign
+ *
+ *
+ *
  * Descrizione PostCampaign
  *
  * Descrizione Node
@@ -22,7 +26,7 @@ export interface Campaign {
     name:   string;
     posts?: Posts[];
     /**
-     * Descrizione della prop
+     * Descrizione x
      */
     x?: number;
 }
@@ -61,7 +65,7 @@ export interface PostCampaign {
     name:  string;
     posts: Posts[];
     /**
-     * Descrizione della prop
+     * Descrizione x
      */
     x: number;
 }

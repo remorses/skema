@@ -1,7 +1,18 @@
-# skema: schema sdl that compiles to json-schema
+# skema: language that compiles to jsonschema, graphql, typescript interfaces, c++ structs, python classes and many more
+
+## What you can do with a skema file:
+- Validate json input
+- Generare code types in graphql, py, ts, cpp, ...
+- Generate fake data for testing
+- Generate react forms, via `react-skema-forms`
+- Infer schema from raw json files
+- convert jsonschema to be easier to read
+And beign somewhat creative:
+- use it as documentation
+- use it to plan your domain model!
 
 <!---[bump]--->
-## last version: 0.0.34
+### last version: 0.0.34
 ## example
 
 
@@ -21,7 +32,7 @@ RemovedTodo:
 
 Event: AddedTodo | RemovedTodo
 ```
-generates the less readable json schema
+generates json schema
 ```json
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -169,34 +180,7 @@ this is because i always forget to put them when doing `Object1 & Object2` so i 
 
 
 
-
-grpahlq todos:
-- object nested in lists needs to be dereferenced in extract_references
-```
-type Root {
-    Array: [
-        cosa: Int
-        object:
-            ciao: Str
-        another: [
-            cose: Str
-            altre: Int
-        ]
-        types: [Type]
-    ]
-    Type: Type
-}
-```
-- alias references `name: String` ... needs to be dereferenced as original type, now are ignored and left as types
-- scalar unions needs to be removed and substituted with stronger type
-- "const values" needs to be interpreted as enums, in to_graphql
-- remove ... nodes, keys that have only ... as child gets Any type
-```
-type RemovedTodo {
-    type: "removed_todo"
-    payload:
-        ...
-    todo_id: Int
-}
-```
-- 
+graphql todos:
+- remove useless parent nesting in names if possible
+- assert no other types exist before generating one
+- customization for Interface_end_name, 

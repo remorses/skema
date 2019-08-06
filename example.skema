@@ -7,7 +7,7 @@ Object:
     sdf?: Int
     bCom: Str
 
-
+"""Descrizione Campaign"""
 Campaign: PostCampaign | MessageCampaign
 
 Base:
@@ -24,6 +24,7 @@ Node:
 # in jsonschema properties gets merged before output, leaving a plain PostCampaign: {type: object, ...}
 # in grapgql this will be represented as single type that implemetns Base, Node
 # in python types this will be simply
+
 """Descrizione PostCampaign"""
 PostCampaign: Base & Node &
     """Descrizione posts"""
@@ -31,10 +32,10 @@ PostCampaign: Base & Node &
         name: Str
         url: Str
     ]
-    """Descrizione della prop"""
+    """Descrizione x"""
     x: Int
 
-"""Descrizione della camp"""
+"""Descrizione MessageCampaign"""
 MessageCampaign: Base & MessageOwn
 
 """
