@@ -17,7 +17,8 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     # replace_aliases,
                                     replace_types,
                                     get_alias_nodes,
-                                    INTERFACE_END_KEYWORD
+                                    INTERFACE_END_KEYWORD,
+                                    mark_enums,
                                     )
 
 
@@ -89,8 +90,11 @@ def remove_tuples(refs: List[Node]) -> List[Node]:
                 node.value = ''.join(node.value)
     return refs
 
+
+
 preprocess_refs = rcompose(
     remove_parent_names,
+    # mark_enums,
     remove_tuples,
     remove_ands,
     merge_scalar_unions,

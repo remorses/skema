@@ -85,7 +85,7 @@ def remove_nulls(node: Node):
     return node
 
 FORBIDDEN_TYPE_NAMES = ['root', OR, AND, LIST]
-
+ENUM_END_KEYWORD = 'Enum'
 
 
 # def is_object_key(node: Node):
@@ -274,3 +274,12 @@ map_types_to_graphql = {
     BOOL: 'Boolean',
     REGEX: 'String',
 }
+
+def mark_enums(refs):
+    enums = [r for r in refs if is_enum_key(r)]
+    for r in enums:
+        if isinstance(r.value, tuple):
+            r.value += (ENUM_END_KEYWORD,)
+        else:
+            r.value += ENUM_END_KEYWORD
+    return refs

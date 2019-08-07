@@ -6,7 +6,7 @@ Base:
 A: Base &
     x: "ciao"
 
-B:
+B: Base &
     x: "saluti"
 
 X: A | B

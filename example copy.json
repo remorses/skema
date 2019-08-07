@@ -51,22 +51,33 @@
             "description": ""
         },
         "B": {
-            "title": "B",
-            "description": "",
             "type": "object",
-            "required": [
-                "x"
-            ],
-            "properties": {
-                "x": {
-                    "enum": [
-                        "saluti"
-                    ],
-                    "type": "string",
-                    "title": "x",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Base",
+                    "title": "",
                     "description": ""
+                },
+                {
+                    "title": "",
+                    "description": "",
+                    "type": "object",
+                    "required": [
+                        "x"
+                    ],
+                    "properties": {
+                        "x": {
+                            "enum": [
+                                "saluti"
+                            ],
+                            "type": "string",
+                            "title": "x",
+                            "description": ""
+                        }
+                    }
                 }
-            }
+            ],
+            "description": ""
         },
         "X": {
             "anyOf": [
