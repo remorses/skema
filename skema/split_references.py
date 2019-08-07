@@ -171,13 +171,12 @@ def merge_ands(node, references):
                 return node, []
             ref, new_indexes = merge_ands(ref, references)
             ref_indexes_to_delete += new_indexes
-            result_children_values = [c.value for c in result.children]
-            children = [c for c in ref.children if c.value not in result_children_values]
+            children = [c for c in ref.children if c.value not in [c.value for c in result.children]]
             result.insert(*children)
             result.implements += [ref.value + INTERFACE_END_KEYWORD]
             ref_indexes_to_delete += [i for i, r in enumerate(references) if ref.value == r.value]
             if node.children[1:]:
-                result.append([n for n in node.children[1:] if n.value not in result_children_values])
+                result.append([n for n in node.children[1:] if n.value not in [c.value for c in result.children]])
                 # result.implements += [ref.value]
         return result, ref_indexes_to_delete
     else:
@@ -248,18 +247,24 @@ def is_enumeration(node):
     return node.parent and node.parent.parent and is_enum_key(node.parent.parent)
 
 
-def replace_types(node: Node,):
+def search_enum_ref(value, refs):
+    enums = [r for r in refs if is_enum_key(r)]
+    get_enums = lambda x: [c.value for c in x.children[0].children]
+    found = next((x.value for x in enums if value in get_enums(x)), None)
+    return found
+
+
+def replace_types(node: Node, refs):
     if not node:
         return
-    if '"' in node.value and node.parent.value != OR: # not is_enumeration(node):
-        # print(node.value)
-        node.value = 'String'
+    if '"' in node.value and node.parent.value != OR:
+        node.value = search_enum_ref(node.value, refs) or 'String'
     if node.value in map_types_to_graphql:
         node.value = map_types_to_graphql[node.value]
     if '..' in node.value:
         node.value = 'Float'
     for c in node.children:
-        replace_types(c)
+        replace_types(c, refs)
     return node
 
 

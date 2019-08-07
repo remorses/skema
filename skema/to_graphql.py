@@ -94,7 +94,7 @@ preprocess_refs = rcompose(
     remove_tuples,
     remove_ands,
     merge_scalar_unions,
-    partial(map, replace_types),
+    lambda refs: [replace_types(r, refs) for r in refs],
     partial(filter, lambda x: x.value.lower() != 'root'),
     list,
 )

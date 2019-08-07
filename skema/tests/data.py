@@ -428,6 +428,13 @@ B:
     y: Int
 '''
 
+find_enums = '''
+Obj:
+    enum: "ciao"
+
+Saluti: "ciao" | "ei"
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """

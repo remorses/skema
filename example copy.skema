@@ -1,0 +1,12 @@
+#!/usr/bin/env skema-gen python typescript graphql jsonschema
+
+Base:
+    x: "ciao" | "saluti"
+
+A: Base &
+    x: "ciao"
+
+B:
+    x: "saluti"
+
+X: A | B

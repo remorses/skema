@@ -1,0 +1,20 @@
+union X = A | B
+
+type B {
+    x: String
+}
+
+type A implements Base_ {
+    x: BaseX
+}
+
+enum BaseX {
+    ciao
+    saluti
+}
+
+scalar Json
+
+interface Base_ {
+    x: BaseX
+}
