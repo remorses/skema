@@ -187,7 +187,12 @@ def merge_ands(node, references):
 def merge_scalar_unions(references):
     to_delete = {}
     for node in references:
-        if (is_or_key(node) or is_and_key(node)) and any([is_scalar(c.value) for c in node.children[0].children]) and not is_enum_key(node):
+        is_scalar_union = (
+            (is_or_key(node) or is_and_key(node)) 
+            and any([is_scalar(c.value) and c.value != NULL for c in node.children[0].children])
+            and not is_enum_key(node)
+        )
+        if is_scalar_union:
             new_type = reduce(stronger_type, node.children[0].children,)
             obj = {node.value: new_type}
             # print('new_type', obj)
