@@ -3,13 +3,13 @@ from funcy import rcompose, partial, tap
 import operator
 from skema.tree import copy, Node
 from typing import List, Callable, Tuple
+from skema.support import is_leaf_key, is_scalar
 from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,
                                     search_cascaded_name,
                                     remove_ellipses,
                                     remove_nulls,
-                                    is_scalar,
                                     # dereference_objects_inside_lists,
                                     split_references,
                                     merge_ands,
@@ -105,7 +105,14 @@ preprocess_refs = rcompose(
 
 json_alias = Node('Json').append([Node('')])
 
-def to_graphql(string: str) -> str:
+scalar_already_present = [
+    'Json',
+    'DateTime',
+    'Time',
+    'Date',
+]
+
+def to_graphql(string: str, scalar_already_present=scalar_already_present) -> str:
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
     node = remove_nulls(node)
@@ -113,6 +120,7 @@ def to_graphql(string: str) -> str:
     print(node)
     refs = [*get_alias_nodes(node)] + [*split_references(node)] + [json_alias]
     refs = preprocess_refs(refs)
+    refs = [r for r in refs if not (is_leaf_key(r) and r.value in scalar_already_present)]
     types = [t.to_graphql() for t in refs]
     schema = '\n\n'.join(types)
     return schema
