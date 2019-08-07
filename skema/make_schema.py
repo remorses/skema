@@ -1,10 +1,10 @@
 
-
+from functools import reduce
 from .tree import Node, get_annotation
 from .constants import *
 
 
-def _make_schema(node, definitions):
+def _make_schema(node, definitions, root):
     to_skip = [ELLIPSIS]
 
     if not len(node.children):
@@ -56,23 +56,26 @@ def _make_schema(node, definitions):
             }
         else:
             return {
-                'anyOf': [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children],
+                'anyOf': [_make_schema(Node('').insert(c), definitions, root) for c in node.children[0].children],
                 'description': get_annotation(node),
             }
 
     elif node.children[0].value == AND:
-        if (len(node.children) > 1): # inline and
+        if (len(node.children) > 1): # inline and, interface
             options = []
-            options += [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
-            inline_props = Node('',).insert(*[c for c in node.children if c.value != AND])
-            options += [_make_schema(inline_props, definitions)]
+            options += [_make_schema(Node('').insert(c), definitions, root) for c in node.children[0].children]
+            interface_keys = reduce(lambda a, b: [*a, *get_properties(b, root)], options, [])
+            children = [c for c in node.children if c.value != AND and c.value not in interface_keys]
+            if children:
+                inline_props = Node('',).insert(*children)
+                options += [_make_schema(inline_props, definitions, root)]
             return {
                 'type': 'object',
                 'allOf': options,
                 'description': get_annotation(node),
             }
         else:
-            options = [_make_schema(Node('').insert(c), definitions) for c in node.children[0].children]
+            options = [_make_schema(Node('').insert(c), definitions, root) for c in node.children[0].children]
             return {
                 'allOf': options,
                 'description': get_annotation(node),
@@ -82,7 +85,7 @@ def _make_schema(node, definitions):
         return {
             'type': 'array',
             'title': get_title(node),
-            'items': _make_schema(Node(node.value, node.parent).append(node.children[0].children), definitions),
+            'items': _make_schema(Node(node.value, node.parent,).append(node.children[0].children), definitions, root),
             # 'description': get_annotation(node),
         }
 
@@ -147,7 +150,7 @@ def _make_schema(node, definitions):
             'type': 'object',
             'required': [child.value for child in node.children if child.required and not child.value in to_skip],
             'properties': {
-                child.value: _make_schema(child, definitions) for child in node.children if not child.value in to_skip
+                child.value: _make_schema(child, definitions, root) for child in node.children if not child.value in to_skip
             },
             # 'additionalProperties': _make_schema(_type, definitions) if _type else True 
         }
@@ -161,7 +164,7 @@ def get_title(node):
 
 # TODO
 def make_schema(root):
-    definitions = [ child.value for child in root.children ]
+    definitions = [child.value for child in root.children]
     # print(definitions)
     schema = {
         "$schema": "http://json-schema.org/draft-07/schema#",
@@ -169,7 +172,7 @@ def make_schema(root):
         'definitions': {},
     }
     for child in root.children:
-        schema['definitions'][child.value] = _make_schema(child, definitions)
+        schema['definitions'][child.value] = _make_schema(child, definitions, root)
 
     return schema
 
@@ -226,3 +229,15 @@ def make_range_schema(node):
             'exclusiveMaximum': boundaries[1],
         })
     return obj
+
+
+def get_properties(block: dict, root: Node):
+    if block.get('properties', {}):
+        return block['properties']
+    elif block.get('$ref', ''):
+        ref_name = block.get('$ref', '').split('/')[-1]
+        node = [n for n in root.children if n.value == ref_name][0]
+        # print(node.children)
+        return [c.value for c in node.children if c.value not in [OR, AND, LIST,]]
+    else:
+        raise Exception(f'cannot get properties from {block}')
