@@ -4,7 +4,7 @@ import random
 
 import pytest
 from graphql import build_schema
-from skema.to_graphql import to_graphql
+from skema.to_graphql import to_graphql, search_existing_subgroup
 from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,
@@ -43,8 +43,8 @@ def test_bfs(string):
     nodes = [n for n in nodes if not is_scalar(n.value) and not n.value in FORBIDDEN_TYPE_NAMES]
     names = []
     for i in range(1, len(nodes)):
-        computed = search_cascaded_name(node, nodes[i])
-        print(computed + ' -> ' + nodes[i].value)
+        computed = str(search_cascaded_name(node, nodes[i]))
+        print(computed + ' -> ' + str(nodes[i].value))
         names.append(computed)
         assert all([x not in computed for x in FORBIDDEN_TYPE_NAMES])
     print(nodes)
@@ -114,3 +114,11 @@ def test_to_gql(string):
 
     
 
+def test_search_subgroup():
+    groups = [
+        (1, 2),
+        (4, 5),
+    ]
+    x = ('', 0, 1, 2)
+    y = search_existing_subgroup(x, groups)
+    assert y == (1, 2)

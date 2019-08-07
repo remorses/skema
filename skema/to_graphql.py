@@ -1,5 +1,8 @@
 from skema import tokenize, make_tree
+from funcy import rcompose, partial, tap
+import operator
 from skema.tree import copy, Node
+from typing import List, Callable, Tuple
 from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,
@@ -34,20 +37,74 @@ def remove_ands(refs):
             refs.pop(i)
     return refs + interfaces
 
+def search_non_existing_subgroup(subgroup: Tuple[str, ...], groups: List[Tuple[str, ...]]) -> Tuple[str, ...]:
+    subgroup = ('', ) + subgroup
+    while len(subgroup) > 1:
+        if subgroup[1:] not in groups:
+            subgroup = subgroup[1:]
+        else:
+            # print('FOUND', subgroup)
+            break
+    return subgroup
 
-def to_graphql(string):
+def search_existing_subgroup(subgroup: Tuple[str, ...], groups: List[Tuple[str, ...]]) -> Tuple[str, ...]:
+    subgroup = ('', ) + subgroup
+    while len(subgroup) > 1:
+        if subgroup not in groups:
+            subgroup = subgroup[1:]
+        else:
+            # print('FOUND', subgroup)
+            break
+    # print('subgroup', subgroup)
+    return subgroup
+
+def remove_parent_names(refs: List[Node]) -> List[Node]:
+    refs = sorted(refs, key=lambda v: len(v.value))
+    ref_names = [n.value if isinstance(n.value, tuple) else (n.value,) for n in refs]
+    assert len(set(ref_names)) == len(ref_names)
+    for ref in refs:
+        ref.value = ref.value if isinstance(ref.value, tuple) else (ref.value,)
+        other_ref_names = [r.value for r in refs if r.value != ref.value]
+        subgroup = search_non_existing_subgroup(ref.value, other_ref_names)
+        ref.value = subgroup
+        # print('ref.value', ref.value)
+    # print([r.value for r in refs])
+    return [compute_new_names(ref, [r.value for r in refs]) for ref in refs]
+
+def compute_new_names(node: Node, ref_names: List[str]) -> Node:
+    leaves = get_leaves(node)
+    leaves_to_compute = [l for l in leaves if isinstance(l.value, tuple)]
+    # print('leaves_to_compute', leaves_to_compute)
+    for leaf in leaves_to_compute:
+        subgroup = search_existing_subgroup(leaf.value, ref_names)
+        leaf.value = subgroup
+    return node
+        
+def remove_tuples(refs: List[Node]) -> List[Node]:
+    for ref in refs:
+        nodes = breadth_first_traversal(ref)
+        for node in nodes:
+            if isinstance(node.value, tuple):
+                node.value = ''.join(node.value)
+    return refs
+
+preprocess_refs = rcompose(
+    remove_parent_names,
+    remove_tuples,
+    remove_ands,
+    merge_scalar_unions,
+    partial(map, replace_types),
+    partial(filter, lambda x: x.value.lower() != 'root'),
+    list,
+)
+
+def to_graphql(string: str) -> str:
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
     # node = replace_aliases(node)
     print(node)
-    refs = []
-    refs += list(get_alias_nodes(node))
-    refs += list(split_references(node))
-    print(refs)
-    refs = [r for r in refs if r.value.lower() != 'root'] # TODO presume root
-    refs = remove_ands(refs)
-    refs = merge_scalar_unions(refs)
-    refs = [replace_types(t) for t in refs]
+    refs = [*get_alias_nodes(node)] + [*split_references(node)]
+    refs = preprocess_refs(refs)
     types = [t.to_graphql() for t in refs]
     schema = '\n\n'.join(types)
     return schema

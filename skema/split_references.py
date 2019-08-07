@@ -1,6 +1,6 @@
 import operator
 from functools import reduce
-
+from typing import Tuple, Callable, Iterator, TypeVar
 from .constants import *
 from .support import (capitalize, is_and_key, is_enum_key, is_key, is_list_key,
                       is_object, is_or_key, is_scalar, is_leaf, is_leaf_key, is_and_object)
@@ -13,9 +13,6 @@ def replace_with_anchor(key):
     return anchor
 
 def make_reference(key):
-    if is_or_key(key) or is_and_key(key):
-        return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
-    else:
         return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
 
 def is_valid_as_reference(key: Node):
@@ -98,8 +95,8 @@ def get_leaves(node):
         leaves = [x for sublist in leaves for x in sublist]
         return leaves
 
-
-def breadth_first_traversal(root: Node, operation=lambda x: x):
+T = TypeVar('T')
+def breadth_first_traversal(root: Node, operation: Callable[[Node], T]=lambda x: x) -> Iterator[T]:
     queue = []
     queue.append(root)
     while len(queue):
@@ -110,13 +107,13 @@ def breadth_first_traversal(root: Node, operation=lambda x: x):
 
 
 
-def search_cascaded_name(root, target):
+def search_cascaded_name(root: Node, target: Node) -> Tuple[str, ...]:
     """
     always find node in a tree if it is taken from himself
     """
     # if is_scalar(target.value):
     #     return target.value
-    def operation(node: Node):
+    def operation(node: Node) -> Tuple[str, ...]:
         if target.value == node.value:
             if same_parents(node, target):
                 return compute_camel_cascaded_name(node)
@@ -139,7 +136,7 @@ def same_parents(a, b, count=0):
     else:
         return True
 
-def compute_camel_cascaded_name(child): # TODO search if there are already same names
+def compute_camel_cascaded_name(child: Node) -> Tuple[str, ...]: # TODO search if there are already same names
     if is_scalar(child.value):
         return child.value
     parent = child.parent
@@ -149,10 +146,10 @@ def compute_camel_cascaded_name(child): # TODO search if there are already same 
         parent = parent.parent
     parent_names = [x for x in parent_names if all([not s in x.lower() for s in FORBIDDEN_TYPE_NAMES])]
     parent_names = [x for x in parent_names if not is_scalar(x)]
-    parent_name = ''.join(reversed(parent_names))
+    parent_names = tuple(reversed(parent_names))
     # print('from ' + child.value + ' with parent ' + child.parent.value + ' computed ' + parent_name + capitalize(child.value))
     end_name = child.value if (child.value not in [LIST, AND, OR] and not is_scalar(child.value)) else ''
-    return parent_name + capitalize(end_name)
+    return parent_names + (capitalize(end_name), ) if end_name else parent_names
 
 
 INTERFACE_END_KEYWORD = '_'
@@ -212,7 +209,7 @@ def stronger_type(a, b):
 
 def replace_occurrences(ref, to_delete):
     for c in ref.children:
-        if c.value in to_delete.keys():
+        if is_leaf(c) and c.value in to_delete.keys():
             c.value = to_delete[c.value]
         replace_occurrences(c, to_delete)
 
@@ -245,7 +242,7 @@ def replace_types(node: Node,):
     if not node:
         return
     if '"' in node.value and node.parent.value != OR: # not is_enumeration(node):
-        print(node.value)
+        # print(node.value)
         node.value = 'String'
     if node.value in map_types_to_graphql:
         node.value = map_types_to_graphql[node.value]
