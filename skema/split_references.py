@@ -76,8 +76,13 @@ def remove_ellipses(node: Node):
             remove_ellipses(c)
     return node
 
-
-
+def remove_nulls(node: Node):
+    if not node.children:
+        return
+    for c in node.children:
+        node.children = [x for x in node.children if x.value != NULL]
+        remove_ellipses(c)
+    return node
 
 FORBIDDEN_TYPE_NAMES = ['root', OR, AND, LIST]
 
@@ -257,6 +262,5 @@ map_types_to_graphql = {
     STR: 'String',
     ANY: 'Json',
     BOOL: 'Boolean',
-    NULL: 'String', # TODO remove them
     REGEX: 'String',
 }

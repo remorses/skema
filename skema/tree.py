@@ -14,7 +14,6 @@ def get_annotation(node):
 
 class Node:
     def __init__(self, value, parent=None, required=True): 
-        # TODO 
         # optional when key is optional, so children[0] is optional
         # &, Node(&).children, every property of every child is grouped
         # |, one of children is valid
@@ -57,7 +56,7 @@ class Node:
             res += '\n' + Node.parent_relation(c, indent + tab)
         return res
 
-    def to_skema(self, indent='', res = ''): # TODO remove bucket arg
+    def to_skema(self, indent='', res = ''):
         if self.value in [AND, OR, LIST]:
             res += ''
         elif not self.children and self.value != ELLIPSIS:

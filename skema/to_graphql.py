@@ -8,6 +8,7 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     is_valid_as_reference,
                                     search_cascaded_name,
                                     remove_ellipses,
+                                    remove_nulls,
                                     is_scalar,
                                     # dereference_objects_inside_lists,
                                     split_references,
@@ -103,6 +104,7 @@ json_alias = Node('Json').append([Node('')])
 def to_graphql(string: str) -> str:
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
+    node = remove_nulls(node)
     # node = replace_aliases(node)
     print(node)
     refs = [*get_alias_nodes(node)] + [*split_references(node)] + [json_alias]
