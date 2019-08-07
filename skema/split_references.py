@@ -255,7 +255,7 @@ def replace_types(node: Node,):
 
 map_types_to_graphql = {
     STR: 'String',
-    ANY: 'String', # TODO make scalar Json
+    ANY: 'Json',
     BOOL: 'Boolean',
     NULL: 'String', # TODO remove them
     REGEX: 'String',

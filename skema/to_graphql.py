@@ -98,12 +98,14 @@ preprocess_refs = rcompose(
     list,
 )
 
+json_alias = Node('Json').append([Node('')])
+
 def to_graphql(string: str) -> str:
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
     # node = replace_aliases(node)
     print(node)
-    refs = [*get_alias_nodes(node)] + [*split_references(node)]
+    refs = [*get_alias_nodes(node)] + [*split_references(node)] + [json_alias]
     refs = preprocess_refs(refs)
     types = [t.to_graphql() for t in refs]
     schema = '\n\n'.join(types)
