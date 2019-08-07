@@ -5,3 +5,4 @@ play*
 js
 .mypy_cache
 .hypothesis
+example*
