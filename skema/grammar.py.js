@@ -57,12 +57,13 @@
             // ------------------------------------------------
             // Indent/Dedent.
     
-            [`\\n( *)`, `
-      
-            yytext = yytext[1:]
-            yytext = len(yytext)
-    
-            return 'SEPARATOR'
+            [`\\n((?:[ ]|#.*)*)`, `
+            if '#' in yytext:
+                pass
+            else:
+                yytext = yytext[1:]
+                yytext = len(yytext)
+                return 'SEPARATOR'
             `],
             [`#.*`, `pass`],
             [`\\s+`, `pass`],

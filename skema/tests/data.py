@@ -435,6 +435,24 @@ Obj:
 Saluti: "ciao" | "ei"
 '''
 
+problematic_comments = '''
+Obj:
+# sdf
+    # 1
+    enum: "ciao"
+
+    # ciao
+    # coma va
+# commenti sannati
+Saluti: "ciao" | "ei"
+
+oggett:
+    x: Int # sdfsdfdsf
+    # dsfsdfsd
+    ciao: Str # dsfsdf
+    # dsfdsf
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """

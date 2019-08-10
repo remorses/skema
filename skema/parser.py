@@ -125,11 +125,12 @@ def _lex_rule8(self):
 def _lex_rule9(self):
     global __, __loc, yytext, yyleng
     
-    
-    yytext = yytext[1:]
-    yytext = len(yytext)
-    
-    return 'SEPARATOR'
+    if '#' in yytext:
+        pass
+    else:
+        yytext = yytext[1:]
+        yytext = len(yytext)
+        return 'SEPARATOR'
     
 
 def _lex_rule10(self):
@@ -148,7 +149,7 @@ _lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
 ['^\]', _lex_rule6],
 ['^\.\.\.', _lex_rule7],
 ['^[a-zA-Z0-9_&\| !."]+', _lex_rule8],
-['^\n( *)', _lex_rule9],
+['^\n((?:[ ]|#.*)*)', _lex_rule9],
 ['^#.*', _lex_rule10],
 ['^\s+', _lex_rule11]]
 
