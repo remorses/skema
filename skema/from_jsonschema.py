@@ -1,4 +1,5 @@
 import json
+from funcy import distinct
 from dataclasses import dataclass, fields
 from .tree import Node
 from .constants import *
@@ -38,13 +39,14 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
     elif schema.anyOf or schema.oneOf or schema.allOf or schema.enum:
         child = Node(AND if schema.allOf else OR, node)
         items = schema.oneOf or schema.anyOf or schema.allOf or schema.enum
+        items = distinct(items, key=get_type_name)
         i = 0
         for subset in items:
             if isinstance(subset, str):
                 subset = SchemaBlock(type=subset,)
             else:
                 subset = SchemaBlock.make(subset,)
-            if subset.type in ['string', 'integer', 'number']:
+            if subset.type in ['string', 'integer', 'number', 'boolean', 'null']:
                 child = schema_to_tree(subset, child, references)
             else:
                 if all([node.value != x for x in (LIST, OR, AND)]):
@@ -88,7 +90,8 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
     
     elif isinstance(schema.type, list):
         child = Node(OR, node)
-        for subset in schema.type:
+        items = distinct(schema.type, key=get_type_name)
+        for subset in items:
             if 'type' in subset:
                 subset = SchemaBlock.make(subset)
                 child = schema_to_tree(subset, child, references)
@@ -98,17 +101,26 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
             else:
                 raise NotImplementedError(str(subset))
         node = node.insert(child,)
-
-        
     else:
         # raise NotImplementedError(str(schema))
-        # print('!!!NotImplementedError!!!', schema.previous_key)
+        # print('!!!NotImplementedError!!!', schema.previous_key)
         # print(str(schema))
         child = Node(ANY, node)
         node = node.insert(child)
-        
-    
     return node
+
+
+def get_type_name(schema):
+    if isinstance(schema, str):
+        return 'string'
+    if isinstance(schema, dict):
+        if 'type' in schema:
+            return schema['type']
+        if not schema:
+            return 'any'
+    return str(schema)
+
+
 
 def from_jsonschema_to_tree(schema, ref_name='Root', ):
     references = []
