@@ -3,6 +3,7 @@ from funcy import distinct
 from dataclasses import dataclass, fields
 from .tree import Node
 from .constants import *
+from .support import capitalize
 from typing import Union, List
 from .resolve_refs import resolve_refs
 
@@ -50,10 +51,10 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
                 child = schema_to_tree(subset, child, references)
             else:
                 if all([node.value != x for x in (LIST, OR, AND)]):
-                    reference_name = node.value.capitalize() + str(i)
+                    reference_name = capitalize(node.value) + str(i)
                 else:
-                    reference_name = node.parent.value.capitalize() + 'Elem' + str(i)
-                reference_root = Node(reference_name,)
+                    reference_name = capitalize(node.parent.value) + 'Elem' + str(i)
+                reference_root = Node(reference_name, child)
                 reference_root = schema_to_tree(subset, reference_root, references)
                 references.append(reference_root)
                 child = child.insert(Node(reference_name, child))
@@ -87,6 +88,9 @@ def schema_to_tree(schema: SchemaBlock, node, references=[]):
     elif schema.type == 'number':
         child = Node(FLOAT, node)
         node = node.insert(child)
+    elif schema.type == 'boolean':
+        child = Node(BOOL, node)
+        node = node.insert(child)
     
     elif isinstance(schema.type, list):
         child = Node(OR, node)
@@ -115,23 +119,28 @@ def get_type_name(schema):
         return 'string'
     if isinstance(schema, dict):
         if 'type' in schema:
+            if schema['type'] == 'object':
+                return str(schema)
             return schema['type']
-        if not schema:
-            return 'any'
-    return str(schema)
+    if any([x in schema for x in ('anyOf', 'allOf', 'enum', 'oneOf',)]):
+        return str(schema)
+    return 'any'
 
 
 
-def from_jsonschema_to_tree(schema, ref_name='Root', ):
+def from_jsonschema_to_tree(schema, ref_name=None, ):
     references = []
     schema = {**schema}
-    resolve_refs(schema)
-    print(json.dumps(schema, indent=4))
+    resolve_refs(schema, add_titles=True)
+    # print(json.dumps(schema, indent=4))
+    root_name = schema.get('title') or ref_name or 'Root'
+    root_name = root_name.replace('_', ' ')
+    root_name = ''.join([capitalize(x) for x in root_name.split(' ')])
     schema = SchemaBlock.make(schema)
-    t = schema_to_tree(schema, node=Node(ref_name), references=references)
+    t = schema_to_tree(schema, node=Node(root_name), references=references)
     return t, references
 
-def from_jsonschema(schema, ref_name='Root'):
+def from_jsonschema(schema, ref_name=None):
     t, references = from_jsonschema_to_tree(schema, ref_name)
     res = ''
     res += t.to_skema()

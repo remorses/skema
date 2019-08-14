@@ -3,7 +3,7 @@ import json
 
 
 
-def _resolve(schema, definitions):
+def _resolve(schema, definitions, add_titles=False):
     if not isinstance(schema, dict):
         return
     for k, v in schema.items():
@@ -12,8 +12,10 @@ def _resolve(schema, definitions):
             # print('_')
             ref = v['$ref'].split('/')[-1]
             schema[k] = definitions[ref]
+            if add_titles:
+                schema[k].update({'title': ref})
         elif isinstance(v, dict):
-            _resolve(schema[k], definitions)
+            _resolve(schema[k], definitions, add_titles)
         elif isinstance(v, list):
             for i, item in enumerate(v):
                 if isinstance(item, dict) and '$ref' in list(item.keys()):
@@ -21,7 +23,7 @@ def _resolve(schema, definitions):
                     ref = item['$ref'].split('/')[-1]
                     schema[k][i] = definitions[ref]
                 elif isinstance(item, dict):
-                    _resolve(schema[k][i], definitions)
+                    _resolve(schema[k][i], definitions, add_titles)
                 else:
                     value = json.dumps(v, indent=4)[:400] + "\n"
                     print(f'should not be here, {k}={value}')
@@ -29,17 +31,17 @@ def _resolve(schema, definitions):
             value = json.dumps(v, indent=4)[:400] + "\n"
             print(f'should not be here, {k}={value}')
 
-        
 
-            
-def resolve_refs(schema):
+def resolve_refs(schema, add_titles=False):
     if not 'definitions' in schema:
         return
     definitions = schema['definitions']
-    _resolve(schema, definitions)
+    _resolve(schema, definitions, add_titles)
     if '$ref' in schema:
         ref = schema['$ref'].split('/')[-1]
         schema.update(schema['definitions'][ref])
+        if add_titles:
+            schema.update({'title': ref})
         del schema['$ref']
     del schema['definitions']
     return
