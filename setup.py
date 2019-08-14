@@ -36,13 +36,16 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    packages=['skema', 'skema.fake_data', 'skema.generate'],
+    packages=['skema', 'skema.fake_data', 'skema.generate', 'skema.infer'],
     scripts=[
         'bin/skema-generate-python',
         'bin/skema-generate-typescript',
         'bin/skema-generate-jsonschema',
         'bin/skema-generate-graphql',
         'bin/skema-gen',
+
+        'bin/skema.infer',
+        'bin/skema.generate',
     ],
 
 )

@@ -9,6 +9,7 @@ class languages(enum.Enum):
     python = 'python'
     graphql = 'graphql'
 
+print(sys.argv)
 if len(sys.argv) <= 2:
     print('skema-gen [lang1] [lang2] [...] source_path')
     sys.exit()

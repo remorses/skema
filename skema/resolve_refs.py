@@ -20,8 +20,14 @@ def _resolve(schema, definitions):
                     # print('_')
                     ref = item['$ref'].split('/')[-1]
                     schema[k][i] = definitions[ref]
-                elif isinstance(v, dict):
-                    _resolve(schema[k], definitions)
+                elif isinstance(item, dict):
+                    _resolve(schema[k][i], definitions)
+                else:
+                    value = json.dumps(v, indent=4)[:400] + "\n"
+                    print(f'should not be here, {k}={value}')
+        else:
+            value = json.dumps(v, indent=4)[:400] + "\n"
+            print(f'should not be here, {k}={value}')
 
         
 
@@ -30,12 +36,12 @@ def resolve_refs(schema):
     if not 'definitions' in schema:
         return
     definitions = schema['definitions']
-    # for definition in definitions: 
-    _resolve(schema, definitions)   
-    ref = schema['$ref'].split('/')[-1]
-    schema.update({**schema, **schema['definitions'][ref]})
+    _resolve(schema, definitions)
+    if '$ref' in schema:
+        ref = schema['$ref'].split('/')[-1]
+        schema.update(schema['definitions'][ref])
+        del schema['$ref']
     del schema['definitions']
-    del schema['$ref']
     return
 
 
