@@ -1,3 +1,35 @@
+export interface Root {
+    x: GenericEdge;
+}
+
+export interface GenericEdge {
+    cose: X;
+}
+
+export interface X {
+    x: string;
+}
+
+export interface A {
+    x: string;
+}
+
+export interface B {
+    x: string;
+}
+
+export interface C {
+    x: string;
+}
+
+export interface D {
+    x: string;
+}
+
+export interface E {
+    x: string;
+}
+
 export interface Object {
     aCiao?: number;
     bCom:   string;
@@ -13,7 +45,7 @@ export interface Object {
  *
  * Descrizione Node
  *
- * Descrizione della camp
+ * Descrizione MessageCampaign
  *
  * Descrizione MessageOwn
  */
@@ -71,7 +103,7 @@ export interface PostCampaign {
 }
 
 /**
- * Descrizione della camp
+ * Descrizione MessageCampaign
  *
  * Descrizione MessageOwn
  */

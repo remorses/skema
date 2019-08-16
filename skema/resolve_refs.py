@@ -26,10 +26,10 @@ def _resolve(schema, definitions, add_titles=False):
                     _resolve(schema[k][i], definitions, add_titles)
                 else:
                     value = json.dumps(v, indent=4)[:400] + "\n"
-                    print(f'should not be here, {k}={value}')
+                    # print(f'should not be here, {k}={value}')
         else:
             value = json.dumps(v, indent=4)[:400] + "\n"
-            print(f'should not be here, {k}={value}')
+            # print(f'should not be here, {k}={value}')
 
 
 def resolve_refs(schema, add_titles=False):
@@ -123,4 +123,4 @@ if __name__ == '__main__':
     }
 
     resolve_refs(schema,)
-    print(json.dumps(schema, indent=4))
+    # print(json.dumps(schema, indent=4))

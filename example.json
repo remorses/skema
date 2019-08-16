@@ -1,7 +1,38 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$ref": "#/definitions/Object",
+    "$ref": "#/definitions/GenericEdge",
     "definitions": {
+        "GenericEdge": {
+            "title": "GenericEdge",
+            "description": "",
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "enum": [
+                        "followers",
+                        "following",
+                        "likers",
+                        "feed",
+                        "stories",
+                        "hashtags",
+                        "geotag",
+                        "author"
+                    ],
+                    "type": "string",
+                    "title": "type",
+                    "description": ""
+                },
+                "amount": {
+                    "type": "number",
+                    "multipleOf": 1.0,
+                    "title": "amount",
+                    "description": ""
+                }
+            }
+        },
         "Object": {
             "title": "Object",
             "description": "",
@@ -152,7 +183,7 @@
                     "description": ""
                 }
             ],
-            "description": "Descrizione della camp"
+            "description": "Descrizione MessageCampaign"
         },
         "MessageOwn": {
             "title": "MessageOwn",

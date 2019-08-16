@@ -1,8 +1,3 @@
-type PostCampaignPosts {
-    name: String
-    url: String
-}
-
 type MessageCampaign implements Base_ & MessageOwn_ {
     y: Int
     label: String
@@ -12,7 +7,7 @@ type MessageCampaign implements Base_ & MessageOwn_ {
 type PostCampaign implements Base_ & Node_ {
     y: Int
     label: String
-    posts: [PostCampaignPosts]
+    posts: [Posts]
     x: Int
     name: String
 }
@@ -24,6 +19,29 @@ type Object {
     sdf: Int
     bCom: String
 }
+
+type GenericEdge {
+    type: Type
+    amount: Int
+}
+
+type Posts {
+    name: String
+    url: String
+}
+
+enum Type {
+    followers
+    following
+    likers
+    feed
+    stories
+    hashtags
+    geotag
+    author
+}
+
+scalar Json
 
 interface Base_ {
     y: Int

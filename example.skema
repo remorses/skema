@@ -1,6 +1,26 @@
 #!/usr/bin/env skema-gen python typescript graphql jsonschema
 
+Root:
+    x: GenericEdge
 
+GenericEdge:
+    type: "followers" | "following" | "likers" | "feed" | "stories" | "hashtags" | "geotag" | "author"
+    amount?: Int
+
+GenericEdge:
+    cose: X
+
+X: A | B | C | D | E
+A:
+    x: Str
+B:
+    x: Str
+C:
+    x: Str
+D:
+    x: Str
+E:
+    x: Str
 
 Object:
     aCiao?: Int

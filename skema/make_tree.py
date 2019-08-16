@@ -45,11 +45,8 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
     child_annotation = ''
 
     for (i, token) in enumerate(tokens):
-        token_value = token['value']
-        log()
-        log(i, token['type'], token['value'])
-        log('node', node.value)
-        log('offset', offset)
+        if not node:
+            raise Exception(f'something went wrong at token `{token["value"]}`')
         
         if token['type'] == 'REQUIRED_KEY':
             child = Node(token['value'], node)

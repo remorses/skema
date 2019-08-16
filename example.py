@@ -3,10 +3,50 @@ from typing import Optional, List
 
 
 @dataclass
+class X:
+    x: str
+
+
+@dataclass
+class GenericEdge:
+    cose: X
+
+
+@dataclass
+class Root:
+    x: GenericEdge
+
+
+@dataclass
+class A:
+    x: str
+
+
+@dataclass
+class B:
+    x: str
+
+
+@dataclass
+class C:
+    x: str
+
+
+@dataclass
+class D:
+    x: str
+
+
+@dataclass
+class E:
+    x: str
+
+
+@dataclass
 class Object:
-    a_ciao: Optional[float]
     b_com: str
-    sdf: Optional[float]
+    a_ciao: Optional[float] = None
+    sdf: Optional[float] = None
 
 
 @dataclass
@@ -25,7 +65,7 @@ class Campaign:
     
     Descrizione Node
     
-    Descrizione della camp
+    Descrizione MessageCampaign
     
     Descrizione MessageOwn
     """
@@ -33,9 +73,9 @@ class Campaign:
     y: float
     """Descrizione name"""
     name: str
-    posts: Optional[List[Posts]]
+    posts: Optional[List[Posts]] = None
     """Descrizione x"""
-    x: Optional[float]
+    x: Optional[float] = None
 
 
 @dataclass
@@ -68,7 +108,7 @@ class PostCampaign:
 
 @dataclass
 class MessageCampaign:
-    """Descrizione della camp
+    """Descrizione MessageCampaign
     
     Descrizione MessageOwn
     """
