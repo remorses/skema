@@ -230,7 +230,7 @@ def get_alias_nodes(node: Node):
 
 # def get_aliases(node: Node):
 #     res = {}
-#     for c in node.children: # TODO this presume tree has Root
+#     for c in node.children:
 #         if is_leaf_key(c):
 #             res.update({c.value: c.children[0].value})
 #     return res
@@ -249,7 +249,7 @@ def is_enumeration(node):
 
 def search_enum_ref(value, refs):
     enums = [r for r in refs if is_enum_key(r)]
-    get_enums = lambda x: [c.value for c in x.children[0].children]
+    get_enums = lambda x: [c.value for c in x.children[0].children] # TODO not works with enums that are child of enums, (more than 2 options) 
     found = next((x.value for x in enums if value in get_enums(x)), None)
     return found
 

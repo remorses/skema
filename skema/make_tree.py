@@ -55,7 +55,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             node = node.insert(child)
             node = child
 
-        elif token['type'] == 'OPTIONAL_KEY': # TODO
+        elif token['type'] == 'OPTIONAL_KEY':
             child = Node(token['value'], node, required=False)
             child.annotation = child_annotation
             child_annotation = ''
@@ -90,7 +90,7 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
                 node = _make_tree(tokens, node, int(token['value']))
                 # node = node.parent
                 # offset -= INDENT_SIZE
-            else: # TODO, other root keys end here
+            else:
                 log(f"{token['value']} < {offset}")
                 off = (offset - int(token['value'])) // INDENT_SIZE
                 log('off', off)

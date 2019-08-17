@@ -1,3 +1,4 @@
+from collections import Counter
 from skema import tokenize, make_tree
 from funcy import rcompose, partial, tap
 import operator
@@ -63,7 +64,9 @@ def search_existing_subgroup(subgroup: Tuple[str, ...], groups: List[Tuple[str, 
 def remove_parent_names(refs: List[Node]) -> List[Node]:
     refs = sorted(refs, key=lambda v: len(v.value))
     ref_names = [n.value if isinstance(n.value, tuple) else (n.value,) for n in refs]
-    assert len(set(ref_names)) == len(ref_names)
+    if not len(set(ref_names)) == len(ref_names):
+        duplicates = [x for x, count in Counter(ref_names).items() if count > 1]
+        print(f'WARNING, found a duplicate: {duplicates}')
     for ref in refs:
         ref.value = ref.value if isinstance(ref.value, tuple) else (ref.value,)
         other_ref_names = [r.value for r in refs if r.value != ref.value]

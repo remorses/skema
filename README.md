@@ -156,6 +156,19 @@ User:
 ```
 
 ## todo:
+- can't handle trailing spaces
+- spaces between properties cause properties spaced to be taken at an outer level
+- graphql doesn't support union inside unions, so i must unnest them
+- in graphql enums with options > 2 are taken as strings
+- if i use Root as a name, this is removed from graphql
+- add the use of ! to indicate that
+    - lists cannot be empty
+    - the same for Strings, to indicate they cannot be ""
+- when using from_jsonschema the i have to dereference anyOf, oneOf, allOf and enums. These can share same name (parent.value + property) and can conflict in final skema
+- when dereferencing skema to produce graphql i add parent  names to differentiate the final type names, i am not sure this can really work in long term
+- when creating python code, special keywords are added with parent names, this means i can't use `ObjectName(**data)`
+- python code translates const enums as an enum object of a single value, it should search for other equal common enum ref (can be solved using common interface)
+- 
 - | and & don't work with [], because VAl is split with ARRAY and smaller VAL during tokenization, is hould add a rule during tokenization to exclude | and & in array tokens and add array logic inside VAL handling
 - the same for regex
 - better handling of comments and white space

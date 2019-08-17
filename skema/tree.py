@@ -114,7 +114,7 @@ class Node:
                 # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                 for c in self.children:
                     obj += '\n' + Node.to_skema(c, indent + tab, )
-                res += '[' + obj + '\n' + indent + ']' # TODO
+                res += '[' + obj + '\n' + indent + ']'
             else: # object
                 for c in self.children:
                     res = Node.to_skema(c, indent + tab, res=res + '\n')
@@ -153,16 +153,6 @@ class Node:
             return ''
             raise NotImplementedError(err)
         return res
-
-def make_references(node: Node): # TODO assert name does nort already exist
-    reference_name = node.value.capitalize()
-    reference = Node(reference_name, node.parent)
-    reference_body = Node(node.value, node.parent)
-    for c in node.children:
-        reference_body = reference_body.insert(c)
-    reference = reference.insert(reference_body)
-    return reference
-    
 
 def tree_from_dict(obj: dict, key='root'):
     node = Node(key)
