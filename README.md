@@ -156,7 +156,7 @@ User:
 ```
 
 ## todo features
-- add ingore_graphl in a description to hide certain fields to a certain lang
+- add [no graphql] in a description to hide certain fields to a certain lang
 - add ! after lists and strings
 
 ## todo:

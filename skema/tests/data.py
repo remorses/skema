@@ -487,6 +487,21 @@ Obj:
     matrix4: [[Str]]
 '''
 
+hidden_fields = '''
+X:
+    """[hide graphql]"""
+    ciao: Str
+    enc: Protected
+    obj:
+        jk: Protected
+        xx: Protected
+
+"""
+[hide graphql]
+"""
+Protected: Str
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """
