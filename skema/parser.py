@@ -114,6 +114,7 @@ def _lex_rule8(self):
     
     # print('token_start_column', self.token_start_column)
     yytext = yytext.replace('!', '')
+    yytext = yytext.strip()
     if self.token_start_column == 0:
         last = len(yytext.strip()) - 1
         yytext = yytext[1:last]
@@ -145,9 +146,9 @@ _lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
 ['^/.*/[ ]*', _lex_rule2],
 ['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule3],
 ['^[a-zA-Z0-9_]+:[ ]*', _lex_rule4],
-['^\[', _lex_rule5],
-['^\]', _lex_rule6],
-['^\.\.\.', _lex_rule7],
+['^\[[ ]*', _lex_rule5],
+['^\][ ]*', _lex_rule6],
+['^\.\.\.[ ]*', _lex_rule7],
 ['^[a-zA-Z0-9_&\| !."]+', _lex_rule8],
 ['^\n((?:[ ]|#.*)*)', _lex_rule9],
 ['^#.*', _lex_rule10],

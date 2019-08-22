@@ -31,14 +31,15 @@
 
 
 
-            ["\\[", "return '['"],
-            ["\\]", "return ']'"],
+            ["\\[[ ]*", "return '['"],
+            ["\\][ ]*", "return ']'"],
 
-            ["\\.\\.\\.", "return '...'"],
+            ["\\.\\.\\.[ ]*", "return '...'"],
     
             [`[a-zA-Z0-9_&\\| !."]+`, `
             # print('token_start_column', self.token_start_column)
-            yytext = yytext.replace('!', '')
+            # yytext = yytext.replace('!', '')
+            yytext = yytext.strip()
             if self.token_start_column == 0:
                 last = len(yytext.strip()) - 1
                 yytext = yytext[1:last]

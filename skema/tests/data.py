@@ -452,6 +452,15 @@ oggett:
     ciao: Str # dsfsdf
     # dsfdsf
 '''
+trailing_spaces = '''
+Obj:
+    enum: "ciao" 
+Saluti: "ciao" | "ei"
+
+oggett:
+    x: Int 
+    ciao: Str  
+'''
 
 # failing = """
 # ciao: NonEsisto

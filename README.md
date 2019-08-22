@@ -155,6 +155,10 @@ User:
     phone: Int
 ```
 
+## todo features
+- add ingore_graphl in a description to hide certain fields to a certain lang
+- add ! after lists and strings
+
 ## todo:
 - can't handle trailing spaces
 - spaces between properties cause properties spaced to be taken at an outer level

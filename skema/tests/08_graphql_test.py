@@ -10,17 +10,19 @@ import bson
 schemas = {
     '1': """
     Root:
-        _id: ObjectId!
-        status: CampaignStatus!
-        byBusinessUserId: ObjectId!
-        name: String!
+        _id: ObjectId
+        status: CampaignStatus
+        byBusinessUserId: ObjectId
+        name: String
         type: CampaignType
-        costInCents: Int!
-        prsCount: Int!
-        daysDuration: Int!
+        costInCents: Int
+        prsCount: [
+            x: Int
+        ]
+        daysDuration: Int
         startedAt: DateTime
         deadline: DateTime
-        campaignPrFilter: PrFilter!
+        campaignPrFilter: PrFilter
         prPartecipantsCount: Int
 
     ObjectId: Any
@@ -28,7 +30,7 @@ schemas = {
         bo: Int
         x: String
     CampaignType: "sdfg"
-    CampaignStatus: Int!
+    CampaignStatus: Int
     DateTime: Any
     """
 }
