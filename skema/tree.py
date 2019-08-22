@@ -13,7 +13,7 @@ def get_annotation(node):
 
 
 class Node:
-    def __init__(self, value, parent=None, required=True): 
+    def __init__(self, value, parent=None, required=True, not_empty=False): 
         # optional when key is optional, so children[0] is optional
         # &, Node(&).children, every property of every child is grouped
         # |, one of children is valid
@@ -25,6 +25,7 @@ class Node:
         self.pattern = ''
         self.implements = []
         self.is_interface = False
+        self.not_empty = not_empty
     
     def insert(self, *nodes):
         [self.children.append(n) for n in nodes]
@@ -40,6 +41,7 @@ class Node:
     
     def __str__(self, indent=''):
         res = (indent + str(self.value) or '""')
+        res += '!' if self.not_empty else ''
         annotation = get_annotation(self)
         res += ' (' + annotation + ')' if annotation else ''
         res += ':' if len(self.children) else ''
@@ -61,6 +63,7 @@ class Node:
             res += ''
         elif not self.children and self.value != ELLIPSIS:
             res += str(self.value)
+            res += '!' if self.not_empty else ''
             res += ':' if len(self.children) else ''
         else:
             annotation = get_annotation(self)
@@ -88,11 +91,13 @@ class Node:
             if self.value == LIST: # key: [Node]
                 if is_end_key(self) and self.children[0].value != ELLIPSIS:
                     res += '[' + Node.to_skema(c, '', ) + ']'
+                    res += '!' if self.not_empty else ''
                 else:
                     # print(c.value)
                     # indent += tab if self.parent and self.parent.parent else '' # references that are list gets too indented
                     obj = '\n' + Node.to_skema(c, indent + tab,)
                     res += '[' + obj + '\n' + indent + ']'
+                    res += '!' if self.not_empty else ''
             else: # key: Node
                 if (len(c.children) == 0 and c.value != ELLIPSIS) or c.value in [AND, OR, LIST]: # dont go \n
                     res += ' ' + Node.to_skema(c, indent, )
@@ -101,9 +106,9 @@ class Node:
         else:
             if self.value in [OR, AND]: # Node | Node
                 children = self.children[:]
-                for i, c in enumerate(self.children):
-                    if len(c.children):
-                        pass
+                # for i, c in enumerate(self.children):
+                #     if len(c.children):
+                #         pass
                         # raise Exception('can\'t handle object inside or, and')
                 symbol = ' | ' if self.value == OR else ' & '
                 for c in children[:-1]:
@@ -115,6 +120,7 @@ class Node:
                 for c in self.children:
                     obj += '\n' + Node.to_skema(c, indent + tab, )
                 res += '[' + obj + '\n' + indent + ']'
+                res += '!' if self.not_empty else ''
             else: # object
                 for c in self.children:
                     res = Node.to_skema(c, indent + tab, res=res + '\n')

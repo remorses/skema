@@ -24,7 +24,7 @@ def make_value_tree(ast, node):
     # children = next(extract_nodes(val))
     # log('ast', ast)
     op, rest = ast
-    child = Node(op, node)
+    child = Node(op.replace('!', ''), node, not_empty=op.endswith('!'))
     node.insert(child)
     for op, rest in rest:
         t = op, rest
@@ -113,6 +113,14 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             log(node.value)
             # while node.value != LIST:
             #     node = node.parent
+            node = node.parent
+            return node
+        
+        elif token['type'] == ']!':
+            log(node.value)
+            # while node.value != LIST:
+            #     node = node.parent
+            node.children[0].not_empty = True # TODO better test ]!
             node = node.parent
             return node
         

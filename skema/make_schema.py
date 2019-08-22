@@ -86,10 +86,12 @@ def _make_schema(node, definitions, root):
             'type': 'array',
             'title': get_title(node),
             'items': _make_schema(Node(node.value, node.parent,).append(node.children[0].children), definitions, root),
+            'minItems': 1 if node.children[0].not_empty else 0,
             # 'description': get_annotation(node),
         }
 
     elif node.children[0].value == STR or node.children[0].value == STRING:
+        
         obj = { 
             'type': 'string', 
             'title': get_title(node), 
@@ -99,6 +101,10 @@ def _make_schema(node, definitions, root):
         if format:
             obj.update({
                 'format': format,
+            })
+        if node.children[0].not_empty:
+            obj.update({
+                'minLength': 1,
             })
         return obj
 

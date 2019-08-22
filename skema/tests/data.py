@@ -461,6 +461,31 @@ oggett:
     x: Int 
     ciao: Str  
 '''
+not_empty_1 = '''
+Obj:
+    not_empty_str: Str!
+    array: [
+        x: "ciao"
+        y: Str!
+    ]!
+
+oggett:
+    x: Int 
+    ciao: Str  
+'''
+not_empty_2 = '''
+Obj:
+    not_empty_str: Str!
+    array: [Str]!
+    enums: ["ciao" | "xx"]!
+'''
+not_empty_3 = '''
+Obj:
+    matrix1: [[Str]!]!
+    matrix2: [[Str]!]
+    matrix3: [[Str]]!
+    matrix4: [[Str]]
+'''
 
 # failing = """
 # ciao: NonEsisto

@@ -13,7 +13,7 @@ schemas = {
         _id: ObjectId
         status: CampaignStatus
         byBusinessUserId: ObjectId
-        name: String
+        name: String!
         type: CampaignType
         costInCents: Int
         prsCount: [

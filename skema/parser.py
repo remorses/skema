@@ -103,17 +103,21 @@ def _lex_rule5(self):
 
 def _lex_rule6(self):
     global __, __loc, yytext, yyleng
-    return ']'
+    return ']!'
 
 def _lex_rule7(self):
     global __, __loc, yytext, yyleng
-    return '...'
+    return ']'
 
 def _lex_rule8(self):
     global __, __loc, yytext, yyleng
+    return '...'
+
+def _lex_rule9(self):
+    global __, __loc, yytext, yyleng
     
     # print('token_start_column', self.token_start_column)
-    yytext = yytext.replace('!', '')
+    # yytext = yytext.replace('!', '')
     yytext = yytext.strip()
     if self.token_start_column == 0:
         last = len(yytext.strip()) - 1
@@ -123,7 +127,7 @@ def _lex_rule8(self):
         return 'VAL'
     
 
-def _lex_rule9(self):
+def _lex_rule10(self):
     global __, __loc, yytext, yyleng
     
     if '#' in yytext:
@@ -134,11 +138,11 @@ def _lex_rule9(self):
         return 'SEPARATOR'
     
 
-def _lex_rule10(self):
+def _lex_rule11(self):
     global __, __loc, yytext, yyleng
     pass
 
-def _lex_rule11(self):
+def _lex_rule12(self):
     global __, __loc, yytext, yyleng
     pass
 
@@ -147,14 +151,15 @@ _lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
 ['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule3],
 ['^[a-zA-Z0-9_]+:[ ]*', _lex_rule4],
 ['^\[[ ]*', _lex_rule5],
-['^\][ ]*', _lex_rule6],
-['^\.\.\.[ ]*', _lex_rule7],
-['^[a-zA-Z0-9_&\| !."]+', _lex_rule8],
-['^\n((?:[ ]|#.*)*)', _lex_rule9],
-['^#.*', _lex_rule10],
-['^\s+', _lex_rule11]]
+['^\]![ ]*', _lex_rule6],
+['^\][ ]*', _lex_rule7],
+['^\.\.\.[ ]*', _lex_rule8],
+['^[a-zA-Z0-9_&\| !."]+', _lex_rule9],
+['^\n((?:[ ]|#.*)*)', _lex_rule10],
+['^#.*', _lex_rule11],
+['^\s+', _lex_rule12]]
 
-_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6,7,8,9,10]}
+_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6,7,8,9,10,11]}
 
 EOF_TOKEN = {
   'type': EOF,
