@@ -506,6 +506,7 @@ input_fields = '''
 X:
     ciao: Str
     enc: Input
+    """[graphql input]"""
     obj:
         jk: Input
         xx: Input

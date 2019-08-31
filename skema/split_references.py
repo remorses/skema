@@ -13,7 +13,7 @@ def replace_with_anchor(key):
     return anchor
 
 def make_reference(key):
-        return Node(compute_camel_cascaded_name(key), key.parent).append(key.children)
+    return Node(compute_camel_cascaded_name(key), key.parent, is_input=key.is_input).append(key.children)
 
 def is_valid_as_reference(key: Node):
     def is_valid_list_key(key):
@@ -162,7 +162,7 @@ INTERFACE_END_KEYWORD = '_'
 def merge_ands(node, references):
     ref_indexes_to_delete = []
     if is_and_key(node) or is_and_object(node):
-        result = Node(node.value, node.parent)
+        result = Node(node.value, node.parent, is_input=node.is_input)
         items = node.children[0].children
         for child in items:
             ref = next((ref for ref in references if ref.value == child.value), None)

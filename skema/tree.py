@@ -13,7 +13,7 @@ def get_annotation(node):
 
 
 class Node:
-    def __init__(self, value, parent=None, required=True, not_empty=False): 
+    def __init__(self, value, parent=None, required=True, not_empty=False, is_input=False): 
         # optional when key is optional, so children[0] is optional
         # &, Node(&).children, every property of every child is grouped
         # |, one of children is valid
@@ -25,7 +25,7 @@ class Node:
         self.pattern = ''
         self.implements = []
         self.is_interface = False
-        self.is_input = False
+        self.is_input = is_input
         self.not_empty = not_empty
     
     def insert(self, *nodes):
