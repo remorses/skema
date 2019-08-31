@@ -517,6 +517,12 @@ X:
 Input:
     x: Int
     y: Int
+
+"""
+[graphql interface]
+"""
+Face:
+    x: Float
 '''
 
 # failing = """

@@ -13,7 +13,10 @@ def replace_with_anchor(key):
     return anchor
 
 def make_reference(key):
-    return Node(compute_camel_cascaded_name(key), key.parent, is_input=key.is_input).append(key.children)
+    # return Node(compute_camel_cascaded_name(key), key.parent, is_input=key.is_input,).append(key.children)
+    node = copy(key)
+    node.value = compute_camel_cascaded_name(key)
+    return node
 
 def is_valid_as_reference(key: Node):
     def is_valid_list_key(key):
