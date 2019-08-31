@@ -25,6 +25,7 @@ class Node:
         self.pattern = ''
         self.implements = []
         self.is_interface = False
+        self.is_input = False
         self.not_empty = not_empty
     
     def insert(self, *nodes):
@@ -146,7 +147,12 @@ class Node:
                 res += Node.to_skema(c, indent + tab, )
             # res += '\n'
         elif is_object(self):
-            res += 'type ' if not self.is_interface else 'interface '
+            if self.is_interface:
+                res += 'interface '
+            elif self.is_input:
+                res += 'input '
+            else:
+                res += 'type '
             res += str(self.value)
             res += (' implements ' + ' & '.join(self.implements)) if self.implements else ''
             res += ' {'
@@ -204,6 +210,9 @@ def is_end_type(node):
 
 def copy(node: Node):
     res = Node(node.value, node.parent)
+    res.is_input = node.is_input
+    res.is_interface = node.is_interface
+    res.required = node.required
     if len(node.children):
         res.insert(*[copy(c) for c in node.children])
     return res

@@ -21,7 +21,7 @@ from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     INTERFACE_END_KEYWORD,
                                     mark_enums,
                                     )
-from skema.preprocess import remove_hidden_fields
+from skema.preprocess import remove_hidden_fields, apply_type_kind
 
 
 def remove_ands(refs): 
@@ -120,6 +120,7 @@ def to_graphql(string: str, scalar_already_present=scalar_already_present) -> st
     node = remove_ellipses(node)
     node = remove_nulls(node)
     node = remove_hidden_fields(node, 'graphql')
+    node = apply_type_kind(node, 'graphql')
     # node = replace_aliases(node)
     print(node)
     refs = [*get_alias_nodes(node)] + [*split_references(node)] + [json_alias]

@@ -7,10 +7,23 @@ def get_alias_nodes(node: Node):
             yield c
 
 def remove_hidden_fields(node, language):
-    indicator = f'[hide {language}]'
+    indicator = f'[{language} hide]'
     aliases = get_alias_nodes(node)
     to_remove = [x.value for x in aliases if indicator in x.annotation]
     return recursize_remove_hidden_fields(node, indicator, to_remove)
+
+
+def apply_type_kind(node: Node, language='graphql'):
+    indicator = f'[{language} input]'
+    if indicator in node.annotation:
+        # print(repr(node))
+        node.is_input = True
+    if not node.children:
+        return
+    for c in node.children:
+        apply_type_kind(c, language)
+    return node
+
 
 def recursize_remove_hidden_fields(node: Node, indicator, aliases_to_remove):
     if not node.children:

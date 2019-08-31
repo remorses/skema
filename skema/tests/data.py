@@ -489,7 +489,7 @@ Obj:
 
 hidden_fields = '''
 X:
-    """[hide graphql]"""
+    """[graphql hide]"""
     ciao: Str
     enc: Protected
     obj:
@@ -497,9 +497,25 @@ X:
         xx: Protected
 
 """
-[hide graphql]
+[graphql hide]
 """
 Protected: Str
+'''
+input_fields = '''
+"""[graphql input]"""
+X:
+    ciao: Str
+    enc: Input
+    obj:
+        jk: Input
+        xx: Input
+
+"""
+[graphql input]
+"""
+Input:
+    x: Int
+    y: Int
 '''
 
 # failing = """
