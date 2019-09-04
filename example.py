@@ -44,8 +44,8 @@ class E:
 
 @dataclass
 class Object:
-    b_com: str
-    a_ciao: Optional[float] = None
+    bCom: str
+    aCiao: Optional[float] = None
     sdf: Optional[float] = None
 
 

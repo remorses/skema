@@ -15,18 +15,19 @@ def gen_int(prop):
 def gen_string(prop):
     min_value = prop.get("minLength", 5)
     max_value = prop.get("maxLength", 30)
-    pattern = prop.get('pattern', r'[ A-Za-z\d]+')
-    return regex(pattern, )\
-            .filter(lambda x: min_value <= len(x) and len(x) <= max_value)\
-            .map(lambda x: x.rstrip('\x00'))
-    # return hs.text(
-    #     hs.characters(
-    #         max_codepoint=100, 
-    #         blacklist_categories=('Cc', 'Cs')),
-    #         min_size=min_value, 
-    #         max_size=max_value
-    #     ).map(lambda s: s.strip()
-    # ).filter(lambda s: len(s) > 0)
+    # pattern = prop.get('pattern', r'[ A-Za-z\d]+')
+    # return regex(pattern, )\
+    #         .filter(lambda x: min_value <= len(x) and len(x) <= max_value)\
+    #         .map(lambda x: x.rstrip('\x00'))
+    return hs.text(
+        hs.characters(
+            min_codepoint=40,
+            max_codepoint=78, 
+            blacklist_categories=('Cc', 'Cs')),
+            min_size=min_value, 
+            max_size=max_value
+        ).map(lambda s: s.strip()
+    ).filter(lambda s: len(s) > min_value)
 
 
 

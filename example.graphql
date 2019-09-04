@@ -20,6 +20,32 @@ type Object {
     bCom: String
 }
 
+type E {
+    x: String
+}
+
+type D {
+    x: String
+}
+
+type C {
+    x: String
+}
+
+type B {
+    x: String
+}
+
+type A {
+    x: String
+}
+
+union X = A | B | C | D | E
+
+type GenericEdge {
+    cose: X
+}
+
 type GenericEdge {
     type: Type
     amount: Int

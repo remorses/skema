@@ -1,34 +1,138 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
-    "$ref": "#/definitions/GenericEdge",
+    "$ref": "#/definitions/Root",
     "definitions": {
+        "Root": {
+            "title": "Root",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x"
+            ],
+            "properties": {
+                "x": {
+                    "$ref": "#/definitions/GenericEdge",
+                    "title": "x",
+                    "description": ""
+                }
+            }
+        },
         "GenericEdge": {
             "title": "GenericEdge",
             "description": "",
             "type": "object",
             "required": [
-                "type"
+                "cose"
             ],
             "properties": {
-                "type": {
-                    "enum": [
-                        "followers",
-                        "following",
-                        "likers",
-                        "feed",
-                        "stories",
-                        "hashtags",
-                        "geotag",
-                        "author"
-                    ],
-                    "type": "string",
-                    "title": "type",
+                "cose": {
+                    "$ref": "#/definitions/X",
+                    "title": "cose",
+                    "description": ""
+                }
+            }
+        },
+        "X": {
+            "anyOf": [
+                {
+                    "$ref": "#/definitions/A",
+                    "title": "",
                     "description": ""
                 },
-                "amount": {
-                    "type": "number",
-                    "multipleOf": 1.0,
-                    "title": "amount",
+                {
+                    "$ref": "#/definitions/B",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "$ref": "#/definitions/C",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "$ref": "#/definitions/D",
+                    "title": "",
+                    "description": ""
+                },
+                {
+                    "$ref": "#/definitions/E",
+                    "title": "",
+                    "description": ""
+                }
+            ],
+            "description": ""
+        },
+        "A": {
+            "title": "A",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x"
+            ],
+            "properties": {
+                "x": {
+                    "type": "string",
+                    "title": "x",
+                    "description": ""
+                }
+            }
+        },
+        "B": {
+            "title": "B",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x"
+            ],
+            "properties": {
+                "x": {
+                    "type": "string",
+                    "title": "x",
+                    "description": ""
+                }
+            }
+        },
+        "C": {
+            "title": "C",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x"
+            ],
+            "properties": {
+                "x": {
+                    "type": "string",
+                    "title": "x",
+                    "description": ""
+                }
+            }
+        },
+        "D": {
+            "title": "D",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x"
+            ],
+            "properties": {
+                "x": {
+                    "type": "string",
+                    "title": "x",
+                    "description": ""
+                }
+            }
+        },
+        "E": {
+            "title": "E",
+            "description": "",
+            "type": "object",
+            "required": [
+                "x"
+            ],
+            "properties": {
+                "x": {
+                    "type": "string",
+                    "title": "x",
                     "description": ""
                 }
             }
@@ -157,7 +261,8 @@
                                         "description": ""
                                     }
                                 }
-                            }
+                            },
+                            "minItems": 0
                         },
                         "x": {
                             "type": "number",

@@ -26,6 +26,6 @@ for lang in sys.argv[1:-1]:
     elif lang == languages.typescript.value:
         generate_types(path, '.ts', '--lang typescript --just-types')
     elif lang == languages.python.value:
-        generate_types(path, '.py', '--lang python --python-version 3.7 --just-types ') #--no-nice-property-names')
+        generate_types(path, '.py', '--lang python --python-version 3.7  --no-nice-property-names')
     else:
         print(f'lang {lang} not supported')
