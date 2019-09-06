@@ -159,6 +159,7 @@ User:
 - preserve reordering
 
 ## todo:
+- scalar unions should be removed from graphql
 - specify if a type gets translated as input, interface in graphql, [graphql input]
 - spaces between properties cause properties spaced to be taken at an outer level
 - graphql doesn't support union inside unions, so i must unnest them

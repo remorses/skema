@@ -1,4 +1,4 @@
-
+import typing as t
 from functools import reduce
 from .constants import *
 from .constants import constants
@@ -13,17 +13,17 @@ def get_annotation(node):
 
 
 class Node:
-    def __init__(self, value, parent=None, required=True, not_empty=False, is_input=False): 
+    def __init__(self, value: t.Any, parent=None, required=True, not_empty=False, is_input=False): 
         # optional when key is optional, so children[0] is optional
         # &, Node(&).children, every property of every child is grouped
         # |, one of children is valid
         self.value = value.strip() if isinstance(value, str) else value
-        self.children = []
+        self.children: t.List[Node] = []
         self.parent = parent
         self.required = required
         self.annotation = ''
         self.pattern = ''
-        self.implements = []
+        self.implements: list = []
         self.is_interface = False
         self.is_input = is_input
         self.not_empty = not_empty

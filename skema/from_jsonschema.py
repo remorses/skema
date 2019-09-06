@@ -129,7 +129,7 @@ def get_type_name(schema):
 
 
 def from_jsonschema_to_tree(schema, ref_name=None, ):
-    references = []
+    references: list = []
     schema = {**schema}
     resolve_refs(schema, add_titles=True)
     # print(json.dumps(schema, indent=4))

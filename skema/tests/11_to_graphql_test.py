@@ -1,7 +1,7 @@
 from graphql import build_schema
 import json
 import random
-
+import typing as t
 import pytest
 from graphql import build_schema
 from skema.to_graphql import to_graphql, search_existing_subgroup
@@ -77,7 +77,7 @@ def test_split_references(string):
     node = make_tree(tokenize(string))
     remove_ellipses(node)
     print(node)
-    refs = []
+    refs: t.List[str] = []
     # refs += list(dereference_objects_inside_lists(node))
     refs += list(split_references(node))
     for r in refs:

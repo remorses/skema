@@ -18,7 +18,7 @@ setup(
     url='https://github.com/remorses/schema',
     keywords=['schema', 'jsonschema', 'alternative', 'readable'],
     install_requires=[x for x in open('./requirements.txt').read().strip().split('\n') if x.strip()],
-    package_data={'': ['*.yaml', '*.json', '*.yml']},
+    package_data={'': ['*.yaml', '*.json', '*.yml', 'VERSION']},
     include_package_data=True,
     classifiers=[
         # How mature is this project? Common values are
@@ -38,12 +38,8 @@ setup(
     ],
     packages=['skema', 'skema.fake_data', 'skema.generate', 'skema.infer'],
     scripts=[
-        'bin/skema-generate-python',
-        'bin/skema-generate-typescript',
-        'bin/skema-generate-jsonschema',
-        'bin/skema-generate-graphql',
         'bin/skema-gen',
-
+        'bin/skema',
         'bin/skema.infer',
         'bin/skema.generate',
     ],

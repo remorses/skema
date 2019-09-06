@@ -95,7 +95,7 @@ def gen_bool(prop):
 def gen_one_of(prop, customs):
     possible_values = []
     for value in prop["oneOf"]:
-        possible_values.append(get_generator(value), customs)
+        possible_values.append(get_generator(value, customs))
 
     return hs.one_of(possible_values)
 
