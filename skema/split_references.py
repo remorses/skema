@@ -191,7 +191,7 @@ def merge_scalar_unions(references):
     for node in references:
         is_scalar_union = (
             (is_or_key(node) or is_and_key(node)) 
-            and any([is_scalar(c.value) and c.value != NULL for c in node.children[0].children])
+            and any([is_scalar(c.value) for c in node.children[0].children])
             and not is_enum_key(node)
         )
         if is_scalar_union:
@@ -206,6 +206,8 @@ def merge_scalar_unions(references):
 
 
 def stronger_type(a, b):
+    if NULL in [a, b]:
+        return a if b == NULL else b
     if STR in [a, b] or STRING in [a, b] or REGEX in [a, b]:
         return STR
     if ANY in [a, b]:
