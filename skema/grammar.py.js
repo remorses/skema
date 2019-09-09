@@ -16,6 +16,11 @@
             yytext = yytext[1:last]
             return 'REGEX'
             `],
+            [`\\.\\.\\.:[ ]*`, `
+            last = len(yytext.strip()) - 1
+            yytext = yytext[0:last]
+            return 'ADDITIONAL_KEYS'
+            `],
 
             [`[a-zA-Z0-9_]+\\?:[ ]*`, `
             last = len(yytext.strip()) - 2

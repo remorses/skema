@@ -54,6 +54,13 @@ def _make_tree(tokens, node: Node=Node('root'), offset=0):
             child_annotation = ''
             node = node.insert(child)
             node = child
+        
+        elif token['type'] == 'ADDITIONAL_KEYS':
+            child = Node(ADDITIONAL_KEYS, node)
+            child.annotation = child_annotation
+            child_annotation = ''
+            node = node.insert(child)
+            node = child
 
         elif token['type'] == 'OPTIONAL_KEY':
             child = Node(token['value'], node, required=False)

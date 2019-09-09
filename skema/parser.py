@@ -84,12 +84,20 @@ def _lex_rule2(self):
 def _lex_rule3(self):
     global __, __loc, yytext, yyleng
     
+    last = len(yytext.strip()) - 1
+    yytext = yytext[0:last]
+    return 'ADDITIONAL_KEYS'
+    
+
+def _lex_rule4(self):
+    global __, __loc, yytext, yyleng
+    
     last = len(yytext.strip()) - 2
     yytext = yytext[0:last]
     return 'OPTIONAL_KEY'
     
 
-def _lex_rule4(self):
+def _lex_rule5(self):
     global __, __loc, yytext, yyleng
     
     last = len(yytext.strip()) - 1
@@ -97,23 +105,23 @@ def _lex_rule4(self):
     return 'REQUIRED_KEY'
     
 
-def _lex_rule5(self):
+def _lex_rule6(self):
     global __, __loc, yytext, yyleng
     return '['
 
-def _lex_rule6(self):
+def _lex_rule7(self):
     global __, __loc, yytext, yyleng
     return ']!'
 
-def _lex_rule7(self):
+def _lex_rule8(self):
     global __, __loc, yytext, yyleng
     return ']'
 
-def _lex_rule8(self):
+def _lex_rule9(self):
     global __, __loc, yytext, yyleng
     return '...'
 
-def _lex_rule9(self):
+def _lex_rule10(self):
     global __, __loc, yytext, yyleng
     
     # print('token_start_column', self.token_start_column)
@@ -127,7 +135,7 @@ def _lex_rule9(self):
         return 'VAL'
     
 
-def _lex_rule10(self):
+def _lex_rule11(self):
     global __, __loc, yytext, yyleng
     
     if '#' in yytext:
@@ -138,28 +146,29 @@ def _lex_rule10(self):
         return 'SEPARATOR'
     
 
-def _lex_rule11(self):
+def _lex_rule12(self):
     global __, __loc, yytext, yyleng
     pass
 
-def _lex_rule12(self):
+def _lex_rule13(self):
     global __, __loc, yytext, yyleng
     pass
 
 _lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
 ['^/.*/[ ]*', _lex_rule2],
-['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule3],
-['^[a-zA-Z0-9_]+:[ ]*', _lex_rule4],
-['^\[[ ]*', _lex_rule5],
-['^\]![ ]*', _lex_rule6],
-['^\][ ]*', _lex_rule7],
-['^\.\.\.[ ]*', _lex_rule8],
-['^[a-zA-Z0-9_&\| !."]+', _lex_rule9],
-['^\n((?:[ ]|#.*)*)', _lex_rule10],
-['^#.*', _lex_rule11],
-['^\s+', _lex_rule12]]
+['^\.\.\.:[ ]*', _lex_rule3],
+['^[a-zA-Z0-9_]+\?:[ ]*', _lex_rule4],
+['^[a-zA-Z0-9_]+:[ ]*', _lex_rule5],
+['^\[[ ]*', _lex_rule6],
+['^\]![ ]*', _lex_rule7],
+['^\][ ]*', _lex_rule8],
+['^\.\.\.[ ]*', _lex_rule9],
+['^[a-zA-Z0-9_&\| !."]+', _lex_rule10],
+['^\n((?:[ ]|#.*)*)', _lex_rule11],
+['^#.*', _lex_rule12],
+['^\s+', _lex_rule13]]
 
-_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6,7,8,9,10,11]}
+_lex_rules_by_conditions = {"INITIAL":[0,1,2,3,4,5,6,7,8,9,10,11,12]}
 
 EOF_TOKEN = {
   'type': EOF,

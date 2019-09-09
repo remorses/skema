@@ -1,11 +1,13 @@
 
 from functools import reduce
 from .tree import Node, get_annotation
+from funcy import omit
 from .constants import *
 
 
+TO_SKIP = [ELLIPSIS, ADDITIONAL_KEYS]
+
 def _make_schema(node, definitions, root):
-    to_skip = [ELLIPSIS]
 
     if not len(node.children):
         raise Exception(f'missing definition {repr(node.value)} {"after " + repr(node.parent.value) if node.parent else None}')
@@ -148,20 +150,17 @@ def _make_schema(node, definitions, root):
         }
     else: # object
         ellipses = [ x for x in node.children if x.value == ELLIPSIS ]
-        # if any(ellipses):
-        #     _type = ellipses[0].children[0] if len(ellipses[0].children) else None # TODO don't know what is this
+        additional_props = next((_make_schema(child, definitions, root) for child in node.children if child.value == ADDITIONAL_KEYS), None)
         obj = {
             'title': get_title(node),
             'description': get_annotation(node),
             'type': 'object',
-            'required': [child.value for child in node.children if child.required and not child.value in to_skip],
+            'required': [child.value for child in node.children if child.required and not child.value in TO_SKIP],
             'properties': {
-                child.value: _make_schema(child, definitions, root) for child in node.children if not child.value in to_skip
+                child.value: _make_schema(child, definitions, root) for child in node.children if not child.value in TO_SKIP
             },
-            # 'additionalProperties': _make_schema(_type, definitions) if _type else True 
+            'additionalProperties': omit(additional_props, ['title']) if additional_props != None else bool(ellipses)
         }
-        if len(ellipses):
-            obj.update({'additionalProperties': True,})
         return obj
 
 def get_title(node):

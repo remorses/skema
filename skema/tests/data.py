@@ -525,6 +525,20 @@ Face:
     x: Float
 '''
 
+ADDITIONAL_KEYS = '''
+Roo:
+    key: Int
+    ...:
+        ciao: Str
+        x: Int
+        ...:
+            hello: Ciao
+    ...
+Ciao:
+    ...:
+        string: Str
+'''
+
 # failing = """
 # ciao: NonEsisto
 # """
