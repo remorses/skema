@@ -135,7 +135,8 @@ generates json schema
     - `Str | Int` means one of string and int
     - `Object1 & Object2` means "all the properties of object 1 and 2"
     - `Object1 | Object2` means "properties of object 1 and 2"
-- types can be annotated writing annotations inside " or """ quotes
+- types can be annotated writing annotations """ quotes above the definition
+- additional propertiescan be specified adding ... at the end of an object and can be better shaped treating it like a normal key, ...: Str means additional properties must be Str
 ```yaml
 "The event type"
 Event:
