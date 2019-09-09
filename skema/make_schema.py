@@ -161,8 +161,8 @@ def _make_schema(node, definitions, root):
             },
             'additionalProperties': omit(additional_props, ['title']) if additional_props != None else bool(ellipses)
         }
-        if not ellipses or additional_props:
-            obj = omit(obj, ['additionalProperties'])
+        # if not ellipses or additional_props:
+        #     obj = omit(obj, ['additionalProperties'])
         return obj
 
 def get_title(node):

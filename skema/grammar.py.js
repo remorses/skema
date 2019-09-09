@@ -22,13 +22,13 @@
             return 'ADDITIONAL_KEYS'
             `],
 
-            [`[a-zA-Z0-9_]+\\?:[ ]*`, `
+            [`[$a-zA-Z0-9_]+\\?:[ ]*`, `
             last = len(yytext.strip()) - 2
             yytext = yytext[0:last]
             return 'OPTIONAL_KEY'
             `],
 
-            [`[a-zA-Z0-9_]+:[ ]*`, `
+            [`[$a-zA-Z0-9_]+:[ ]*`, `
             last = len(yytext.strip()) - 1
             yytext = yytext[0:last]
             return 'REQUIRED_KEY'
@@ -42,7 +42,7 @@
 
             ["\\.\\.\\.[ ]*", "return '...'"],
     
-            [`[a-zA-Z0-9_&\\| !."]+`, `
+            [`[$a-zA-Z0-9_&\\| !."]+`, `
             # print('token_start_column', self.token_start_column)
             # yytext = yytext.replace('!', '')
             yytext = yytext.strip()
