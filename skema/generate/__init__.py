@@ -55,11 +55,11 @@ def generate_graphql(skema_path, result_file=None):
     with open(result_file, 'w') as f:
         f.write(schema)
 
-def generate_jsonschema(skema_path, result_file=None, ref=None):
+def generate_jsonschema(skema_path, result_file=None, ref=None, resolve=False):
         result_path = result_file or get_result_file(skema_path, '.json')
         with open(skema_path) as f:
                 data = f.read()
-        schema = skema.to_jsonschema(data, ref=ref, resolve=False)
+        schema = skema.to_jsonschema(data, ref=ref, resolve=resolve)
         with open(result_path, 'w') as f:
                 f.write(json.dumps(schema, indent=4))
     
