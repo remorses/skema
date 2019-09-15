@@ -47,10 +47,10 @@ def generate_types(skema_path, extension, args, result_file=None, ref=None):
         except subprocess.CalledProcessError as e:
             print(e.stderr)
 
-def generate_graphql(skema_path, result_file=None):
+def generate_graphql(skema_path, result_file=None, hide=[]):
     with open(skema_path) as f:
         data = f.read()
-    schema = to_graphql(data)
+    schema = to_graphql(data, scalar_already_present=hide)
     result_file = result_file or get_result_file(skema_path, '.graphql')
     with open(result_file, 'w') as f:
         f.write(schema)

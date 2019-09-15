@@ -109,6 +109,7 @@ preprocess_refs = rcompose(
 json_alias = Node('Json').append([Node('')])
 
 scalar_already_present = [ # empty to make tests pass
+    'ID',
     # 'Json', 
     # 'DateTime',
     # 'Time',
