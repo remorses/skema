@@ -106,7 +106,6 @@ preprocess_refs = rcompose(
     list,
 )
 
-json_alias = Node('Json').append([Node('')])
 
 scalar_already_present = [ # empty to make tests pass
     'ID',
@@ -116,17 +115,22 @@ scalar_already_present = [ # empty to make tests pass
     # 'Date',
 ]
 
-def to_graphql(string: str, scalar_already_present=scalar_already_present) -> str:
+def to_graphql(string: str, hide=scalar_already_present, only=None) -> str:
     node = make_tree(tokenize(string))
     node = remove_ellipses(node)
     node = remove_nulls(node)
     node = remove_hidden_fields(node, 'graphql')
     node = apply_type_kind(node, 'graphql')
     # node = replace_aliases(node)
+    node.children += [Node('Json', node).append([Node('')])]
+    if only and isinstance(only, list):
+        node.children = [c for c in node.children if c.value in only]
+    if hide and isinstance(hide, list):
+        node.children = [c for c in node.children if not c.value in hide]
     print(node)
-    refs = [*get_alias_nodes(node)] + [*split_references(node)] + [json_alias]
+    refs = [*get_alias_nodes(node)] + [*split_references(node)]
     refs = preprocess_refs(refs)
-    refs = [r for r in refs if not (is_leaf_key(r) and r.value in scalar_already_present)]
+    # refs = [r for r in refs if not (is_leaf_key(r) and r.value in scalar_already_present)]
     types = [t.to_graphql() for t in refs]
     schema = '\n\n'.join(types)
     return schema

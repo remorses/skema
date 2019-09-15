@@ -7,7 +7,7 @@ import fire
 from skema.infer import from_jsonschema
 from skema.generate import generate_graphql, generate_types, generate_jsonschema, temporary_write, get_result_file
 
-def generate(path, graphql: Union[str, bool]=False, typescript=False, python=False, jsonschema=False, ref=None, resolve=False, hide=[]):
+def generate(path, graphql: Union[str, bool]=False, typescript=False, python=False, jsonschema=False, ref=None, resolve=False, hide=[], only=None):
     temp: temporary_write = None
     if 'http' in path:
         r = requests.get(path, stream=True)
@@ -18,9 +18,9 @@ def generate(path, graphql: Union[str, bool]=False, typescript=False, python=Fal
     if not isinstance(hide, list):
         raise Exception('hide argument must be list, like --hide [Json, ObjectId]')
     if graphql and isinstance(graphql, bool):
-        generate_graphql(path, hide=hide)
+        generate_graphql(path, hide=hide, only=only)
     elif isinstance(graphql, str):
-        generate_graphql(path, result_file=graphql, hide=hide)
+        generate_graphql(path, result_file=graphql, hide=hide, only=only)
     
     if jsonschema and isinstance(jsonschema, bool):
         generate_jsonschema(path, ref=ref, resolve=resolve)

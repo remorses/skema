@@ -30,10 +30,10 @@ def get_result_file(skema_path, extension):
     print(result_file)
     return result_file
 
-def generate_types(skema_path, extension, args, result_file=None, ref=None):
+def generate_types(skema_path, extension, args, result_file=None, ref=None, ):
     with open(skema_path) as f:
         data = f.read()
-        json_schema = skema.to_jsonschema(data,)
+        json_schema = skema.to_jsonschema(data, )
     root_name = json_schema.get('$ref').split('/')[-1]
     json_schema = json.dumps(json_schema, indent=4, default=str)
     print(json_schema)
@@ -47,10 +47,10 @@ def generate_types(skema_path, extension, args, result_file=None, ref=None):
         except subprocess.CalledProcessError as e:
             print(e.stderr)
 
-def generate_graphql(skema_path, result_file=None, hide=[]):
+def generate_graphql(skema_path, result_file=None, hide=[], only=None):
     with open(skema_path) as f:
         data = f.read()
-    schema = to_graphql(data, scalar_already_present=hide)
+    schema = to_graphql(data, hide=hide, only=only)
     result_file = result_file or get_result_file(skema_path, '.graphql')
     with open(result_file, 'w') as f:
         f.write(schema)

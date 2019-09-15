@@ -99,18 +99,25 @@ def test_to_gql(string):
     schema = to_graphql(string)
     print(schema)
     build_schema(schema)
-    # node = make_tree(tokenize(string))
-    # node = remove_ellipses(node)
-    # node = replace_aliases(node)
-    # print(node)
-    # # refs += list(dereference_objects_inside_lists(node))
-    # # print('after deref list' + str(refs))
-    # refs = list(split_references(node))
-    # refs = [merge_ands(r, refs) for r in refs]
-    # refs = merge_scalar_unions(refs)
-    # refs = [replace_types(t) for t in refs]
-    # types = [t.to_graphql() for t in refs]
-    # schema = '\n\n'.join(types)
+
+
+def test_to_gql_only():
+    string = '''
+    X:
+        ciao: Str
+    
+    Y:
+        Hello: Int
+    '''
+    schema = to_graphql(string, only=['Y'])
+    print(schema)
+    assert 'Y' in schema
+    build_schema(schema)
+    schema = to_graphql(string, hide=['Y', 'Json'])
+    assert 'X' in schema
+    print(schema)
+    build_schema(schema)
+
 
     
 
