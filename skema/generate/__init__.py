@@ -30,10 +30,10 @@ def get_result_file(skema_path, extension):
     print(result_file)
     return result_file
 
-def generate_types(skema_path, extension, args, result_file=None, ref=None, ):
+def generate_types(skema_path, extension, args, result_file=None, ref=None, hide=[], only=None):
     with open(skema_path) as f:
         data = f.read()
-        json_schema = skema.to_jsonschema(data, )
+        json_schema = skema.to_jsonschema(data, hide=hide, only=only)
     root_name = json_schema.get('$ref').split('/')[-1]
     json_schema = json.dumps(json_schema, indent=4, default=str)
     print(json_schema)
@@ -55,11 +55,11 @@ def generate_graphql(skema_path, result_file=None, hide=[], only=None):
     with open(result_file, 'w') as f:
         f.write(schema)
 
-def generate_jsonschema(skema_path, result_file=None, ref=None, resolve=False):
+def generate_jsonschema(skema_path, result_file=None, ref=None, resolve=False, hide=[], only=None):
         result_path = result_file or get_result_file(skema_path, '.json')
         with open(skema_path) as f:
                 data = f.read()
-        schema = skema.to_jsonschema(data, ref=ref, resolve=resolve)
+        schema = skema.to_jsonschema(data, ref=ref, resolve=resolve, hide=hide, only=only)
         with open(result_path, 'w') as f:
                 f.write(json.dumps(schema, indent=4))
     

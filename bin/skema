@@ -5,50 +5,93 @@ import shutil
 import requests
 import fire
 from skema.infer import from_jsonschema
-from skema.generate import generate_graphql, generate_types, generate_jsonschema, temporary_write, get_result_file
+from skema.generate import (
+    generate_graphql,
+    generate_types,
+    generate_jsonschema,
+    temporary_write,
+    get_result_file,
+)
 
-def generate(path, graphql: Union[str, bool]=False, typescript=False, python=False, jsonschema=False, ref=None, resolve=False, hide=[], only=None):
+
+def generate(
+    path,
+    graphql: Union[str, bool] = False,
+    typescript=False,
+    python=False,
+    jsonschema=False,
+    ref=None,
+    resolve=False,
+    hide=[],
+    only=None,
+):
     temp: temporary_write = None
-    if 'http' in path:
+    if "http" in path:
         r = requests.get(path, stream=True)
-        temp = temporary_write('', path=path.split('/')[-1])
+        temp = temporary_write("", path=path.split("/")[-1])
         path = temp.path
-        with open(path, 'wb') as f:
+        with open(path, "wb") as f:
             shutil.copyfileobj(r.raw, f)
     if not isinstance(hide, list):
-        raise Exception('hide argument must be list, like --hide [Json, ObjectId]')
+        raise Exception("hide argument must be list, like --hide [Json, ObjectId]")
     if graphql and isinstance(graphql, bool):
         generate_graphql(path, hide=hide, only=only)
     elif isinstance(graphql, str):
         generate_graphql(path, result_file=graphql, hide=hide, only=only)
-    
+
     if jsonschema and isinstance(jsonschema, bool):
-        generate_jsonschema(path, ref=ref, resolve=resolve)
+        generate_jsonschema(path, ref=ref, resolve=resolve, hide=hide, only=only)
     elif isinstance(jsonschema, str):
-        generate_jsonschema(path, result_file=graphql, ref=ref, resolve=resolve),
-    
+        generate_jsonschema(
+            path, result_file=graphql, ref=ref, resolve=resolve, hide=hide, only=only
+        ),
+
     if python and isinstance(python, bool):
-        generate_types(path, '.py', '--lang python --python-version 3.7  --no-nice-property-names', ref=ref)
+        generate_types(
+            path,
+            ".py",
+            "--lang python --python-version 3.7  --no-nice-property-names",
+            ref=ref,
+            hide=hide,
+            only=only,
+        )
     elif isinstance(python, str):
-        generate_types(path, '.py', '--lang python --python-version 3.7  --no-nice-property-names', result_file=python, ref=ref)
-    
+        generate_types(
+            path,
+            ".py",
+            "--lang python --python-version 3.7  --no-nice-property-names",
+            result_file=python,
+            ref=ref,
+            hide=hide,
+            only=only,
+        )
+
     if typescript and isinstance(typescript, bool):
-        generate_types(path, '.ts', '--lang typescript --just-types', ref=ref)
+        generate_types(
+            path, ".ts", "--lang typescript --just-types", ref=ref, hide=hide, only=only
+        )
     elif isinstance(typescript, str):
-        generate_types(path, '.ts', '--lang typescript --just-types', result_file=typescript, ref=ref)
+        generate_types(
+            path,
+            ".ts",
+            "--lang typescript --just-types",
+            result_file=typescript,
+            ref=ref,
+            hide=hide,
+            only=only,
+        )
     if temp:
         temp.release()
 
 
-def parse(path, target=None, root='Root'):
-    target_path = target or get_result_file(path, '.skema')
+def parse(path, target=None, root="Root"):
+    target_path = target or get_result_file(path, ".skema")
     with open(path) as f:
         schema = json.loads(f.read())
-        with open(target_path, 'w') as f:
+        with open(target_path, "w") as f:
             skema = from_jsonschema(schema, ref_name=root)
             f.write(skema)
 
-fire.Fire(dict(
-    generate=generate,
-    parse=parse
-))
+
+fire.Fire(dict(generate=generate, parse=parse))
+
