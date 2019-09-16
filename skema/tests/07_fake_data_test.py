@@ -71,7 +71,7 @@ customs = {
 def test_fake_data_1(string):
     json_schema = to_jsonschema(string, resolve=True)
     log(json_schema)
-    fakes = fake_data(string, cutom_types=customs)
+    fakes = fake_data(string, resolvers=customs)
     for o in fakes:
         print(json.dumps(o, indent=4, default=repr, ensure_ascii=False))
         validate(o, json_schema, )

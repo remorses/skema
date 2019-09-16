@@ -44,8 +44,10 @@ def generate_types(skema_path, extension, args, result_file=None, ref=None, hide
         try:
             res = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE)
             print(res.stdout.decode())
+            return result_file
         except subprocess.CalledProcessError as e:
             print(e.stderr)
+            raise Exception('quicktype failed')
 
 def generate_graphql(skema_path, result_file=None, hide=[], only=None):
     with open(skema_path) as f:

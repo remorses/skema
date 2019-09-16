@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 from typing import Union
+from funcy import collecting
+from populate import populate_string, indent_to
 import json
 import shutil
 import requests
 import fire
 from skema.infer import from_jsonschema
+from skema.to_jsonschema import to_jsonschema
 from skema.generate import (
     generate_graphql,
     generate_types,
@@ -12,6 +15,49 @@ from skema.generate import (
     temporary_write,
     get_result_file,
 )
+
+
+def append_to_file(path, string):
+    with open(path, "a") as f:
+        f.write("\n" + string)
+
+
+def repr_dict(obj, indentation=""):
+    dumped = json.dumps(obj, indent=4)
+    dumped = indent_to(indentation, dumped)
+    dumped = dumped.replace(': false', ': False')
+    dumped = dumped.replace(': true', ': True')
+    return dumped.lstrip()
+
+
+
+@collecting
+def get_objects(schema):
+    schema = to_jsonschema(schema)
+    for name, body in schema.get('definitions', []).items():
+        if (
+            body.get('type', '') == 'object' or body.get('type', '') == 'array' or body.get('allOf') or body.get('anyOf') or body.get('oneOf')
+        ):
+            yield name
+imports = '''
+import skema
+import fastjsonschema
+'''
+template = """
+${{typename}}.schema = ${{ repr_dict(schema) }}
+${{typename}}.validate = lambda instance: fastjsonschema.compile(${{typename}}.schema)(instance)
+${{typename}}.fake = lambda resolvers={}: skema.fake_data(${{typename}}.schema, amount=1, from_json=True, resolvers=resolvers)[0]
+
+"""
+def generate_python_bilerplate(schema):
+    # get the main objects names from schema
+    # generate a resolved jsonschema for each one
+    string = indent_to(imports, '')
+    for typename in get_objects(schema):
+        string += populate_string(
+            template, dict(repr_dict=repr_dict, schema=to_jsonschema(schema, ref=typename, resolve=True), typename=typename)
+        )
+    return string
 
 
 def generate(
@@ -45,26 +91,21 @@ def generate(
         generate_jsonschema(
             path, result_file=graphql, ref=ref, resolve=resolve, hide=hide, only=only
         ),
-
-    if python and isinstance(python, bool):
-        generate_types(
+    if python:
+        if isinstance(python, str):
+            result_file = python
+        else:
+            result_file = None
+        result_file = generate_types(
             path,
             ".py",
             "--lang python --python-version 3.7  --no-nice-property-names",
+            result_file=result_file,
             ref=ref,
             hide=hide,
             only=only,
         )
-    elif isinstance(python, str):
-        generate_types(
-            path,
-            ".py",
-            "--lang python --python-version 3.7  --no-nice-property-names",
-            result_file=python,
-            ref=ref,
-            hide=hide,
-            only=only,
-        )
+        append_to_file(result_file, generate_python_bilerplate(open(path).read()))
 
     if typescript and isinstance(typescript, bool):
         generate_types(
