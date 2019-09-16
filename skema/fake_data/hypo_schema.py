@@ -1,5 +1,5 @@
 from random import randint
-
+from funcy import omit
 from hypothesis import strategies as hs
 # from hypothesis._strategies import from_regex as regex
 import json
@@ -40,14 +40,15 @@ def should_include(key, required_list):
 def gen_array(prop, customs):
     min_items = prop.get("minItems", 0)
     max_items = prop.get("maxItems", 5)
-    if prop.get("items", {}).get("type", False) is not False:
+    if prop.get("items", {}):
         generator = get_generator(prop.get("items"), customs)
         return hs.lists(elements=generator,
                         min_size=min_items,
                         max_size=max_items)
-    return hs.lists(elements=gen_anything(),
-                    min_size=min_items,
-                    max_size=max_items)
+    else:
+        return hs.lists(elements=gen_anything(),
+                        min_size=min_items,
+                        max_size=max_items)
 
 
 def gen_anything():
@@ -139,14 +140,10 @@ def get_generator(prop, customs={}):
             
     }
     if prop.get('title') != None:
-        title = prop.get('title', '').strip()
+        title = prop.get('title', '') # .strip()
         if title in customs:
-            # print(customs[title]())
             return hs.builds(lambda x: customs[title](), hs.integers())
-        else:
-            prop = {k:v for k,v in prop.items() if k != 'title' and k != 'description'}
-    
-    if not prop:
+    if not omit(prop, ['title', 'description']):
         return gen_anything()
 
     enum = prop.get("enum", None)

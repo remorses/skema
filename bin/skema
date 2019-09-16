@@ -46,14 +46,20 @@ import fastjsonschema
 template = """
 ${{typename}}.schema = ${{ repr_dict(schema) }}
 ${{typename}}.validate = lambda instance: fastjsonschema.compile(${{typename}}.schema)(instance)
-${{typename}}.fake = lambda resolvers={}: skema.fake_data(${{typename}}.schema, amount=1, from_json=True, resolvers=resolvers)[0]
+${{typename}}.fake = lambda resolvers={}: ${{typename}}.from_dict(skema.fake_data(${{typename}}.schema, amount=1, from_json=True, resolvers=resolvers)[0])
 
 """
-def generate_python_bilerplate(schema):
+def generate_python_bilerplate(schema, hide=[], only=None,):
     # get the main objects names from schema
     # generate a resolved jsonschema for each one
+    names = get_objects(schema)
+    if only:
+        names = [x for x in names if x in only]
+    if hide:
+        names = [x for x in names if not x in hide]
+
     string = indent_to(imports, '')
-    for typename in get_objects(schema):
+    for typename in names:
         string += populate_string(
             template, dict(repr_dict=repr_dict, schema=to_jsonschema(schema, ref=typename, resolve=True), typename=typename)
         )
@@ -105,7 +111,7 @@ def generate(
             hide=hide,
             only=only,
         )
-        append_to_file(result_file, generate_python_bilerplate(open(path).read()))
+        append_to_file(result_file, generate_python_bilerplate(open(path).read(), hide=hide,only=only,))
 
     if typescript and isinstance(typescript, bool):
         generate_types(
