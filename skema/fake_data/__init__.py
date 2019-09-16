@@ -11,8 +11,11 @@ from .hypo_schema import get_generator
 
 
 
-def fake_data(schema: str, ref=None, amount=5, cutom_types={}) -> List[dict]:
-    json_schema=to_jsonschema(schema, ref=ref, resolve=True)
+def fake_data(schema: str, ref=None, amount=5, cutom_types={}, from_json=False) -> List[dict]:
+    if from_json:
+        json_schema=schema
+    else:
+        json_schema=to_jsonschema(schema, ref=ref, resolve=True)
     examples = []
     @given(get_generator(json_schema, cutom_types))
     @settings(max_examples=amount)
