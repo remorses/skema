@@ -34,10 +34,11 @@ def remove_ands(refs):
     for node in interfaces:
         node.value = node.value + INTERFACE_END_KEYWORD
         node.is_interface = True
-    leaves = [leaf for r in refs for leaf in get_leaves(r) if r.value.lower() != 'root'] # TODO presume no root
-    for i in indexes:
-        if not [l for l in leaves if l.value == refs[i].value]:
-            refs.pop(i)
+    # i don't want to delete interfaces types
+    # leaves = [leaf for r in refs for leaf in get_leaves(r) if r.value.lower() != 'root'] # TODO presume no root
+    # for i in indexes:
+    #     if not [l for l in leaves if l.value == refs[i].value]:
+    #         refs.pop(i)
     return refs + interfaces
 
 def search_non_existing_subgroup(subgroup: Tuple[str, ...], groups: List[Tuple[str, ...]]) -> Tuple[str, ...]:

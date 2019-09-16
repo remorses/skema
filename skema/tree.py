@@ -154,7 +154,8 @@ class Node:
             else:
                 res += 'type '
             res += str(self.value)
-            res += (' implements ' + ' & '.join(self.implements)) if self.implements else ''
+            if not self.is_input:
+                res += (' implements ' + ' & '.join(self.implements)) if self.implements else ''
             res += ' {'
             for c in self.children:
                 res += '\n' + Node.to_skema(c, indent + tab, )

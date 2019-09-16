@@ -22,50 +22,6 @@ def append_to_file(path, string):
         f.write("\n" + string)
 
 
-def repr_dict(obj, indentation=""):
-    dumped = json.dumps(obj, indent=4)
-    dumped = indent_to(indentation, dumped)
-    dumped = dumped.replace(': false', ': False')
-    dumped = dumped.replace(': true', ': True')
-    return dumped.lstrip()
-
-
-
-@collecting
-def get_objects(schema):
-    schema = to_jsonschema(schema)
-    for name, body in schema.get('definitions', []).items():
-        if (
-            body.get('type', '') == 'object' or body.get('type', '') == 'array' or body.get('allOf') or body.get('anyOf') or body.get('oneOf')
-        ):
-            yield name
-imports = '''
-import skema
-import fastjsonschema
-'''
-template = """
-${{typename}}.schema = ${{ repr_dict(schema) }}
-${{typename}}.validate = lambda instance: fastjsonschema.compile(${{typename}}.schema)(instance)
-${{typename}}.fake = lambda resolvers={}: ${{typename}}.from_dict(skema.fake_data(${{typename}}.schema, amount=1, from_json=True, resolvers=resolvers)[0])
-
-"""
-def generate_python_bilerplate(schema, hide=[], only=None,):
-    # get the main objects names from schema
-    # generate a resolved jsonschema for each one
-    names = get_objects(schema)
-    if only:
-        names = [x for x in names if x in only]
-    if hide:
-        names = [x for x in names if not x in hide]
-
-    string = indent_to(imports, '')
-    for typename in names:
-        string += populate_string(
-            template, dict(repr_dict=repr_dict, schema=to_jsonschema(schema, ref=typename, resolve=True), typename=typename)
-        )
-    return string
-
-
 def generate(
     path,
     graphql: Union[str, bool] = False,
@@ -102,16 +58,9 @@ def generate(
             result_file = python
         else:
             result_file = None
-        result_file = generate_types(
-            path,
-            ".py",
-            "--lang python --python-version 3.7  --no-nice-property-names",
-            result_file=result_file,
-            ref=ref,
-            hide=hide,
-            only=only,
-        )
-        append_to_file(result_file, generate_python_bilerplate(open(path).read(), hide=hide,only=only,))
+        code = generate_python_bilerplate(open(path).read(), hide=hide,only=only,)
+        with open(result_file, 'w') as f:
+            f.write(code)
 
     if typescript and isinstance(typescript, bool):
         generate_types(
