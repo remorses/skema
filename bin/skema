@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from typing import Union
+import os.path
 from funcy import collecting
 from populate import populate_string, indent_to
 import json
@@ -17,6 +18,9 @@ from skema.generate import (
     get_result_file,
 )
 
+def filename(path):
+    name, _ = os.path.splitext(path)
+    return name.split('/')[-1]
 
 def append_to_file(path, string):
     with open(path, "a") as f:
@@ -34,6 +38,22 @@ def generate(
     hide=[],
     only=None,
 ):
+    if isinstance(path, list):
+        name = '_and_'.join([filename(p) for p in path])
+        concatenated = '\n\n'.join([open(p).read() for p in path])
+        
+        with temporary_write(concatenated, path=name) as path:
+            return generate(
+                path,
+                graphql,
+                typescript,
+                python,
+                jsonschema,
+                ref,
+                resolve,
+                hide,
+                only,
+            )
     temp: temporary_write = None
     if "http" in path:
         r = requests.get(path, stream=True)
