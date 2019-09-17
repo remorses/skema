@@ -18,7 +18,7 @@ def make_reference(key):
     node.value = compute_camel_cascaded_name(key)
     return node
 
-def is_valid_as_reference(key: Node):
+def is_valid_as_reference(key: Node): # for graphql
     def is_valid_list_key(key):
         if not is_key(key):
             return False
@@ -29,18 +29,20 @@ def is_valid_as_reference(key: Node):
         return True
     if is_or_key(key) or is_and_key(key) or is_and_object(key):
         return True
+    if is_big_list(key):
+        return True
     return False
 
-def get_current_subtypes(root: Node):
+def get_current_subtypes(root: Node, is_valid_as_reference=is_valid_as_reference):
     nodes = breadth_first_traversal(root,)
-    nodes = filter(lambda x: is_valid_as_reference(x) or is_big_list(x), nodes)
+    nodes = filter(lambda x: is_valid_as_reference(x), nodes)
     nodes = reversed(list(nodes))
     nodes = list(nodes)
     # print(f'valid refs are {nodes}')
     return nodes
     
-def split_references(root: Node):
-    nodes = get_current_subtypes(root)
+def split_references(root: Node, is_valid_as_reference=is_valid_as_reference):
+    nodes = get_current_subtypes(root, is_valid_as_reference=is_valid_as_reference)
     while nodes:
         key = nodes.pop(0)
         ref = make_reference(key)
@@ -49,7 +51,7 @@ def split_references(root: Node):
         # yield from dereference_objects_inside_lists(ref)
         # print(f'after {repr(ref)}')
         # print(root)
-        nodes = get_current_subtypes(root)
+        nodes = get_current_subtypes(root, is_valid_as_reference=is_valid_as_reference)
 
 def is_big_list(node):
     return (

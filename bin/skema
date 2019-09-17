@@ -9,6 +9,7 @@ import fire
 from skema.infer import from_jsonschema
 from skema.to_jsonschema import to_jsonschema
 from skema.generate import (
+    generate_python,
     generate_graphql,
     generate_types,
     generate_jsonschema,
@@ -54,13 +55,7 @@ def generate(
             path, result_file=graphql, ref=ref, resolve=resolve, hide=hide, only=only
         ),
     if python:
-        if isinstance(python, str):
-            result_file = python
-        else:
-            result_file = None
-        code = generate_python_bilerplate(open(path).read(), hide=hide,only=only,)
-        with open(result_file, 'w') as f:
-            f.write(code)
+        generate_python(path, result_file=None if python is True else python, hide=hide, only=only)
 
     if typescript and isinstance(typescript, bool):
         generate_types(

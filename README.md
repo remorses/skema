@@ -160,6 +160,8 @@ User:
 - preserve reordering
 
 ## todo:
+- scalar name can be overridden by other splitted types in py and gql
+- when generating python i have to order dependencies over the types
 - ~~scalar unions with null should be removed from graphql~~
 - --hide [...] should support other types than scalars and opther lans other than gql
 - ~~specify if a type gets translated as input, interface in graphql, [graphql input]

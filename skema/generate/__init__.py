@@ -6,6 +6,7 @@ import skema
 import subprocess
 import os, random
 from ..to_graphql import to_graphql
+from ..to_python import to_python
 
 class temporary_write:
         def __init__(self,  data, path=str(random.random())[3:]):
@@ -54,6 +55,14 @@ def generate_graphql(skema_path, result_file=None, hide=[], only=None):
         data = f.read()
     schema = to_graphql(data, hide=hide, only=only)
     result_file = result_file or get_result_file(skema_path, '.graphql')
+    with open(result_file, 'w') as f:
+        f.write(schema)
+
+def generate_python(skema_path, result_file=None, hide=[], only=None):
+    with open(skema_path) as f:
+        data = f.read()
+    schema = to_python(data, hide=hide, only=only)
+    result_file = result_file or get_result_file(skema_path, '.py')
     with open(result_file, 'w') as f:
         f.write(schema)
 

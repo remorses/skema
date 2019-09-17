@@ -4,7 +4,8 @@ import random
 import typing as t
 import pytest
 from graphql import build_schema
-from skema.to_graphql import to_graphql, search_existing_subgroup
+from skema.to_graphql import to_graphql
+from skema.split_tree_parts import search_existing_subgroup
 from skema.split_references import (FORBIDDEN_TYPE_NAMES,
                                     breadth_first_traversal, get_leaves,
                                     is_valid_as_reference,

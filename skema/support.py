@@ -48,6 +48,9 @@ def is_or_key(node):
 def is_list_key(node):
     return is_key(node) and node.children[0].value in [LIST,]
 
+def is_list(node):
+    return node.value in [LIST,]
+
 
 def is_enum_key(node):
     return is_or_key(node) and all(['"' in c.value for c in node.children[0].children])
