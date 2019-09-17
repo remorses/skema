@@ -12,7 +12,8 @@ scalar_already_present = [ # empty to make tests pass
 
 def to_graphql(string: str, hide=scalar_already_present, only=None) -> str:
     refs = split_tree_parts(string, language='graphql', hide=hide, only=only,)
-    refs += [Node('Json',).append([Node('')])]
+    if not 'Json' in hide and not (only and not 'Jons' in only):
+        refs += [Node('Json',).append([Node('')])] 
     types = [t.to_graphql() for t in refs]
     schema = '\n\n'.join(types)
     return schema

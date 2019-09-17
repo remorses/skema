@@ -119,12 +119,12 @@ def split_tree_parts(string, language, hide=[], only=None, is_valid_as_reference
     node = remove_hidden_fields(node, language)
     node = apply_type_kind(node, language)
     # node = replace_aliases(node)
-    if only and isinstance(only, list):
-        node.children = [c for c in node.children if c.value in only]
-    if hide and isinstance(hide, list):
-        node.children = [c for c in node.children if not c.value in hide]
     print(node)
     refs = [*get_alias_nodes(node)] + [*split_references(node, is_valid_as_reference)]
     refs = preprocess_refs(refs)
+    if only and isinstance(only, list):
+        refs = [c for c in refs if c.value in only]
+    if hide and isinstance(hide, list):
+        refs = [c for c in refs if c.value not in hide]
     return refs
     # refs = [r for r in refs if not (is_leaf_key(r) and r.value in scalar_already_present)]

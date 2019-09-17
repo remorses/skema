@@ -149,7 +149,7 @@ class Node:
         elif is_object(self):
             if self.is_interface:
                 res += 'interface '
-            elif self.is_input:
+            elif self.is_input or any([x.is_input for x in parents(self)]):
                 res += 'input '
             else:
                 res += 'type '
@@ -175,6 +175,12 @@ def tree_from_dict(obj: dict, key='root'):
         else:
             node.insert(Node(k,).insert(Node(val,)))
     return node
+
+def parents(node: Node): # TODO
+    if node.parent:
+        return [node.parent] + parents(node.parent)
+    else:
+        return []
 
 
 def map_tree(f, node, result=Node('')):
