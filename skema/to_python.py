@@ -21,11 +21,17 @@ from .support import (capitalize, is_and_key, is_enum_key, is_key, is_list_key, 
 
 
 imports = """
-from typing import *
-from typing_extensions import Literal
+import typing
+import typing_extensions
 import skema
 import fastjsonschema
 from prtty import prettify
+lmap = lambda func: lambda xs: list(map(func, xs))
+
+class dotdict(dict):
+    __setattr__ = dict.__setitem__
+    __getattr__ = dict.__getitem__
+    __delattr__ = dict.__delitem__
 """
 
 def is_circular(schema):
@@ -48,6 +54,7 @@ def get_local_schema(schema, typename,):
 map_simple_types = dict( # TODO i am mapping from graphql types
     String='str',
     Str='str',
+    str='str',
     Int='int',
     Float='float',
     null='None',
@@ -66,8 +73,21 @@ def map_type(node: Node):
         if key == OR:
             return handle_union(node.children[0])
         elif key == LIST:
-            return f'List[{map_type(node.children[0])}]'
+            return f'typing.List[{map_type(node.children[0])}]'
         return "'" + key + "'"
+
+def get_initializer(node: Node):
+    key = node.children[0].value
+    if key in map_simple_types:
+        return None
+    else:
+        if key == OR:
+            if any(['"' in c.value for c in node.children[0].children]):
+                return None
+            return f'dotdict'
+        elif key == LIST:
+            return f'lmap({get_initializer(node.children[0])})'
+        return f'{key}.from_dict'
 
 
 def is_valid_as_reference(key: Node): # for graphql
@@ -90,8 +110,8 @@ def is_valid_as_reference(key: Node): # for graphql
 
 def handle_union(node: Node):
     options = ["'" + c.value + "'" if not '"' in c.value else c.value for c in node.children]
-    options = [f'Literal[{n}]' if '"' in n else n for n in options]
-    return f'Union[{", ".join(options)}]'
+    options = [f'typing_extensions.Literal[{n}]' if '"' in n else n for n in options]
+    return f'typing.Union[{", ".join(options)}]'
 
 
 
@@ -137,6 +157,9 @@ def to_python(schema, hide=[], only=None):
     # refs = [x for x in refs if not is_leaf_key(x)]
     print('\n\n'.join([str(x) for x in refs]))
     string = imports
+    string += populate_string(exports, dict(
+        all=[n.value for n in refs],
+    ))
     for node in refs:
         typename = node.value
         if is_leaf_key(node):
@@ -147,29 +170,47 @@ def to_python(schema, hide=[], only=None):
             continue
         args = {c.value: not c.required for c in node.children}
         hints = {c.value: map_type(c) for c in node.children}
-        local_schema = get_local_schema(schema, typename)
+        setters = {c.value: get_initializer(c) for c in node.children}
         # print(local_schema)
         string += populate_string(
             template,
             dict(
                 hints=hints,
                 args=args,
-                schema=local_schema,
-                # schema = {},
+                setters=setters,
                 typename=typename,
                 render_args=render_args,
+                render_setters=render_setters,
                 render_hints=render_hints,
                 indent_to=indent_to,
                 render_dict=render_dict,
             ),
         )
         string += '\n'
+    for node in refs:
+        typename = node.value
+        local_schema = get_local_schema(schema, typename)
+        string += populate_string(
+            bottom,
+            dict(
+                schema=local_schema,
+                typename=typename,
+                render_dict=render_dict,
+            ),
+        )
     return string
 
+exports = '''
+__all__ = ${{ str(tuple(all)) }}
+'''
 
+bottom = '''
+${{typename}}._schema = ${{ render_dict(schema) }}
+${{typename}}.validate_ = staticmethod(fastjsonschema.compile(${{typename}}._schema))
+
+'''
 template = """
 class ${{typename}}(dict):
-    _schema = ${{ indent_to('    ', render_dict(schema)) }}
 
     ${{indent_to('    ', render_hints(hints, args)) + '\\n'}}
     def __getattr__(self, name):
@@ -177,8 +218,15 @@ class ${{typename}}(dict):
             return dict.__getitem__(self, name)
         except KeyError:
             return object.__getattribute__(self, name)
-    def __init__(self, *, ${{render_args(args) }}, **kwargs): # i could set this kwargs only when additionalProperties is enabled
-        super().__init__(${{render_args({k: True for k in args}, default=lambda k: k)}})
+    def __init__(
+        self, 
+        *, 
+        ${{indent_to('        ', render_args(args, hints)) }}, 
+        **kwargs
+    ):
+        super().__init__(
+            ${{indent_to('            ', render_setters(setters, args))}}
+        )
     @classmethod
     def from_dict(cls, obj: dict):
         assert isinstance(obj, dict)
@@ -187,12 +235,13 @@ class ${{typename}}(dict):
         return self.validate_(self)
     @classmethod
     def fake(cls, resolvers={}):
-        return cls(**skema.fake_data(${{typename}}._schema, amount=1, from_json=True, resolvers=resolvers)[0])
+        return cls(**(skema.fake_data(${{typename}}._schema, amount=1, from_json=True, resolvers=resolvers)[0] or {}))
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
     def __repr__(self):
         return f'${{typename}}({prettify(self)})'
-# ${{typename}}.validate_ = staticmethod(fastjsonschema.compile(${{typename}}._schema))
+
+
 """
 
 
@@ -204,12 +253,17 @@ def render_hints(hints: Dict[str, str], args: Dict[str, str]):
     return "\n".join(hints)
 
 
-def render_args(fields: Dict[str, bool], default=lambda k: "None"):
+def render_args(fields: Dict[str, bool], hints: Dict[str, str], default=lambda k: "None"):
     required_fields = [x for x, is_optional in fields.items() if not is_optional]
     optional_fields = [x for x, is_optional in fields.items() if is_optional]
-    required_args = [f"{name}" for name in required_fields]
-    optional_args = [f"{name}={default(name)}" for name in optional_fields]
-    return ", ".join(required_args + optional_args)
+    required_args = [f"{name}: {hints[name]}" for name in required_fields]
+    optional_args = [f"{name}: {hints[name]}={default(name)}" for name in optional_fields]
+    return ",\n".join(required_args + optional_args)
+
+
+def render_setters(setters: Dict[str, str], args: Dict[str, bool]):
+    args = [f"{name}={(initializer + '(' + name + ')' + f' if {name} != None else {name}') if initializer else name}" for name, initializer in setters.items()]
+    return ",\n".join(args)
 
 
 if __name__ == "__main__":
