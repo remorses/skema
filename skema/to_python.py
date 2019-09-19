@@ -225,7 +225,8 @@ class ${{typename}}(dict):
         **kwargs
     ):
         super().__init__(
-            ${{indent_to('            ', render_setters(setters, args))}}
+            ${{indent_to('            ', render_setters(setters, args))}},
+            **kwargs
         )
     @classmethod
     def from_dict(cls, obj: dict):
