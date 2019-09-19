@@ -21,8 +21,8 @@ from .support import (capitalize, is_and_key, is_enum_key, is_key, is_list_key, 
 
 
 imports = """
-import typing
-import typing_extensions
+from typing import Any, Optional, List, Union, Callable
+from typing_extensions import Literal
 import skema
 import fastjsonschema
 from prtty import prettify
@@ -73,7 +73,7 @@ def map_type(node: Node):
         if key == OR:
             return handle_union(node.children[0])
         elif key == LIST:
-            return f'typing.List[{map_type(node.children[0])}]'
+            return f'List[{map_type(node.children[0])}]'
         return "'" + key + "'"
 
 def get_initializer(node: Node):
@@ -87,6 +87,8 @@ def get_initializer(node: Node):
             return f'dotdict'
         elif key == LIST:
             return f'lmap({get_initializer(node.children[0])})'
+        elif key == ANY:
+            return None
         return f'{key}.from_dict'
 
 
@@ -110,8 +112,8 @@ def is_valid_as_reference(key: Node): # for graphql
 
 def handle_union(node: Node):
     options = ["'" + c.value + "'" if not '"' in c.value else c.value for c in node.children]
-    options = [f'typing_extensions.Literal[{n}]' if '"' in n else n for n in options]
-    return f'typing.Union[{", ".join(options)}]'
+    options = [f'Literal[{n}]' if '"' in n else n for n in options]
+    return f'Union[{", ".join(options)}]'
 
 
 
@@ -201,7 +203,9 @@ def to_python(schema, hide=[], only=None):
     return string
 
 exports = '''
-__all__ = ${{ str(tuple(all)) }}
+__all__ = (
+    ${{ indent_to('    ', '\\n'.join(['"' + x + '",' for x in all])) }}
+)
 '''
 
 bottom = '''
@@ -211,6 +215,8 @@ ${{typename}}.validate_ = staticmethod(fastjsonschema.compile(${{typename}}._sch
 '''
 template = """
 class ${{typename}}(dict):
+    _schema: dict
+    _validate: Callable
 
     ${{indent_to('    ', render_hints(hints, args)) + '\\n'}}
     def __getattr__(self, name):
