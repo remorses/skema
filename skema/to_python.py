@@ -210,7 +210,7 @@ __all__ = (
 
 bottom = '''
 ${{typename}}._schema = ${{ render_dict(schema) }}
-${{typename}}.validate_ = staticmethod(fastjsonschema.compile(${{typename}}._schema))
+# ${{typename}}.validate_ = staticmethod(fastjsonschema.compile(${{typename}}._schema))
 
 '''
 template = """
