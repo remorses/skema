@@ -216,7 +216,7 @@ ${{typename}}.validate_ = staticmethod(fastjsonschema.compile(${{typename}}._sch
 template = """
 class ${{typename}}(dict):
     _schema: dict
-    _validate: Callable
+    validate_: staticmethod
 
     ${{indent_to('    ', render_hints(hints, args)) + '\\n'}}
     def __getattr__(self, name):
