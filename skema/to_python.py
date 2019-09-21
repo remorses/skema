@@ -25,13 +25,30 @@ from typing import Any, Optional, List, Union, Callable
 from typing_extensions import Literal
 import skema
 import fastjsonschema
+from jsonschema import validate
 from prtty import prettify
 lmap = lambda func: lambda xs: list(map(func, xs))
 
 class dotdict(dict):
+    def __getattr__(self, name):
+        try:
+            return dict.__getitem__(self, name)
+        except KeyError:
+            return object.__getattribute__(self, name)
+    @classmethod
+    def from_dict(cls, obj: dict):
+        assert isinstance(obj, dict)
+        return cls(**obj)
+    def validate(self):
+        # return self.validate_(self)
+        return validate(instance=self, schema=self._schema)
+    @classmethod
+    def fake(cls, resolvers={}):
+        return cls(**(skema.fake_data(cls._schema, amount=1, from_json=True, resolvers=resolvers)[0] or {}))
     __setattr__ = dict.__setitem__
-    __getattr__ = dict.__getitem__
     __delattr__ = dict.__delitem__
+    def __repr__(self):
+        return f'{self.__class__.__name__}({prettify(self)})'
 """
 
 def is_circular(schema):
@@ -169,6 +186,7 @@ def to_python(schema, hide=[], only=None):
             continue
         if node.children[0].value == OR:
             string += f'{typename} = ' + handle_union(node.children[0]) + '\n'
+            string += f'{typename}.from_dict = lambda x: x' + '\n'
             continue
         args = {c.value: not c.required for c in node.children}
         hints = {c.value: map_type(c) for c in node.children}
@@ -214,16 +232,12 @@ ${{typename}}._schema = ${{ render_dict(schema) }}
 
 '''
 template = """
-class ${{typename}}(dict):
+class ${{typename}}(dotdict):
     _schema: dict
-    validate_: staticmethod
+    # validate_: staticmethod
 
     ${{indent_to('    ', render_hints(hints, args)) + '\\n'}}
-    def __getattr__(self, name):
-        try:
-            return dict.__getitem__(self, name)
-        except KeyError:
-            return object.__getattribute__(self, name)
+
     def __init__(
         self, 
         *, 
@@ -234,19 +248,7 @@ class ${{typename}}(dict):
             ${{indent_to('            ', render_setters(setters, args))}},
             **kwargs
         )
-    @classmethod
-    def from_dict(cls, obj: dict):
-        assert isinstance(obj, dict)
-        return cls(**obj)
-    def validate(self):
-        return self.validate_(self)
-    @classmethod
-    def fake(cls, resolvers={}):
-        return cls(**(skema.fake_data(${{typename}}._schema, amount=1, from_json=True, resolvers=resolvers)[0] or {}))
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
-    def __repr__(self):
-        return f'${{typename}}({prettify(self)})'
+
 
 
 """
