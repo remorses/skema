@@ -3,6 +3,7 @@ fastjsonschema
 jsonschema
 bson
 genson
+populate
 # for fake_data
 hypothesis
 # tests
