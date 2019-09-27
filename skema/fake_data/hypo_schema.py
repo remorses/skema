@@ -8,7 +8,7 @@ from .regex import regex
 
 def gen_int(prop):
     min_value = prop.get("minimum", 0)
-    max_value = prop.get("maximum", 1000)
+    max_value = prop.get("maximum", ) or prop.get("exclusiveMaximum", ) or (20 if not min_value else None)
     return hs.integers(min_value=min_value, max_value=max_value)
 
 

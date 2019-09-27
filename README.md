@@ -12,7 +12,7 @@ And beign somewhat creative:
 - use it to plan your domain model!
 
 <!---[bump]--->
-## last version: 0.0.52
+## last version: 0.0.50
 ## example
 
 
@@ -159,7 +159,17 @@ User:
 ## todo features
 - preserve reordering
 
+refactor plan:
+all the refactoring should be implementabel in another language in [go, rust, cpp] to use the features in other platforms as dylib
+1 use lark instead of the current shit
+2 divide in packages:
+- tree: all functions that take or output nodes, like is leaf, is array ...
+- generate: all functions that generate code strings
+- 
+
+
 ## todo:
+- optional types are union of null ans the type in jsonschema
 - scalar name can be overridden by other splitted types in py and gql
 - when generating python i have to order dependencies over the types
 - ~~scalar unions with null should be removed from graphql~~
