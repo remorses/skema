@@ -103,7 +103,7 @@ def get_initializer(node: Node):
                 return None
             return f'dotdict'
         elif key == LIST:
-            return f'lmap({get_initializer(node.children[0])})'
+            return f'lmap({get_initializer(node.children[0]) or "lambda x: x"})'
         elif key == ANY:
             return None
         return f'{key}.from_dict'
