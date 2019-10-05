@@ -3,8 +3,10 @@ from .make_schema import make_schema
 from .make_tree import make_tree
 from .resolve_refs import resolve_refs
 from .support import rcompose
+from copy import deepcopy
 
 def resolve_schema(jsonschema, ref=None):
+    jsonschema = deepcopy(jsonschema)
     jsonschema["$ref"] = jsonschema["$ref"] if not ref else "#/definitions/" + ref
     resolve_refs(jsonschema)
     return jsonschema
@@ -30,5 +32,5 @@ def to_jsonschema(schema, ref=None, resolve=False, hide=[], only=None):
 
     if resolve:
         result = resolve_schema(result, ref)
-        
+
     return result
