@@ -4,6 +4,11 @@ from .make_tree import make_tree
 from .resolve_refs import resolve_refs
 from .support import rcompose
 
+def resolve_schema(jsonschema, ref=None):
+    jsonschema["$ref"] = jsonschema["$ref"] if not ref else "#/definitions/" + ref
+    resolve_refs(jsonschema)
+    return jsonschema
+
 
 def to_jsonschema(schema, ref=None, resolve=False, hide=[], only=None):
 
@@ -24,7 +29,6 @@ def to_jsonschema(schema, ref=None, resolve=False, hide=[], only=None):
     result["$ref"] = result["$ref"] if not ref else "#/definitions/" + ref
 
     if resolve:
-        resolve_refs(result)
-        return result
-    else:
-        return result
+        result = resolve_schema(result, ref)
+        
+    return result
