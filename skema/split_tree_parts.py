@@ -119,7 +119,7 @@ def split_tree_parts(string, language, hide=[], only=None, is_valid_as_reference
     node = remove_hidden_fields(node, language)
     node = apply_type_kind(node, language)
     # node = replace_aliases(node)
-    print(node)
+    # print(node)
     refs = [*get_alias_nodes(node)] + [*split_references(node, is_valid_as_reference)]
     refs = preprocess_refs(refs)
     if only and isinstance(only, list):

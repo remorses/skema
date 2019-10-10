@@ -73,7 +73,7 @@ class Node:
             res += ':' if len(self.children) else ''
             
         if is_and_object(self): # interface
-            print(repr(self))
+            # print(repr(self))
             for c in self.children[0].children:
                  res += ' ' + Node.to_skema(c, '') + ' &'
             for c in self.children[1:]:
