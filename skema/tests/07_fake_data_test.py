@@ -5,7 +5,6 @@ from datetime import datetime
 from .. import to_jsonschema
 from .support import values, keys, log
 from jsonschema import validate
-import bson
 
 schemas = {
     'simple': """
@@ -64,7 +63,7 @@ def test_fake_data(string):
 
 customs = {
     'DateTime': datetime.utcnow,
-    'ObjectId': bson.ObjectId,
+    # 'ObjectId': bson.ObjectId,
 }
 
 @pytest.mark.parametrize("string", values(schemas), ids=keys(schemas))

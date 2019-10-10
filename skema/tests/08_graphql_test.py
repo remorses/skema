@@ -5,7 +5,6 @@ from datetime import datetime
 from .. import to_jsonschema
 from .support import values, keys, log
 from jsonschema import validate
-import bson
 
 schemas = {
     '1': """
