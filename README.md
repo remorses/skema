@@ -12,7 +12,7 @@ And beign somewhat creative:
 - use it to plan your domain model!
 
 <!---[bump]--->
-## last version: 0.0.58
+## last version: 0.0.59
 ## example
 
 
