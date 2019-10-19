@@ -1,19 +1,38 @@
-# skema: language that compiles to jsonschema, graphql, typescript interfaces, c++ structs, python classes and many more
+<p align="center">
+  <img width="300" src="https://github.com/remorses/mongoke/blob/master/.github/logo.jpg?raw=true">
+</p>
+<h1 align="center">skema</h1>
+<h3 align="center">Single source of truth for all your types</h3>
+
+## Built in types
+- Int
+- Float
+- Str
+- Bool
+- null
+- "literal string"
+- /regex/
+- 0..69
+- Any
+
+
 
 ## What you can do with a skema file:
 - Validate json input
-- Generare code types in graphql, py, ts, cpp, ...
-- Generate fake data for testing
-- Generate react forms, via `react-skema-forms`
-- Infer schema from raw json files
+- Generare code types for every language in your architecture (graphql, py, ts, cpp, ...)
+- Generate fake data based on your schema
+- Infer schema from raw json (perfect for reverse engineering)
 - convert jsonschema to be easier to read
-And beign somewhat creative:
-- use it as documentation
+- use it for API types documentation
+- Generate react forms, via [`react-skema-forms`]
 - use it to plan your domain model!
+
 
 <!---[bump]--->
 ## last version: 0.0.61
-## example
+
+
+## examples
 
 
 this skema snippet
