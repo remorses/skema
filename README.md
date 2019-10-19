@@ -4,6 +4,32 @@
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
+## Supported languages
+## built-in
+- **jsonschema**
+- **python**
+- **graphql**
+### using [quicktype](https://github.com/quicktype/quicktype)
+- **python**
+- **typescript**
+- **go**
+- **rust**
+- **c++**
+...
+
+## Installation
+Requires python 3.6+ and npm
+```
+pip install skema
+npm i -g quicktype # for more languages
+```
+
+## Usage
+```
+skema generate ./schema.skema --jsonschema ./your_path.json
+skema generate ./schema.skema --graphql ./your_path.graphql
+skema generate ./schema.skema --graphql ./your_path.graphql
+```
 
 
 ## Examples
