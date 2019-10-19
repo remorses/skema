@@ -4,6 +4,11 @@
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
+## Why
+Today multi-service architectures requires developers to keep in sync a lot of different services built in different languages by different teams.
+To do this manually requires a lot of work always changing the shared object types between different projects and a lot of integration tests to make sure that all the services can communicate.
+With skema you can have one single source of truth for your most important shared types and can generate the validation (jsonschema) and the code to serialize them and be sure the different services can communicate.
+
 ## Supported languages
 ### built-in
 - **jsonschema**
@@ -29,6 +34,8 @@ npm i -g quicktype # for more languages
 skema generate ./schema.skema --jsonschema ./your_path.json
 skema generate ./schema.skema --graphql ./your_path.graphql
 skema generate ./schema.skema --typescript ./your_path.graphql
+# using an hosted skema
+skema generate "https://gist.github.com/your_gist" --typescript ./your_path.graphql
 ```
 
 
