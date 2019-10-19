@@ -38,6 +38,25 @@ and: Ref1 & Ref2 & X
 lista: [
     ciao: "sdf" | "ccc"
 ]
+
+oggetto:
+    x: Int
+    ...
+
+z:
+    ...
+
+
+o:
+    rx: /xxx/
+# comment
+
+""" # asas
+aiii # asd
+"""
+oggett:
+    x: Str # comm
+    y: Int # sdfsdf
 '''
 
 def test():
