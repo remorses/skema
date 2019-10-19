@@ -5,7 +5,7 @@
 <h3 align="center">Single source of truth for all your types</h3>
 
 ## Supported languages
-## built-in
+### built-in
 - **jsonschema**
 - **python**
 - **graphql**
