@@ -4,6 +4,76 @@
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
+
+
+## Examples
+
+## Nested objects
+```yml
+User:
+    id: Int
+    name: Str
+    address:
+        street: Str
+        number: Int
+        state: Str
+    credit: Float
+    email: /.*@.*\.com/
+```
+
+## Lists
+```yml
+Pet:
+    name: Str
+    friends: [Pet] # you can reference other types
+
+Owner:
+    full_name: Str
+    hobbies: [
+        name: Str
+        when: CronString
+    ]
+
+CronString: Str
+```
+
+## Unions
+```yml
+Animal: Tiger | Bear | Panthera
+
+Panthera:
+    _id: ObjectId # a type alias
+    black_nuance: "super_dark" | "dark" | "light" # enumeration
+
+Tiger:
+    _id: ObjectId
+    humans_killed: Int
+
+Bear:
+    _id: ObjectId
+    likes_honey: Bool
+
+ObjectId: Any
+```
+
+## And types
+```yml
+Centaur: Horse & Human
+
+Horse:
+    name: Str
+    eats: ["carrots" | "weeds"]
+
+Human:
+    name: Str
+    surname: Str
+    eats: ["meat" | "vegetables"]
+```
+
+
+
+
+
 ## Built in types
 - Int
 - Float
@@ -28,116 +98,6 @@
 - use it to plan your domain model!
 
 
-<!---[bump]--->
-## last version: 0.0.63
-
-
-## examples
-
-
-this skema snippet
-```yaml
-AddedTodo:
-    type: "added_todo" | "ciao"
-    payload:
-        todo:
-            name: Str
-
-RemovedTodo:
-    type: "removed_todo"
-    payload:
-        id: Str
-    todo_id: Int
-
-Event: AddedTodo | RemovedTodo
-```
-generates json schema
-```json
-{
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
-        "AddedTodo": {
-            "additional_properties": false,
-            "type": "object",
-            "properties": {
-                "type": {
-                    "const": "added_todo"
-                },
-                "payload": {
-                    "additional_properties": false,
-                    "type": "object",
-                    "properties": {
-                        "todo": {
-                            "additional_properties": false,
-                            "type": "object",
-                            "properties": {
-                                "name": {
-                                    "type": "string"
-                                }
-                            },
-                            "required": [
-                                "name"
-                            ],
-                            "title": "todo"
-                        }
-                    },
-                    "required": [
-                        "todo"
-                    ],
-                    "title": "payload"
-                }
-            },
-            "required": [
-                "type",
-                "payload"
-            ],
-            "title": "AddedTodo"
-        },
-        "RemovedTodo": {
-            "additional_properties": false,
-            "type": "object",
-            "properties": {
-                "type": {
-                    "const": "removed_todo"
-                },
-                "payload": {
-                    "additional_properties": false,
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "type": "string"
-                        }
-                    },
-                    "required": [
-                        "id"
-                    ],
-                    "title": "payload"
-                },
-                "todo_id": {
-                    "type": "number",
-                    "multipleOf": 1.0
-                }
-            },
-            "required": [
-                "type",
-                "payload",
-                "todo_id"
-            ],
-            "title": "RemovedTodo"
-        },
-        "Event": {
-            "oneOf": [
-                {
-                    "$ref": "#/definitions/AddedTodo"
-                },
-                {
-                    "$ref": "#/definitions/RemovedTodo"
-                }
-            ]
-        }
-    }
-}
-```
 ## spec
 
 - all root properties are references and can be used as types
@@ -156,35 +116,6 @@ generates json schema
     - `Object1 | Object2` means "properties of object 1 and 2"
 - types can be annotated writing annotations """ quotes above the definition
 - additional propertiescan be specified adding ... at the end of an object and can be better shaped treating it like a normal key, ...: Str means additional properties must be Str
-```yaml
-"The event type"
-Event:
-    type: "trigger" | "unknown"
-    data:
-        ...
-    by: User
-
-"""
-The annotation will be put in json schema description,
-can also be used to write the type to use in fake_data:
-:type datetime.datetime
-The faker will try tu use this Class
-"""
-User:
-    name: Str
-    phone: Int
-```
-
-## todo features
-- preserve reordering
-
-refactor plan:
-all the refactoring should be implementabel in another language in [go, rust, cpp] to use the features in other platforms as dylib
-1 use lark instead of the current shit
-2 divide in packages:
-- tree: all functions that take or output nodes, like is leaf, is array ...
-- generate: all functions that generate code strings
-- 
 
 
 ## todo:
@@ -202,7 +133,6 @@ all the refactoring should be implementabel in another language in [go, rust, cp
 - when dereferencing skema to produce graphql i am adding parent  names to differentiate the final type names, i am not sure this can really work in long term
 - when creating python code, special keywords (from) are padded with parent names, this means i can't use `ObjectName(**data)`
 - python code translates const enums as an enum object of a single value, it should search for other equal common enum ref (can be solved using common interface)
-- 
 - | and & don't work with [], because VAl is split with ARRAY and smaller VAL during tokenization, is hould add a rule during tokenization to exclude | and & in array tokens and add array logic inside VAL handling (can be solved putting [] only to a reference)
 - the same for regex
 - better handling of comments and white space
