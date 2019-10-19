@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="350" src="https://github.com/remorses/skema/blob/master/.github/logo.gif?raw=true">
+  <img width="250" src="https://github.com/remorses/skema/blob/master/.github/logo.gif?raw=true">
 </p>
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
