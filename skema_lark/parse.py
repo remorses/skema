@@ -4,12 +4,36 @@ from lark.indenter import Indenter
 from lark.reconstruct import Reconstructor
 
 tree_grammar = r"""
-    ?start: _NL* tree
+    start: (_NL* pair)+ _NL*
 
-    tree: NAME _NL [_INDENT tree+ _DEDENT]
+    scalar: "Str" -> str
+        | "Int" -> int
+        | "Float" -> float
+        | "Bool" -> bool
+        | "null" -> null
+        | "true" -> true
+        | "false" -> false
+        | ESCAPED_STRING -> literal_string
+        | SIGNED_NUMBER -> literal_number
+        | NAME -> ref
+
+    union: value ("|" scalar)+
+    intersection: value ("&" scalar)+
+
+    ?value: scalar
+        | union
+        | intersection
+
+    pair: NAME ":" (_NL object | value _NL | list _NL)
+
+    list: "[" (_NL object | value) "]"
+
+    object: _INDENT pair+ _DEDENT
 
     %import common.CNAME -> NAME
     %import common.WS_INLINE
+    %import common.ESCAPED_STRING
+    %import common.SIGNED_NUMBER
     %declare _INDENT _DEDENT
     %ignore WS_INLINE
 

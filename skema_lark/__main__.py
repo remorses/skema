@@ -1,13 +1,44 @@
 from .parse import parser
 test_tree = """
-a
-    b
-    c
-        d
-        e
-    f
-        g
+a:
+    c:
+        d: Str
+        e: Str
+    f:
+        g: Str
 """
+
+test_tree = '''
+x:
+    y: Str
+    z: Str
+    b:
+        x: Str
+        s:
+            z: AnotherType
+    obj: Str
+    arr: [Str]
+    arr2: [
+        x: Int
+        y: Int
+    ]
+    string: "ciao"
+
+z:
+    ciao: Str
+
+k: Str
+
+ref: Ref
+
+unione: Ref1 | Ref2 | X
+
+and: Ref1 & Ref2 & X
+
+lista: [
+    ciao: "sdf" | "ccc"
+]
+'''
 
 def test():
     t = parser.parse(test_tree)
