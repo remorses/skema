@@ -1,6 +1,6 @@
-<p align="center">
+<!--- <p align="center">
   <img width="300" src="https://github.com/remorses/mongoke/blob/master/.github/logo.jpg?raw=true">
-</p>
+</p> --->
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
