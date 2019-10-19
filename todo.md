@@ -5,7 +5,7 @@
 - ~~when generating python i have to order dependencies over the types~~
 - ~~scalar unions with null should be removed from graphql~~
 - --hide [...] should support other types than scalars and opther lans other than gql
-- ~~specify if a type gets translated as input, interface in graphql, [graphql input]
+- ~~specify if a type gets translated as input, interface in graphql, [graphql input]~~
 - spaces between properties cause properties spaced to be taken at an outer level
 - graphql doesn't support union inside unions, so i must unnest them
 - in graphql enums with options ==1 or > 2 are taken as strings
