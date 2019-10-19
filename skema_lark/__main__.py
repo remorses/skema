@@ -33,13 +33,13 @@ ref: Ref
 
 unione: Ref1 | Ref2 | X
 
-and: Ref1 & Ref2 & X
+and?: Ref1 & Ref2 & X
 
 lista: [
     ciao: "sdf" | "ccc"
 ]
 
-oggetto:
+oggetto?:
     x: Int
     ...
 
@@ -54,9 +54,9 @@ o:
 """ # asas
 aiii # asd
 """
-oggett:
+oggett?:
     x: Str # comm
-    y: Int # sdfsdf
+    y?: Int # sdfsdf
 '''
 
 def test():

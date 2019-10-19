@@ -31,7 +31,9 @@ tree_grammar = r'''
 
     annotation: _TRIPLE_QUOTE _NL (/.+/ _NL)* _TRIPLE_QUOTE _NL
 
-    pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
+    ?pair: required_pair | optional_pair
+    required_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
+    optional_pair: [annotation] NAME "?:" (_NL object | value _NL | list _NL)
 
     list: "[" (_NL object | value) "]"
 
