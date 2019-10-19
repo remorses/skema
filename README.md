@@ -28,7 +28,7 @@ npm i -g quicktype # for more languages
 ```
 skema generate ./schema.skema --jsonschema ./your_path.json
 skema generate ./schema.skema --graphql ./your_path.graphql
-skema generate ./schema.skema --graphql ./your_path.graphql
+skema generate ./schema.skema --typescript ./your_path.graphql
 ```
 
 
