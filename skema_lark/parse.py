@@ -14,14 +14,18 @@ tree_grammar = r'''
         | "true" -> true
         | "false" -> false
         | ESCAPED_STRING -> literal_string
-        | SIGNED_NUMBER -> literal_number
         | NAME -> ref
         | /\/.*\// -> regex
+        | range
+        | SIGNED_INT -> literal_int
 
     ellipsis: "..."
     union: value ("|" scalar)+
     intersection: value ("&" scalar)+
 
+    ?range: (SIGNED_INT  | SIGNED_FLOAT) ".." (SIGNED_INT | SIGNED_FLOAT) -> bounded_range
+        | (SIGNED_INT  | SIGNED_FLOAT) ".." -> low_bounded_range
+        | ".." (SIGNED_INT  | SIGNED_FLOAT) -> high_bounded_range
 
     ?value: scalar
         | union
@@ -47,6 +51,8 @@ tree_grammar = r'''
     %import common.SIGNED_NUMBER
     %import common.INT
     %import common.FLOAT
+    %import common.SIGNED_INT
+    %import common.SIGNED_FLOAT
     %declare _INDENT _DEDENT
     %ignore WS_INLINE
     %ignore COMMENT

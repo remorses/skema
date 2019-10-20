@@ -57,6 +57,14 @@ aiii # asd
 oggett?:
     x: Str # comm
     y?: Int # sdfsdf
+
+range: 0 .. 20
+range: 0. .. 1.6
+range: .. 1.6
+range: .. 6
+num: 3
+
+nums: 2 | 3 | 5
 '''
 
 def test():
