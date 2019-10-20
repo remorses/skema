@@ -72,7 +72,7 @@ def generate(
         generate_jsonschema(path, ref=ref, resolve=resolve, hide=hide, only=only)
     elif isinstance(jsonschema, str):
         generate_jsonschema(
-            path, result_file=graphql, ref=ref, resolve=resolve, hide=hide, only=only
+            path, result_file=jsonschema, ref=ref, resolve=resolve, hide=hide, only=only
         ),
     if python:
         generate_python(path, result_file=None if python is True else python, hide=hide, only=only)
