@@ -73,18 +73,3 @@ class TreeIndenter(Indenter):
 
 parser = Lark(tree_grammar, parser='lalr', postlex=TreeIndenter(), lexer_callbacks={'COMMENT': lambda c: None})
 # reconstructor = Reconstructor(parser)
-
-test_tree = """
-a
-    b
-    c
-        d
-        e
-    f
-        g
-"""
-
-def test():
-    t = parser.parse(test_tree)
-    print(t.pretty())
-    print(reconstructor.reconstruct(t))
