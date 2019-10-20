@@ -21,7 +21,7 @@ tree_grammar = r'''
 
     ellipsis: "..."
     union: value ("|" scalar)+
-    intersection: value ("&" scalar)+
+    intersection: value (("&" scalar)+ | "&" _NL object)
 
     ?range: (SIGNED_INT  | SIGNED_FLOAT) ".." (SIGNED_INT | SIGNED_FLOAT) -> bounded_range
         | (SIGNED_INT  | SIGNED_FLOAT) ".." -> low_bounded_range
@@ -34,6 +34,7 @@ tree_grammar = r'''
     _TRIPLE_QUOTE: "\"\"\""
 
     annotation: _TRIPLE_QUOTE _NL (/.+/ _NL)* _TRIPLE_QUOTE _NL
+
 
     ?pair: required_pair | optional_pair
     required_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
