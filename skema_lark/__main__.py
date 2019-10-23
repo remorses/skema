@@ -67,7 +67,7 @@ num: 3
 interfaced: XXX &
     num: 9
 
-nums: 2 | 3 | 5 & 3
+nums: 1 & 2 | 3 | 5 & 3
 '''
 
 def test():
