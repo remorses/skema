@@ -7,10 +7,14 @@ ELLIPSIS = "..."
 
 
 class TreeToJson(Transformer):
+    def __init__(self, ref=None):
+        self.ref = ref
+
     def start(self, children):
+        ref = self.ref or get_first_key(children[0])
         return {
             "$schema": "http://json-schema.org/draft-07/schema#",
-            #  "$ref": "#/definitions/" + children[0],
+            "$ref": "#/definitions/" + ref,
             "definitions": merge(*children),
         }
 
@@ -67,28 +71,40 @@ class TreeToJson(Transformer):
         return value
 
     def bounded_range(self, children):
-        if any(["." in x for x in children]):
+        are_floats = any(["." in x for x in children])
+        if are_floats:
             children = lmap(float, children)
         else:
             children = lmap(int, children)
         low, high = children
-        return {"type": "number", "minimum": low, "maximum": high}
+        res = {"type": "number", "minimum": low, "maximum": high}
+        if not are_floats:
+            res.update({"multipleOf": 1.0})
+        return res
 
     def low_bounded_range(self, children):
-        if any(["." in x for x in children]):
+        are_floats = any(["." in x for x in children])
+        if are_floats:
             children = lmap(float, children)
         else:
             children = lmap(int, children)
         low, = children
-        return {"type": "number", "minimum": low}
+        res = {"type": "number", "minimum": low}
+        if not are_floats:
+            res.update({"multipleOf": 1.0})
+        return res
 
     def high_bounded_range(self, children):
-        if any(["." in x for x in children]):
+        are_floats = any(["." in x for x in children])
+        if are_floats:
             children = lmap(float, children)
         else:
             children = lmap(int, children)
         high, = children
-        return {"type": "number", "maximum": high}
+        res = {"type": "number", "maximum": high}
+        if not are_floats:
+            res.update({"multipleOf": 1.0})
+        return res
 
     def object(self, children):
         required = [
@@ -99,22 +115,27 @@ class TreeToJson(Transformer):
         if ELLIPSIS in children:
             children.remove(ELLIPSIS)
             if len(children) == 1:
-                return {"type": "object", "required": required}
-
-            return {"type": "object", "properties": properties, "required": required}
+                res = {"type": "object"}
+            else:
+                res = {"type": "object", "properties": properties}
         else:
-            return {
+            res = {
                 "type": "object",
                 "properties": properties,
                 "additionalProperties": False,
                 "required": required,
             }
+        if required:
+            res.update({"required": required})
+        return res
 
     def list(self, children):
         value, = children
         return {"type": "array", "items": value}
 
     def union(self, children):
+        if all(["const" in x for x in children]):
+            return {"enum": children, }
         return {"anyOf": children}
 
     def intersection(self, children):
@@ -169,5 +190,11 @@ x:
 z: 0 .. 1
 x: 0 | 1 | 4
 xxx: Name | Str & Int
+
+zzz: X &
+    x: 0 ..
+
+enum: "s" | "sd"
+
 '''
 pretty(parse(x))

@@ -21,7 +21,7 @@ tree_grammar = r'''
         | range
 
     literal_ellipsis: "..."
-    union: value ("|" scalar)+
+    union: (value ("|" scalar)+)
     intersection: value (("&" scalar)+ | "&" _NL object)
 
     ?range: (SIGNED_INT  | SIGNED_FLOAT) ".." (SIGNED_INT | SIGNED_FLOAT) -> bounded_range
