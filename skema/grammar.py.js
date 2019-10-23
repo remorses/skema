@@ -1,12 +1,12 @@
 ({
     lex: {
         rules: [
-            ['"""(?:(?!""").|\\n)*"""[ ]*', `
+            ['"""(?:(?!""").|\\r?\\n)*"""[ ]*', `
             last = len(yytext.strip()) - 3
             yytext = yytext[3:last]
-            if yytext and yytext[0] == '\\n':
+            if yytext and yytext[0] in ['\\n', '\\r\\n', '\\r']:
                 yytext = yytext[1:]
-            if yytext and yytext[-1] == '\\n':
+            if yytext and yytext[-1] in ['\\n', '\\r\\n', '\\r']:
                 yytext = yytext[:-1]
             return 'ANNOTATION'
             `],
@@ -64,7 +64,7 @@
             // ------------------------------------------------
             // Indent/Dedent.
     
-            [`\\n((?:[ ]|#.*)*)`, `
+            [`\\r?\\n((?:[ ]|#.*)*)`, `
             if '#' in yytext:
                 pass
             else:

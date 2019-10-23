@@ -66,9 +66,9 @@ def _lex_rule1(self):
     
     last = len(yytext.strip()) - 3
     yytext = yytext[3:last]
-    if yytext and yytext[0] == '\n':
+    if yytext and yytext[0] in ['\n', '\r\n', '\r']:
         yytext = yytext[1:]
-    if yytext and yytext[-1] == '\n':
+    if yytext and yytext[-1] in ['\n', '\r\n', '\r']:
         yytext = yytext[:-1]
     return 'ANNOTATION'
     
@@ -154,7 +154,7 @@ def _lex_rule13(self):
     global __, __loc, yytext, yyleng
     pass
 
-_lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
+_lex_rules = [['^"""(?:(?!""").|\r?\n)*"""[ ]*', _lex_rule1],
 ['^/.*/[ ]*', _lex_rule2],
 ['^\.\.\.:[ ]*', _lex_rule3],
 ['^[$a-zA-Z0-9_]+\?:[ ]*', _lex_rule4],
@@ -164,7 +164,7 @@ _lex_rules = [['^"""(?:(?!""").|\n)*"""[ ]*', _lex_rule1],
 ['^\][ ]*', _lex_rule8],
 ['^\.\.\.[ ]*', _lex_rule9],
 ['^[$a-zA-Z0-9_&\| !."]+', _lex_rule10],
-['^\n((?:[ ]|#.*)*)', _lex_rule11],
+['^\r?\n((?:[ ]|#.*)*)', _lex_rule11],
 ['^#.*', _lex_rule12],
 ['^\s+', _lex_rule13]]
 
