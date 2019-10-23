@@ -67,52 +67,41 @@ class TreeToJson(Transformer):
         return value
 
     def bounded_range(self, children):
-        if any(['.' in x for x in children]):
+        if any(["." in x for x in children]):
             children = lmap(float, children)
         else:
             children = lmap(int, children)
-        low, high = children        
-        return {
-            'type': 'number',
-            'minimum': low,
-            'maximum': high,
-        }
+        low, high = children
+        return {"type": "number", "minimum": low, "maximum": high}
+
     def low_bounded_range(self, children):
-        if any(['.' in x for x in children]):
+        if any(["." in x for x in children]):
             children = lmap(float, children)
         else:
             children = lmap(int, children)
-        low, = children        
-        return {
-            'type': 'number',
-            'minimum': low,
-        }
+        low, = children
+        return {"type": "number", "minimum": low}
 
     def high_bounded_range(self, children):
-        if any(['.' in x for x in children]):
+        if any(["." in x for x in children]):
             children = lmap(float, children)
         else:
             children = lmap(int, children)
-        high, = children        
-        return {
-            'type': 'number',
-            'maximum': high,
-        }
+        high, = children
+        return {"type": "number", "maximum": high}
 
     def object(self, children):
-        required = [get_first_key(c) for c in children if c != ELLIPSIS and c['required']]
-        children = lmap(lambda o: omit(o, ['required']), children)
+        required = [
+            get_first_key(c) for c in children if c != ELLIPSIS and c["required"]
+        ]
+        children = lmap(lambda o: omit(o, ["required"]), children)
         properties = merge(*children)
         if ELLIPSIS in children:
             children.remove(ELLIPSIS)
             if len(children) == 1:
                 return {"type": "object", "required": required}
 
-            return {
-                "type": "object",
-                "properties": properties,
-                "required": required,
-            }
+            return {"type": "object", "properties": properties, "required": required}
         else:
             return {
                 "type": "object",
@@ -124,29 +113,25 @@ class TreeToJson(Transformer):
     def list(self, children):
         value, = children
         return {"type": "array", "items": value}
-    
+
     def union(self, children):
-        return {
-            'anyOf': children,
-        }
-    
+        return {"anyOf": children}
+
     def intersection(self, children):
-        return {
-            'allOf': children,
-        }
+        return {"allOf": children}
 
     def required_pair(self, children):
         if len(children) == 3:
             annotation, key, value = children
         else:
             key, value = children
-            annotation = ''
-        res = {str(key): value, 'required': True, 'description': str(annotation)}
+            annotation = ""
+        res = {str(key): value, "required": True, "description": str(annotation)}
         return res
 
     def optional_pair(self, children):
         key, value = children
-        res = {str(key): value, 'required': False}
+        res = {str(key): value, "required": False}
         return res
 
     pass
