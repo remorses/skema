@@ -21,7 +21,7 @@ start: exp
 
 terms: "a" -> a
     | "b" -> b
-    | "c"  -> c
+    | "c" -> c
     | "(" exp ")" -> group
 
 ?or: and | or ("|" and)+

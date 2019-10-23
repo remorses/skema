@@ -6,20 +6,21 @@ from lark.reconstruct import Reconstructor
 tree_grammar = r'''
     start: (_NL* pair)+ _NL*
 
-    scalar: "Str" -> str
-        | "Int" -> int
-        | "Float" -> float
-        | "Bool" -> bool
-        | "null" -> null
-        | "true" -> true
-        | "false" -> false
+    scalar: "Str" -> type_str
+        | "Int" -> type_int
+        | "Float" -> type_float
+        | "Bool" -> type_bool
+        | "Any" -> type_any
+        | "null" -> literal_null
+        | "true" -> literal_true
+        | "false" -> literal_false
         | ESCAPED_STRING -> literal_string
-        | NAME -> ref
+        | SIGNED_INT -> literal_integer
+        | NAME -> reference
         | /\/.*\// -> regex
         | range
-        | SIGNED_INT -> literal_int
 
-    ellipsis: "..."
+    literal_ellipsis: "..."
     union: value ("|" scalar)+
     intersection: value (("&" scalar)+ | "&" _NL object)
 
@@ -35,14 +36,13 @@ tree_grammar = r'''
 
     annotation: _TRIPLE_QUOTE _NL (/.+/ _NL)* _TRIPLE_QUOTE _NL
 
-
     ?pair: required_pair | optional_pair
     required_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
     optional_pair: [annotation] NAME "?:" (_NL object | value _NL | list _NL)
 
     list: "[" (_NL object | value) "]"
 
-    object: _INDENT pair* [ellipsis _NL] _DEDENT
+    object: _INDENT pair* [literal_ellipsis _NL] _DEDENT
 
     COMMENT: /#.*/
 

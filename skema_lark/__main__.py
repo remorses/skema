@@ -67,7 +67,11 @@ num: 3
 interfaced: XXX &
     num: 9
 
-nums: 1 & 2 | 3 | 5 & 3
+
+obj:
+    prop1: Str
+    bca: Int
+
 '''
 
 def test():
