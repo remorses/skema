@@ -1,5 +1,5 @@
 from lark import Visitor, Tree, Transformer
-from funcy import cat, flip
+from funcy import cat, flip, collecting
 from prtty import pretty
 from collections import defaultdict
 from .topological_sort import topological_sort
@@ -68,7 +68,17 @@ class MergeAnds(Transformer):
                 to_join += fields
             elif child.data == 'object':
                 to_join += child.children
-        return Tree('object', to_join)
+        children = unique(to_join, key=lambda x: x.children[0])
+        return Tree('object', children)
+
+@collecting
+def unique(l, *, key):
+    passed = set()
+    for e in l:
+        d = key(e)
+        if not d in passed:
+            yield e
+        passed.add(d)
 
 
 is_reference_parent = lambda node: ( # TODO add list reference k case
