@@ -1,5 +1,5 @@
 from prtty import pretty
-from .splitter import Splitter, MakeMap, MergeAnds
+from .splitter import Splitter, MakeMap, MergeAnds, ReplaceIds
 from lark import Transformer, Token, Tree
 from funcy import merge, lmap, omit, concat
 from .parse import parser
@@ -130,6 +130,16 @@ obj:
     z:
         a: Int
         b: Str
+        nn:
+            a: Str
+            lkk: [
+                k: Int
+            ]
+
+ll: 
+    x: [
+        x: Int
+    ]
 
 A:
     x: Str
@@ -145,10 +155,10 @@ xxx: A & zzz
 """
 
 t = parser.parse(x)
-print(t.pretty())
-mapper = MakeMap()
-mapper.visit(t)
-pretty(mapper.types)
+# print(t.pretty())
+# mapper = MakeMap()
+# mapper.visit(t)
+# pretty(mapper.types)
 
 
 # t = MergeAnds().transform(t)
@@ -157,7 +167,7 @@ pretty(mapper.types)
 
 # t = Splitter().transform(t)
 # print(t.pretty())
-transformer = MergeAnds() * Splitter()
+transformer = MergeAnds() * Splitter() * ReplaceIds()
 t = transformer.transform(t)
 print(t.pretty())
 

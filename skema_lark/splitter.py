@@ -1,4 +1,8 @@
 from lark import Visitor, Tree, Transformer
+from funcy import cat, flip
+from prtty import pretty
+from collections import defaultdict
+from .topological_sort import topological_sort
 import uuid
 from copy import copy
 
@@ -31,6 +35,10 @@ class MergeAnds(Transformer):
     def root_pair(self, children):
         key, *_ = children
         self.types[key] = Tree('root_pair', children)
+        is_reference = lambda node: node.data == 'reference'
+        for child in Tree('', children).find_pred(is_reference):
+            print(child)
+        # self.child_of
         return Tree('root_pair', children)
 
     # def intersection(self, tree: Tree):
@@ -63,6 +71,59 @@ class MergeAnds(Transformer):
         return Tree('object', to_join)
 
 
+is_reference_parent = lambda node: ( # TODO add list reference k case
+    node.data in ['optional_pair', 'required_pair'] and node.children[1].data == 'reference'
+)
+
+
+class ReplaceIds(Transformer):
+    types: dict = {}
+    child_of: defaultdict = defaultdict(set)
+
+    def __init__(self, ):
+        pass
+
+    def start(self, children):
+        translations = {}
+        ids_items = [(k, {x for x in v if x in self.child_of.keys()}) for k, v in self.child_of.items()]
+        ids_sorted = topological_sort(ids_items)
+        ids_sorted = (list(ids_sorted))
+        for id in ids_sorted:
+            translations[id] = '_'.join(reversed(list(self.child_of[id])))
+            self.types[id].children[0] = translations[id]
+
+            for _, parents in self.child_of.items():
+                if id in parents:
+                    parents.remove(id)
+                    parents.add(translations[id])
+
+            for parent in self.child_of[id]:
+                original_id = flip(translations).get(parent)
+                if not original_id in self.types:
+                    continue
+                refs = self.types[original_id].find_pred(lambda node: node.data == 'reference')
+                for ref_node in refs:
+                    refname, = ref_node.children
+                    if refname in translations:
+                        ref_node.children = [translations[refname]]
+        return Tree('start', list(self.types.values()))
+        
+
+    def root_pair(self, children):
+        key, *_ = children
+        self.types[key] = Tree('root_pair', children)
+        refs_parents = Tree('', children).find_pred(is_reference_parent)
+        for child in refs_parents:
+            parentname, ref = child.children # TODO first child might be annotation
+            refname, = ref.children
+            self.child_of[refname].add(str(key))
+            self.child_of[refname].add(str(parentname))
+        if refs_parents:
+            pretty(self.child_of)
+            pretty(list(self.types.keys()))
+        return Tree('root_pair', children)
+
+
 
 class Splitter(Transformer):
     types: dict = {}
@@ -86,9 +147,8 @@ class Splitter(Transformer):
         id = make_id()
         if child.data in ["object", "list"]:
             old_children = copy(child.children)
-            child.children = [Tree("reference", [id])]
-            self.types[id] = Tree("root_pair", [id] + old_children)
-        return Tree('list', [child])
+            self.types[id] = Tree("root_pair", [id] + [Tree('object', old_children)])
+        return Tree('list', [Tree("reference", [id])])
 
     def intersection(self, tree: Tree):
         raise Exception('cannot handle intersections')
@@ -102,6 +162,9 @@ class Splitter(Transformer):
                 self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
                 key.children = [name, Tree("reference", [id])]
         return Tree('object', children)
+
+
+
 
 
 
