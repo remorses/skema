@@ -75,6 +75,18 @@ is_reference_parent = lambda node: ( # TODO add list reference k case
     node.data in ['optional_pair', 'required_pair'] and node.children[1].data == 'reference'
 )
 
+# is_reference_list_parent = lambda node: ( # TODO add list reference k case
+#     node.data in ['optional_pair', 'required_pair'] and node.children[1].data == 'list' 
+#     and (node.children[1].children[0].data == 'list')
+# )
+
+def is_reference_list_parent(node: Tree):
+    is_list_pair = node.data in ['optional_pair', 'required_pair'] and node.children[1].data == 'list'
+    if not is_list_pair:
+        return False
+    list_node = node.children[1]
+    return str(list_node.children[0].data) == 'reference'
+
 
 class ReplaceIds(Transformer):
     types: dict = {}
@@ -112,15 +124,27 @@ class ReplaceIds(Transformer):
     def root_pair(self, children):
         key, *_ = children
         self.types[key] = Tree('root_pair', children)
+
+        # get generic references
         refs_parents = Tree('', children).find_pred(is_reference_parent)
         for child in refs_parents:
             parentname, ref = child.children # TODO first child might be annotation
             refname, = ref.children
             self.child_of[refname].add(str(key))
             self.child_of[refname].add(str(parentname))
-        if refs_parents:
-            pretty(self.child_of)
-            pretty(list(self.types.keys()))
+        
+        # get list references
+        list_refs_parents = list(Tree('', children).find_pred(is_reference_list_parent))
+        for list_parent in list_refs_parents:
+            parentname, list_node, = list_parent.children
+            ref, = list_node.children
+            refname, = ref.children
+            self.child_of[refname].add(str(key))
+            self.child_of[refname].add(str(parentname))
+
+        # if refs_parents:
+        #     pretty(self.child_of)
+        #     pretty(list(self.types.keys()))
         return Tree('root_pair', children)
 
 
