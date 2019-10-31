@@ -1,5 +1,5 @@
 from prtty import pretty
-from .splitter import Splitter, MakeMap
+from .splitter import Splitter, MakeMap, MergeAnds
 from lark import Transformer, Token, Tree
 from funcy import merge, lmap, omit, concat
 from .parse import parser
@@ -131,17 +131,17 @@ obj:
         a: Int
         b: Str
 
-
-xxx: String | Int
-
 A:
     x: Str
 
 B:
     y: Str
 
-zzz: A & B
+zzz: A &
+    y: Int
+    b: Str
 
+xxx: A & zzz
 """
 
 t = parser.parse(x)
@@ -149,7 +149,19 @@ print(t.pretty())
 mapper = MakeMap()
 mapper.visit(t)
 pretty(mapper.types)
-t = Splitter(types=mapper.types).visit(t)
+
+
+# t = MergeAnds().transform(t)
+# print('\nMERGED\n')
+# print(t.pretty())
+
+# t = Splitter().transform(t)
+# print(t.pretty())
+transformer = MergeAnds() * Splitter()
+t = transformer.transform(t)
 print(t.pretty())
+
+
+
 s = Graphql().transform(t)
 print(s)
