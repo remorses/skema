@@ -4,7 +4,7 @@ from lark.indenter import Indenter
 from lark.reconstruct import Reconstructor
 
 tree_grammar = r'''
-    start: (_NL* pair)+ _NL*
+    start: (_NL* root_pair)+ _NL*
 
     scalar: "Str" -> type_str
         | "Int" -> type_int
@@ -36,13 +36,13 @@ tree_grammar = r'''
 
     annotation: _TRIPLE_QUOTE _NL (/.+/ _NL)* _TRIPLE_QUOTE _NL
 
-    ?pair: required_pair | optional_pair
+    root_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
     required_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
     optional_pair: [annotation] NAME "?:" (_NL object | value _NL | list _NL)
 
     list: "[" (_NL object | value) "]"
 
-    object: _INDENT pair* [literal_ellipsis _NL] _DEDENT
+    object: _INDENT (required_pair | optional_pair)* [literal_ellipsis _NL] _DEDENT
 
     COMMENT: /#.*/
 
