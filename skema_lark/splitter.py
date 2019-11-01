@@ -219,12 +219,13 @@ class Splitter(Transformer):
 
     @v_args(meta=True)
     def list(self, children, meta):
+        child, = children
+        if not child.data in ["object", "list"]:
+            return Tree('list', children)
         parent_key = meta['parent_key']
         id = self.make_id(parent_key)
-        child, = children
-        if child.data in ["object", "list"]:
-            old_children = copy(child.children)
-            self.types[id] = Tree("root_pair", [id] + [Tree('object', old_children)])
+        old_children = copy(child.children)
+        self.types[id] = Tree("root_pair", [id] + [Tree('object', old_children)])
         return Tree('list', [Tree("reference", [id])])
 
     def intersection(self, tree: Tree):

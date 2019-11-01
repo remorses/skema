@@ -146,10 +146,15 @@ A:
 
 B:
     y: Str
+    l: [Str]
 
 zzz: A &
     y: Int
     b: Str
+    kkkkk: [
+        z: Int
+        o: [Int]
+    ]
 
 xxx: A & zzz
 """
