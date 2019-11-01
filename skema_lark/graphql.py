@@ -1,5 +1,5 @@
 from prtty import pretty
-from .splitter import Splitter, MakeMap, MergeAnds, ReplaceIds
+from .splitter import Splitter, MakeMap, MergeAnds, ReplaceIds, GetDependencies, AddListMetas
 from lark import Transformer, Token, Tree
 from funcy import merge, lmap, omit, concat
 from .parse import parser
@@ -167,7 +167,7 @@ t = parser.parse(x)
 
 # t = Splitter().transform(t)
 # print(t.pretty())
-transformer = MergeAnds() * Splitter() * ReplaceIds()
+transformer = MergeAnds() * GetDependencies() * AddListMetas() * Splitter() # * ReplaceIds()
 t = transformer.transform(t)
 print(t.pretty())
 

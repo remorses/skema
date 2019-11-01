@@ -1,8 +1,12 @@
-from lark import Visitor, Tree, Transformer
+from lark import Visitor, Tree, Transformer, Token, v_args
+from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
 from collections import defaultdict
 from .topological_sort import topological_sort
+from toposort import toposort, toposort_flatten
+from orderedset import OrderedSet
+from .types import UniqueKey
 import uuid
 from copy import copy
 
@@ -12,9 +16,7 @@ def make_reference(id, tree: Tree):
     subs = Tree("root_pair", [id] + old_children)
     return subs
 
-def make_id():
-    id = str(uuid.uuid1())[:8]
-    return id
+
 
 class MakeMap(Visitor):
     types: dict
@@ -26,6 +28,8 @@ class MakeMap(Visitor):
     def root_pair(self, tree):
         key, *_ = tree.children
         self.types[key] = tree
+
+
 
 class MergeAnds(Transformer):
     types: dict = {}
@@ -97,7 +101,9 @@ def is_reference_list_parent(node: Tree):
     list_node = node.children[1]
     return str(list_node.children[0].data) == 'reference'
 
-
+# i could remove this class by 
+# getting the path from root to leaf for the node i am removing,
+# make the name of the reference as the join of the parent names
 class ReplaceIds(Transformer):
     types: dict = {}
     child_of: defaultdict = defaultdict(set)
@@ -158,27 +164,64 @@ class ReplaceIds(Transformer):
         return Tree('root_pair', children)
 
 
+@v_args(tree=True)
+class AddListMetas(Transformer):
+    def required_pair(self, tree: Tree):
+        name, list_node = tree.children
+        if not list_node.data == 'list':
+            return tree
+        list_node._meta = {'parent_key': name}
+        return tree
+    
+    optional_pair = required_pair
+    root_pair = required_pair
+        
+
 
 class Splitter(Transformer):
     types: dict = {}
+    tree: Tree
+    dependencies: dict
+
+    def transform(self, t):
+        self.tree = t
+        if not t.meta or not 'dependencies' in t.meta:
+            raise Exception('needs tree with dependencies')
+        self.dependencies = t.meta['dependencies']
+        for k, v in t.meta['dependencies'].items():
+            print(f'{k} -> {list(v)}')
+        return super().transform(t)
+    
+    def make_id(self, key):
+        print(repr(key))
+        print(self.dependencies[key])
+        if not key:
+            return str(uuid.uuid1())[:8]
+        if not isinstance(key, UniqueKey):
+            key = UniqueKey(key)
+        id = '_'.join(list(self.dependencies[key])) + '_' + str(key)
+        assert id
+        return id
 
     def root_pair(self, children):
         key, *_ = children
         self.types[key] = Tree('root_pair', children)
         return Tree('root_pair', children)
 
-    def start(self, tree: Tree):
+    def start(self, children):
         types = list(self.types.values())
-        # tree.children.extend(types)
+        # tree.children.extend(types)
         return Tree('start', types)
 
     def __init__(self, ):
         self.types = {}
         pass
 
-    def list(self, children):
+    @v_args(meta=True)
+    def list(self, children, meta):
+        parent_key = meta['parent_key']
+        id = self.make_id(parent_key)
         child, = children
-        id = make_id()
         if child.data in ["object", "list"]:
             old_children = copy(child.children)
             self.types[id] = Tree("root_pair", [id] + [Tree('object', old_children)])
@@ -192,48 +235,77 @@ class Splitter(Transformer):
             name, value = key.children # TODO sometimes first is annotation
             if value.data in ['object']:
                 print('ok')
-                id = make_id()
+                id = self.make_id(name)
                 self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
                 key.children = [name, Tree("reference", [id])]
         return Tree('object', children)
 
 
 
+@v_args(tree=True)
+class GetDependencies(Transformer):
+    dependencies: defaultdict = defaultdict(OrderedSet)
+
+    def start(self, tree):
+        ordered_deps = list(toposort_flatten(self.dependencies_as_sets))
+        for k in ordered_deps:
+            v = self.dependencies[k]
+            to_process = [x for x in v if x in self.dependencies]
+            for x in to_process:
+                self.dependencies[(k)].update(self.dependencies[x])
+        return Tree("start", tree.children, meta={'dependencies': self.dependencies})
+
+    @property
+    def dependencies_as_sets(self,):
+        return {k: set(v) for k, v in self.dependencies.items()}
+
+    def required_pair(self, t,):
+        this, value = t.children
+        if value.data == 'object':
+            for child in value.children:
+                k, _ = child.children
+                self.dependencies[UniqueKey(k)].add(UniqueKey(this))
+        return t
+
+    optional_pair = required_pair
+    root_pair = required_pair
 
 
 
-class SplitterVisitor(Visitor):
-    types: dict = {}
 
 
-    def root_pair(self, tree):
-        key, *_ = tree.children
-        self.types[key] = tree
+# class SplitterVisitor(Visitor):
+#     types: dict = {}
 
-    def start(self, tree: Tree):
-        types = list(self.types.values())
-        # tree.children.extend(types)
-        tree.children = self.types.values()
 
-    def __init__(self, ):
-        self.types = {}
-        pass
+#     def root_pair(self, tree):
+#         key, *_ = tree.children
+#         self.types[key] = tree
 
-    def list(self, tree: Tree):
-        child, = tree.children
-        id = make_id()
-        if child.data in ["object", "list"]:
-            self.types[id] = make_reference(id, tree)
-        pass
+#     def start(self, tree: Tree):
+#         types = list(self.types.values())
+#         # tree.children.extend(types)
+#         tree.children = self.types.values()
 
-    def intersection(self, tree: Tree):
-        raise Exception('cannot handle intersections')
+#     def __init__(self, ):
+#         self.types = {}
+#         pass
 
-    def object(self, tree: Tree):
-        for key in tree.children:
-            name, value = key.children # TODO sometimes first is annotation
-            if value.data in ['object']:
-                print('ok')
-                id = make_id()
-                self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
-                key.children = [name, Tree("reference", [id])]
+#     def list(self, tree: Tree):
+#         child, = tree.children
+#         id = make_id()
+#         if child.data in ["object", "list"]:
+#             self.types[id] = make_reference(id, tree)
+#         pass
+
+#     def intersection(self, tree: Tree):
+#         raise Exception('cannot handle intersections')
+
+#     def object(self, tree: Tree):
+#         for key in tree.children:
+#             name, value = key.children # TODO sometimes first is annotation
+#             if value.data in ['object']:
+#                 print('ok')
+#                 id = make_id()
+#                 self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
+#                 key.children = [name, Tree("reference", [id])]
