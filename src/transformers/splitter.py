@@ -62,7 +62,7 @@ class Splitter(Transformer):
 
     @v_args(meta=True)
     def union(self, children, meta):
-        parent_key = '' #  meta["parent_key"] # TODO inject meta to make the right id
+        parent_key = meta["parent_key"]
         id = self.make_id(parent_key)
         old_children = copy(children)
         self.types[id] = Tree("root_pair", [id] + [Tree("union", old_children)])

@@ -50,3 +50,16 @@ class AddListMetas(Transformer):
 
     optional_pair = required_pair
     root_pair = required_pair
+
+
+@v_args(tree=True)
+class AddUnionMetas(Transformer):
+    def required_pair(self, tree: Tree):
+        name, list_node = tree.children
+        if not list_node.data == "union":
+            return tree
+        list_node._meta = {"parent_key": name}
+        return tree
+
+    optional_pair = required_pair
+    root_pair = required_pair

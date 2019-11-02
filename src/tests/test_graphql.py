@@ -14,7 +14,7 @@ def test_1():
 def test_2():
     t = parser.parse(y)
     transformer = (
-        MergeIntersections() * GetDependencies() * AddListMetas() * Splitter()
+        MergeIntersections() * GetDependencies() * AddListMetas() * AddUnionMetas() * Splitter()
     )  # * ReplaceIds()
     t = transformer.transform(t)
     print(t.pretty())
