@@ -61,7 +61,7 @@ tree_grammar = r'''
     
     _NL: ["\r"] "\n" " "*
 '''
-# _NL: /(\r?\n[\t ]*)+/
+
 
 class TreeIndenter(Indenter):
     NL_type = '_NL'
@@ -72,19 +72,4 @@ class TreeIndenter(Indenter):
     tab_len = 4
 
 parser = Lark(tree_grammar, parser='lalr', postlex=TreeIndenter(), lexer_callbacks={'COMMENT': lambda c: None})
-# reconstructor = Reconstructor(parser)
 
-test_tree = """
-a
-    b
-    c
-        d
-        e
-    f
-        g
-"""
-
-def test():
-    t = parser.parse(test_tree)
-    print(t.pretty())
-    print(reconstructor.reconstruct(t))

@@ -1,12 +1,11 @@
 from prtty import pretty
 from lark import Transformer, Token
 from funcy import merge, lmap, omit
-from .parse import parser
+from ..parser import parser
 
 ELLIPSIS = "..."
 
-
-class TreeToJson(Transformer):
+class JsonSchema(Transformer):
     def __init__(self, ref=None):
         self.ref = ref
 
@@ -149,6 +148,8 @@ class TreeToJson(Transformer):
             annotation = ""
         res = {str(key): value, "required": True, "description": str(annotation)}
         return res
+    
+    root_pair = required_pair
 
     def optional_pair(self, children):
         key, value = children
@@ -162,39 +163,3 @@ def get_first_key(obj):
     keys = list(obj.keys())
     return keys[0]
 
-
-def parse(x):
-    tree = parser.parse(x)
-    print(tree.pretty())
-    return TreeToJson().transform(tree)
-
-
-x = '''
-obj: Str
-"""
-ciao
-"""
-x:
-    y: Str
-    z: "Str"
-    v: 4
-    b: X
-    oo:
-        a: [Str]
-    ll: [
-        x: Int
-        u: Str
-    ]
-    x: /xxx/
-
-z: 0 .. 1
-x: 0 | 1 | 4
-xxx: Name | Str & Int
-
-zzz: X &
-    x: 0 ..
-
-enum: "s" | "sd"
-
-'''
-pretty(parse(x))

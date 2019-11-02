@@ -1,22 +1,9 @@
 from prtty import pretty
-from .splitter import Splitter, MakeMap, MergeAnds, ReplaceIds, GetDependencies, AddListMetas
 from lark import Transformer, Token, Tree
 from funcy import merge, lmap, omit, concat
-from .parse import parser
+from ..parser import parser
 
 ELLIPSIS = "..."
-
-
-class Enumeration:
-    children: list
-
-
-class Object:
-    fields: list
-
-
-class List:
-    fields: list
 
 
 class Graphql(Transformer):
@@ -117,66 +104,5 @@ def get_first_key(obj):
     return keys[0]
 
 
-def parse(x):
-    tree = parser.parse(x)
-    print(tree.pretty())
-    return Graphql().transform(tree)
 
 
-x = """
-obj:
-    a: Str
-    b: Int
-    z:
-        a: Int
-        b: Str
-        nn:
-            a: Str
-            lkk: [
-                k: Int
-            ]
-
-ll: 
-    x: [
-        x: Int
-    ]
-
-A:
-    x: Str
-
-B:
-    y: Str
-    l: [Str]
-
-zzz: A &
-    y: Int
-    b: Str
-    kkkkk: [
-        z: Int
-        o: [Int]
-    ]
-
-xxx: A & zzz
-"""
-
-t = parser.parse(x)
-# print(t.pretty())
-# mapper = MakeMap()
-# mapper.visit(t)
-# pretty(mapper.types)
-
-
-# t = MergeAnds().transform(t)
-# print('\nMERGED\n')
-# print(t.pretty())
-
-# t = Splitter().transform(t)
-# print(t.pretty())
-transformer = MergeAnds() * GetDependencies() * AddListMetas() * Splitter() # * ReplaceIds()
-t = transformer.transform(t)
-print(t.pretty())
-
-
-
-s = Graphql().transform(t)
-print(s)
