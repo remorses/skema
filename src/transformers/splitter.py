@@ -60,6 +60,14 @@ class Splitter(Transformer):
         self.types[id] = Tree("root_pair", [id] + [Tree("object", old_children)])
         return Tree("list", [Tree("reference", [id])])
 
+    @v_args(meta=True)
+    def union(self, children, meta):
+        parent_key = '' #  meta["parent_key"] # TODO inject meta to make the right id
+        id = self.make_id(parent_key)
+        old_children = copy(children)
+        self.types[id] = Tree("root_pair", [id] + [Tree("union", old_children)])
+        return Tree("reference", [id])
+
     def intersection(self, tree: Tree):
         raise Exception("cannot handle intersections")
 

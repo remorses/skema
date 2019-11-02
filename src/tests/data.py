@@ -2,6 +2,7 @@ x = """
 obj:
     a: Str
     b: Int
+    c: A | B
     z:
         a: Int
         b: Str
@@ -62,4 +63,9 @@ x1 = '''
 
     enum: "s" | "sd"
 
+'''
+
+y = '''
+x:
+    un: A | B
 '''
