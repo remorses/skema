@@ -10,6 +10,9 @@ class Graphql(Transformer):
     def __init__(self, ref=None):
         self.ref = ref
 
+    def __default__(self, data, children, meta):
+        raise NotImplementedError(f"{data} is not implemented in grahql") from None
+
     def start(self, children):
         return "\n".join(children)
 
@@ -28,21 +31,18 @@ class Graphql(Transformer):
     def type_any(self, _):
         return "Json"
 
-    def literal_null(self, _):
-        raise NotImplementedError("null not exists in graphql")
+    # def literal_null(self, _):
+    #     raise NotImplementedError("null not exists in graphql")
 
-    def literal_true(self, _):
-        raise NotImplementedError("true not exists in graphql")
+    # def literal_true(self, _):
+    #     raise NotImplementedError("true not exists in graphql")
 
-    def literal_false(self, _):
-        raise NotImplementedError("false not exists in graphql")
+    # def literal_false(self, _):
+    #     raise NotImplementedError("false not exists in graphql")
 
     # def literal_string(self, children):
     #     value, = children
     #     return value
-
-    def literal_integer(self, children):
-        raise NotImplementedError("literal integers not exists in graphql")
 
     def literal_ellipsis(self, _):
         return ELLIPSIS
