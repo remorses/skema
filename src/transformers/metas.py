@@ -39,7 +39,6 @@ class GetDependencies(Transformer):
     root_pair = required_pair
 
 
-
 @v_args(tree=True)
 class AddListMetas(Transformer):
     def required_pair(self, tree: Tree):

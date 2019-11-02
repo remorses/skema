@@ -78,23 +78,23 @@ class Graphql(Transformer):
                 + "\n".join(["    " + str(x.children[0][1:-1]) for x in children])
                 + "\n}\n"
             )
-        elif all([isinstance(x, str) for x in children]): 
+        elif all([isinstance(x, str) for x in children]):
             return "type $key = " + " | ".join(children) + "\n"
         else:
-            raise NotImplementedError('cannot mix literals and shit')
+            raise NotImplementedError("cannot mix literals and shit")
 
     def required_pair(self, children):
         k, v = children
         if "$key" in v:
             return v.replace("$key", k)
         return k + ": " + v
-    
+
     def root_pair(self, children):
         k, v = children
         if "$key" in v:
             return v.replace("$key", k)
         else:
-            return f'scalar {k}\n'
+            return f"scalar {k}\n"
 
     pass
 
@@ -102,7 +102,3 @@ class Graphql(Transformer):
 def get_first_key(obj):
     keys = list(obj.keys())
     return keys[0]
-
-
-
-

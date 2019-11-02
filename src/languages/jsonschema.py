@@ -5,6 +5,7 @@ from ..parser import parser
 
 ELLIPSIS = "..."
 
+
 class JsonSchema(Transformer):
     def __init__(self, ref=None):
         self.ref = ref
@@ -134,7 +135,7 @@ class JsonSchema(Transformer):
 
     def union(self, children):
         if all(["const" in x for x in children]):
-            return {"enum": children, }
+            return {"enum": children}
         return {"anyOf": children}
 
     def intersection(self, children):
@@ -148,7 +149,7 @@ class JsonSchema(Transformer):
             annotation = ""
         res = {str(key): value, "required": True, "description": str(annotation)}
         return res
-    
+
     root_pair = required_pair
 
     def optional_pair(self, children):
@@ -162,4 +163,3 @@ class JsonSchema(Transformer):
 def get_first_key(obj):
     keys = list(obj.keys())
     return keys[0]
-

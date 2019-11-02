@@ -72,4 +72,3 @@ class Splitter(Transformer):
                 self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
                 key.children = [name, Tree("reference", [id])]
         return Tree("object", children)
-

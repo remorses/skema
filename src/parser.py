@@ -1,9 +1,8 @@
-
 from lark import Lark
 from lark.indenter import Indenter
 from lark.reconstruct import Reconstructor
 
-tree_grammar = r'''
+tree_grammar = r"""
     start: (_NL* root_pair)+ _NL*
 
     scalar: "Str" -> type_str
@@ -60,16 +59,21 @@ tree_grammar = r'''
 
     
     _NL: ["\r"] "\n" " "*
-'''
+"""
 
 
 class TreeIndenter(Indenter):
-    NL_type = '_NL'
+    NL_type = "_NL"
     OPEN_PAREN_types = []
     CLOSE_PAREN_types = []
-    INDENT_type = '_INDENT'
-    DEDENT_type = '_DEDENT'
+    INDENT_type = "_INDENT"
+    DEDENT_type = "_DEDENT"
     tab_len = 4
 
-parser = Lark(tree_grammar, parser='lalr', postlex=TreeIndenter(), lexer_callbacks={'COMMENT': lambda c: None})
 
+parser = Lark(
+    tree_grammar,
+    parser="lalr",
+    postlex=TreeIndenter(),
+    lexer_callbacks={"COMMENT": lambda c: None},
+)

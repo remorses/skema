@@ -30,8 +30,6 @@ from copy import copy
 #         self.types[key] = tree
 
 
-
-
 # i could remove this class by
 # getting the path from root to leaf for the node i am removing,
 # make the name of the reference as the join of the parent names
@@ -97,8 +95,6 @@ class ReplaceIds(Transformer):
         #     pretty(self.child_of)
         #     pretty(list(self.types.keys()))
         return Tree("root_pair", children)
-
-
 
 
 # class SplitterVisitor(Visitor):

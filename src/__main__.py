@@ -1,4 +1,5 @@
 from .parse import parser
+
 test_tree = """
 a:
     c:
@@ -74,9 +75,11 @@ obj:
 
 '''
 
+
 def test():
     t = parser.parse(test_tree)
     print(t.pretty())
     # print(reconstructor.reconstruct(t))
+
 
 test()

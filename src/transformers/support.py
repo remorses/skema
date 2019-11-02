@@ -9,6 +9,7 @@ from ..types import UniqueKey
 import uuid
 from copy import copy
 
+
 @collecting
 def unique(l, *, key):
     passed = set()
