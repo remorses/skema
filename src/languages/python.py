@@ -1,4 +1,5 @@
 from prtty import pretty
+from populate import indent_to, populate_string
 from lark import Transformer, Token, Tree
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
@@ -42,7 +43,7 @@ class Python(Transformer):
 
     def literal_string(self, children):
         value, = children
-        return f'Literal[{value}]'
+        return f"Literal[{value}]"
 
     def literal_ellipsis(self, _):
         return ELLIPSIS
@@ -65,8 +66,8 @@ class Python(Transformer):
         return value
 
     def object(self, children):
-        return "type $key {\n" + "\n".join(["    " + c for c in children]) + "\n}\n"
-        template = '''
+
+        template = """
         class ${{typename}}(dotdict):
             _schema: dict
 
@@ -82,13 +83,22 @@ class Python(Transformer):
                     ${{indent_to('            ', render_setters(setters, args))}},
                     **kwargs
                 )
-        '''
+        """
+        types = "\n".join(children)
+        template = indent_to(
+            "",
+            """
+            class $key(dictlike):
+                ${{indent_to('    ', types)}}
+            """,
+        )
+        return populate_string(template, dict(types=types, indent_to=indent_to))
 
     def list(self, children):
         value, = children
         return f"List[{value}]"
 
-    def union(self, children):        
+    def union(self, children):
         return "type $key = " + f'Union[{", ".join(children)}]'
 
     def required_pair(self, children):
