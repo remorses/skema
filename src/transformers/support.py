@@ -18,15 +18,15 @@ class types:
     REGEX = 'regex'
 
 class literals:
-    NULL = 'null'
-    TRUE = 'true'
-    FALSE = 'false'
+    NULL = 'literal_null'
+    TRUE = 'literal_true'
+    FALSE = 'literal_false'
     STRING = 'literal_string'
     INTEGER = 'literal_integer'
     ELLIPSIS = 'literal_ellipsis'
 
 class composed_types:
-    OBJECT = 'obect'
+    OBJECT = 'object'
     LIST = 'list'
     INTERSECTION = 'intersection'
     UNION = 'union'
@@ -37,7 +37,7 @@ class composed_types:
 class structure:
     ROOT_PAIR = 'root_pair'
     REQUIRED_PAIR = 'required_pair'
-    OPTIONAL_PAIR = 'optional_par'
+    OPTIONAL_PAIR = 'optional_pair'
     REFERENCE = 'reference'
     ANNOTATION = 'annotation'
 

@@ -17,14 +17,15 @@ class MergeIntersections(Transformer):
     def __init__(self,):
         pass
 
-    def root_pair(self, children):
-        key, *_ = children
-        self.types[key] = Tree("root_pair", children)
-        is_reference = lambda node: node.data == "reference"
-        for child in Tree("", children).find_pred(is_reference):
-            print(child)
+    @v_args(tree=True)
+    def root_pair(self, t):
+        key, *_ = t.children
+        self.types[key] = t
+        # is_reference = lambda node: node.data == "reference"
+        # for child in t.find_pred(is_reference):
+        #     print(child)
         #  self.child_of
-        return Tree("root_pair", children)
+        return t
 
     # def intersection(self, tree: Tree):
     #     to_join = []
