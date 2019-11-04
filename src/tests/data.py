@@ -5,9 +5,9 @@ vvv: A | B
 
 obj:
     a: Str
-    b: Int
+    b?: Int
     c: A | B
-    z:
+    z?:
         a: Int
         b: Str
         nn:

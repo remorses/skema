@@ -6,7 +6,10 @@ from ..parser import parser
 
 ELLIPSIS = "..."
 
-
+imports = '''
+from typing import (Optional, List, Any)
+from typing_extensions import Literal
+'''
 class Python(Transformer):
     def __init__(self, ref=None):
         self.ref = ref
@@ -15,7 +18,7 @@ class Python(Transformer):
         raise NotImplementedError(f"{data} is not implemented in grahql") from None
 
     def start(self, children):
-        return "\n".join(children)
+        return imports + "\n".join(children)
 
     def type_str(self, _):
         return "str"
@@ -117,6 +120,13 @@ class Python(Transformer):
             return v.replace("$key", k)
         else:
             return f"{k} = {v}\n"
+
+    def optional_pair(self, children):
+        k, v = children
+        if "$key" in v:
+            return v.replace("$key", k)
+        else:
+            return f"{k}: Optional[{v}] = None\n"
 
     pass
 

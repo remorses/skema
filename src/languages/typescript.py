@@ -86,6 +86,12 @@ class Typescript(Transformer):
             return v.replace("$key", k)
         return k + ": " + v
 
+    def optional_pair(self, children):
+        k, v = children
+        if "$key" in v:
+            return v.replace("$key", k)
+        return k + "?: " + v
+
     def root_pair(self, children):
         k, v = children
         if "$key" in v:
