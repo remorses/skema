@@ -3,6 +3,7 @@ from lark import Token, Tree, v_args
 from ..transformers import Transformer
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
+from ..support import modifiers
 
 ELLIPSIS = "..."
 
@@ -97,6 +98,12 @@ class Graphql(Transformer):
         k, v = children
         annotation = meta['annotation'] if 'annotation' in meta else ''    
         annotation = annotation and f'"""\n{annotation}\n"""\n'
+        if modifiers.GRAPHQL_HIDDEN in annotation: # TODO graphql hide should be made before splitting
+            return ''
+
+        if modifiers.GRAPHQL_INPUT in annotation:
+            v = v.replace('type ', 'input ')
+            
         if "$key" in v:
             return annotation + v.replace("$key", k)
         else:

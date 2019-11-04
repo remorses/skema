@@ -3,7 +3,7 @@ vvv: A | B
 
 
 """
-ciao
+[graphql hide]
 """
 obj:
     a: Str

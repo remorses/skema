@@ -1,3 +1,8 @@
+class modifiers:
+    GRAPHQL_INPUT = "[graphql input]"
+    GRAPHQL_HIDDEN = "[graphql hide]"
+
+
 class types:
     STR = "type_str"
     BOOL = "type_bool"
