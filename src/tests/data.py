@@ -1,8 +1,10 @@
-x = """
+x = '''
 vvv: A | B
 
 
-
+"""
+ciao
+"""
 obj:
     a: Str
     b?: Int
@@ -38,7 +40,7 @@ zzz: A &
     ]
 
 xxx: A & zzz
-"""
+'''
 
 x1 = '''
     obj: Str

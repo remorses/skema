@@ -1,4 +1,5 @@
-from lark import Visitor, Tree, Transformer, Token, v_args
+from lark import Visitor, Tree, Token, v_args
+from .support import Transformer, unique
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -6,7 +7,6 @@ from collections import defaultdict
 from toposort import toposort, toposort_flatten
 from orderedset import OrderedSet
 from ..types import UniqueKey
-from .support import unique
 import uuid
 from copy import copy
 

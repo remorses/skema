@@ -1,7 +1,8 @@
 from prtty import pretty
 from populate import indent_to, populate_string
-from lark import Transformer, Token, Tree
+from lark import Token, Tree
 from funcy import merge, lmap, omit, concat
+from ..transformers import Transformer
 from ..parser import parser
 
 ELLIPSIS = "..."

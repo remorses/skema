@@ -1,4 +1,4 @@
-from lark import Visitor, Tree, Transformer, Token, v_args
+from lark import Visitor, Tree, Transformer as _Transformer, Token, v_args
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -6,8 +6,17 @@ from collections import defaultdict
 from toposort import toposort, toposort_flatten
 from orderedset import OrderedSet
 from ..types import UniqueKey
+from ..support import structure
 import uuid
 from copy import copy
+
+
+class Transformer(_Transformer):
+    def __default__(self, data, children, meta):
+        "Default operation on tree (for override)"
+        if not isinstance(meta, dict):
+            meta = {}
+        return Tree(data, children, meta)
 
 
 @v_args(tree=True)
@@ -15,6 +24,7 @@ class Printer(Transformer):
     def start(self, t):
         print(t.pretty())
         return t
+    
 
 
 @collecting

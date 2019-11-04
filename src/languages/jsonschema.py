@@ -1,5 +1,6 @@
 from prtty import pretty
-from lark import Transformer, Token
+from lark import Token
+from ..transformers import Transformer
 from funcy import merge, lmap, omit
 from ..parser import parser
 

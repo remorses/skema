@@ -12,6 +12,7 @@ def jsonschema(string):
 
 def python(string):
     transformer = TransformerChain(
+        t.RemoveAnnotations(),
         t.MergeIntersections(),
         t.GetDependencies(),
         t.AddListMetas(),
@@ -27,6 +28,7 @@ def python(string):
 
 def typescript(string):
     transformer = TransformerChain(
+        t.RemoveAnnotations(),
         t.MergeIntersections(),
         t.GetDependencies(),
         t.AddListMetas(),
@@ -40,6 +42,7 @@ def typescript(string):
 
 def graphq(string):
     transformer = TransformerChain(
+        t.RemoveAnnotations(),
         t.MergeIntersections(),
         t.GetDependencies(),
         t.AddListMetas(),

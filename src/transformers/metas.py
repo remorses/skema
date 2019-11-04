@@ -1,4 +1,5 @@
-from lark import Visitor, Tree, Transformer, Token, v_args
+from lark import Visitor, Tree, Token, v_args
+from .support import Transformer
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -6,6 +7,7 @@ from collections import defaultdict
 from toposort import toposort, toposort_flatten
 from orderedset import OrderedSet
 from ..types import UniqueKey
+from ..support import structure
 import uuid
 from copy import copy
 
@@ -16,6 +18,20 @@ class TranformerDictMeta(Transformer):
         if not isinstance(meta, dict):
             meta = {}
         return Tree(data, children, meta)
+
+@v_args(tree=True)
+class RemoveAnnotations(TranformerDictMeta):
+    def root_pair(self, t: Tree):
+        first, *_ = t.children
+        if isinstance(first, Tree) and first.data == structure.ANNOTATION:
+            annotation = t.children.pop(0)
+        else:
+            annotation = ''
+        meta = t.meta if isinstance(t.meta, dict) else {}
+        t._meta = {**meta, 'annotation': annotation}
+        return t
+    required_pair = root_pair
+    optional_pair = root_pair
 
 
 @v_args(tree=True)
