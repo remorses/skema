@@ -9,3 +9,6 @@ def test_grpahql():
 
 def test_jsonschema():
     print(jsonschema(x))
+
+def test_typescript():
+    print(typescript(x))

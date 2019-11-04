@@ -10,6 +10,13 @@ import uuid
 from copy import copy
 
 
+class TranformerDictMeta(Transformer):
+    def __default__(self, data, children, meta):
+        "Default operation on tree (for override)"
+        if not isinstance(meta, dict):
+            meta = {}
+        return Tree(data, children, meta)
+
 @v_args(tree=True)
 class GetDependencies(TranformerDictMeta):
     dependencies: defaultdict = defaultdict(OrderedSet)
@@ -39,12 +46,6 @@ class GetDependencies(TranformerDictMeta):
     root_pair = required_pair
 
 
-class TranformerDictMeta(Transformer):
-    def __default__(self, data, children, meta):
-        "Default operation on tree (for override)"
-        if not isinstance(meta, dict):
-            meta = {}
-        return Tree(data, children, meta)
 
 
 @v_args(tree=True)

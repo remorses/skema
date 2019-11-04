@@ -22,6 +22,18 @@ def python(string):
     tree = parse(string)
     return transformer.transform(tree)
 
+def typescript(string):
+    transformer = TransformerChain(
+        t.MergeIntersections(),
+        t.GetDependencies(),
+        t.AddListMetas(),
+        t.AddUnionMetas(),
+        t.Splitter(unions_inside_objects=False),
+        l.Typescript(),
+    )
+    tree = parse(string)
+    return transformer.transform(tree)
+
 
 def graphq(string):
     transformer = TransformerChain(
