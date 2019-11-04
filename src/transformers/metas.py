@@ -69,7 +69,7 @@ class AddListMetas(TranformerDictMeta):
         name, list_node = tree.children
         if not list_node.data == "list":
             return tree
-        list_node._meta = {"parent_key": name}
+        list_node._meta = {**list_node._meta, "parent_key": name}
         return tree
 
     optional_pair = required_pair
@@ -82,7 +82,7 @@ class AddUnionMetas(TranformerDictMeta):
         name, list_node = tree.children
         if not list_node.data == "union":
             return tree
-        list_node._meta = {"parent_key": name}
+        list_node._meta = {**list_node._meta, "parent_key": name}
         return tree
 
     # optional_pair = required_pair
