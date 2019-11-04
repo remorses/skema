@@ -40,7 +40,7 @@ def typescript(string):
     return transformer.transform(tree)
 
 
-def graphq(string):
+def graphql(string):
     transformer = TransformerChain(
         t.RemoveAnnotations(),
         t.MergeIntersections(),

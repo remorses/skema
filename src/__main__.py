@@ -14,15 +14,27 @@ def write(path, data):
         f.write(data)
 
 
-def gen(python=None, graphql=None, jsonschema=None):
+def get_stdin() -> str:
+    if sys.stdin.isatty():
+        print("need skema from stdin")
+        return
+    string = "".join(list(sys.stdin)).strip() + "\n"
+    return string
+
+
+def gen(python=None, graphql=None, typescript=None, jsonschema=None):
+    stdin = get_stdin()
     if python:
-        if sys.stdin.isatty():
-            print("need skema from stdin")
-            return
-        string = "".join(list(sys.stdin)).strip() + '\n'
-        # print(string.replace(' ', '.'))
-        code = gens.python(string)
-        print(code.strip())
+        code = gens.python(stdin)
+    elif typescript:
+        code = gens.typescript(stdin)
+    elif graphql:
+        code = gens.graphql(stdin)
+    elif jsonschema:
+        code = gens.jsonschema(stdin)
+    else:
+        code = ""
+    print(code.strip())
 
 
 fire.Fire({"gen": gen})
