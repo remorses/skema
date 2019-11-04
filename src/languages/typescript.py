@@ -44,7 +44,7 @@ class Typescript(Transformer):
 
     def literal_string(self, children):
         value, = children
-        return f'"{value}"'
+        return f'{value}'
 
     def literal_number(self, children):
         value, = children
