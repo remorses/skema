@@ -166,7 +166,7 @@ class Python(Transformer):
         if "$key" in v:
             return v.replace("$key", k)
         else:
-            return f"{k} = {v}\n{k}.from = lambda x: x\n"
+            return f"{k} = {v}\n{k}.from_ = lambda x: x\n"
 
     pass
 
