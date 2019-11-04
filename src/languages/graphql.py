@@ -89,6 +89,8 @@ class Graphql(Transformer):
             return v.replace("$key", k)
         return k + ": " + v
 
+    optional_pair = required_pair
+
     def root_pair(self, children):
         k, v = children
         if "$key" in v:
