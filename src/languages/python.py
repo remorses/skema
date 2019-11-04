@@ -113,6 +113,7 @@ class Python(Transformer):
             "",
             """
             class $key(dictlike):
+                $annotation
                 ${{indent_to('    ', types)}}
                 def __init__(
                     self,
@@ -162,10 +163,14 @@ class Python(Transformer):
                 f'{k}={meta["initializer"].replace("$value", k)}',
             )
 
-    def root_pair(self, children):
+    @v_args(meta=True)
+    def root_pair(self, children, meta):
         k, v = children
+        annotation = meta['annotation'] if 'annotation' in meta else ''
+        annotation = '\n    '.join(annotation.split('\n'))
+        annotation = annotation and f'"""\n    {annotation}\n    """\n'
         if "$key" in v:
-            return v.replace("$key", k)
+            return v.replace("$key", k).replace("$annotation", annotation)
         else:
             return f"{k} = {v}\n{k}.from_ = lambda x: x\n"
 
