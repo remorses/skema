@@ -24,11 +24,11 @@ class RemoveAnnotations(TranformerDictMeta):
     def root_pair(self, t: Tree):
         first, *_ = t.children
         if isinstance(first, Tree) and first.data == structure.ANNOTATION:
-            annotation = t.children.pop(0)
+            annotation = t.children.pop(0).children[0]
         else:
             annotation = ''
         meta = t.meta if isinstance(t.meta, dict) else {}
-        t._meta = {**meta, 'annotation': annotation}
+        t._meta = {**meta, 'annotation': str(annotation)}
         return t
     required_pair = root_pair
     optional_pair = root_pair

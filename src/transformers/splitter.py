@@ -58,10 +58,11 @@ class Splitter(TransformerWithMeta):
     def dependencies(self) -> dict:
         return self.meta["dependencies"]
 
-    def root_pair(self, children):
-        key, *_ = children
-        self.types[key] = Tree("root_pair", children)
-        return Tree("root_pair", children)
+    @v_args(tree=True)
+    def root_pair(self, t):
+        key, *_ = t.children
+        self.types[key] = t
+        return t
 
     def start(self, children):
         types = list(self.types.values())
