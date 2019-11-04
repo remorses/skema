@@ -3,7 +3,6 @@ from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
 from collections import defaultdict
-from .topological_sort import topological_sort
 from toposort import toposort, toposort_flatten
 from orderedset import OrderedSet
 from .types import UniqueKey
