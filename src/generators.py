@@ -1,14 +1,12 @@
-from .parser import parser
+from .parser import parse
 from lark.visitors import TransformerChain
 import src.languages as l
 import src.transformers as t
 
 
 def jsonschema(string):
-    transformer = TransformerChain(
-        l.JsonSchema(),
-    )
-    tree = parser.parse(string)
+    transformer = TransformerChain(l.JsonSchema())
+    tree = parse(string)
     return transformer.transform(tree)
 
 
@@ -18,10 +16,10 @@ def python(string):
         t.GetDependencies(),
         t.AddListMetas(),
         t.AddUnionMetas(),
-        t.Splitter(),
+        t.Splitter(unions_inside_objects=False),
         l.Python(),
     )
-    tree = parser.parse(string)
+    tree = parse(string)
     return transformer.transform(tree)
 
 
@@ -32,8 +30,9 @@ def graphq(string):
         t.AddListMetas(),
         t.AddUnionMetas(),
         t.Splitter(),
+        t.Printer(),
         l.Graphql(),
     )
-    tree = parser.parse(string)
+    tree = parse(string)
     return transformer.transform(tree)
 

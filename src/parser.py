@@ -77,3 +77,8 @@ parser = Lark(
     postlex=TreeIndenter(),
     lexer_callbacks={"COMMENT": lambda c: None},
 )
+
+def parse(string):
+    t = parser.parse(string)
+    print(t.pretty())
+    return t

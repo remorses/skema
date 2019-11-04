@@ -53,11 +53,11 @@ class Graphql(Transformer):
 
     def reference(self, children):
         value, = children
-        return value
+        return str(value)
 
     def annotation(self, children):
         value, = children
-        return value
+        return str(value)
 
     # TODO remove and make range better
     def scalar(self, children):

@@ -11,7 +11,7 @@ from copy import copy
 
 
 @v_args(tree=True)
-class GetDependencies(Transformer):
+class GetDependencies(TranformerDictMeta):
     dependencies: defaultdict = defaultdict(OrderedSet)
 
     def start(self, tree):
@@ -39,8 +39,16 @@ class GetDependencies(Transformer):
     root_pair = required_pair
 
 
+class TranformerDictMeta(Transformer):
+    def __default__(self, data, children, meta):
+        "Default operation on tree (for override)"
+        if not isinstance(meta, dict):
+            meta = {}
+        return Tree(data, children, meta)
+
+
 @v_args(tree=True)
-class AddListMetas(Transformer):
+class AddListMetas(TranformerDictMeta):
     def required_pair(self, tree: Tree):
         name, list_node = tree.children
         if not list_node.data == "list":
@@ -53,13 +61,12 @@ class AddListMetas(Transformer):
 
 
 @v_args(tree=True)
-class AddUnionMetas(Transformer):
+class AddUnionMetas(TranformerDictMeta):
     def required_pair(self, tree: Tree):
         name, list_node = tree.children
         if not list_node.data == "union":
             return tree
         list_node._meta = {"parent_key": name}
         return tree
-
-    optional_pair = required_pair
-    root_pair = required_pair
+    # optional_pair = required_pair
+    # root_pair = required_pair

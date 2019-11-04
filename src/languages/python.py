@@ -32,16 +32,20 @@ class Python(Transformer):
     def type_any(self, _):
         return "Any"
 
-    # def literal_null(self, _):
-    #     raise NotImplementedError("null not exists in graphql")
+    def literal_null(self, _):
+        return 'None'
 
-    # def literal_true(self, _):
-    #     raise NotImplementedError("true not exists in graphql")
+    def literal_true(self, _):
+        return f'Literal[True]'
 
-    # def literal_false(self, _):
-    #     raise NotImplementedError("false not exists in graphql")
+    def literal_false(self, _):
+        return f'Literal[False]'
 
     def literal_string(self, children):
+        value, = children
+        return f"Literal[{value}]"
+
+    def literal_number(self, children):
         value, = children
         return f"Literal[{value}]"
 
@@ -99,7 +103,7 @@ class Python(Transformer):
         return f"List[{value}]"
 
     def union(self, children):
-        return "type $key = " + f'Union[{", ".join(children)}]'
+        return f'Union[{", ".join(children)}]'
 
     def required_pair(self, children):
         k, v = children

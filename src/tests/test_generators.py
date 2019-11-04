@@ -5,7 +5,7 @@ def test_python():
     print(python(x))
 
 def test_grpahql():
-    print(python(x))
+    print(graphq(x))
 
 def test_jsonschema():
-    print(python(x))
+    print(jsonschema(x))

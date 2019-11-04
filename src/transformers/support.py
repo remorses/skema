@@ -9,6 +9,12 @@ from ..types import UniqueKey
 import uuid
 from copy import copy
 
+@v_args(tree=True)
+class Printer(Transformer):
+    def start(self, t):
+        print(t.pretty())
+        return t
+
 
 @collecting
 def unique(l, *, key):

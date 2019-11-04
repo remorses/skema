@@ -10,30 +10,52 @@ import uuid
 from copy import copy
 
 
-class Splitter(Transformer):
-    types: dict = {}
-    tree: Tree
-    dependencies: dict
+class TransformerWithMeta(Transformer):
+    meta: dict = {}
 
     def transform(self, t):
         self.tree = t
-        if not t.meta or not "dependencies" in t.meta:
-            raise Exception("needs tree with dependencies")
-        self.dependencies = t.meta["dependencies"]
-        for k, v in t.meta["dependencies"].items():
-            print(f"{k} -> {list(v)}")
+        if not t.meta or not isinstance(t.meta, dict):
+            raise Exception("needs meta")
+        self.meta = t.meta
+        # for k, v in t.meta["dependencies"].items():
+        #     print(f"{k} -> {list(v)}")
         return super().transform(t)
 
-    def make_id(self, key):
-        print(repr(key))
-        print(self.dependencies[key])
-        if not key:
-            return str(uuid.uuid1())[:8]
-        if not isinstance(key, UniqueKey):
-            key = UniqueKey(key)
-        id = "_".join(list(self.dependencies[key])) + "_" + str(key)
-        assert id
-        return id
+
+def join_names(names):
+    # print(repr(key))
+    # print(self.dependencies[key])
+    if not names:
+        return str(uuid.uuid1())[:8]
+    id = "_".join(names)
+    assert id
+    return id
+
+
+class Splitter(TransformerWithMeta):
+    types: dict = {}
+
+    def __init__(
+        self,
+        objects_inside_objects=True,
+        objects_inside_lists=True,
+        unions_inside_objects=True,
+        join_names=join_names,
+    ):
+        self.join_names = join_names
+        self.objects_inside_objects = objects_inside_objects
+        self.objects_inside_lists = objects_inside_lists
+        self.unions_inside_objects = unions_inside_objects
+
+    def make_new_name(self, name):
+        if not isinstance(name, UniqueKey):
+            name = UniqueKey(name)
+        return self.join_names(list(self.dependencies[name]) + [name])
+
+    @property
+    def dependencies(self) -> dict:
+        return self.meta["dependencies"]
 
     def root_pair(self, children):
         key, *_ = children
@@ -45,38 +67,38 @@ class Splitter(Transformer):
         # tree.children.extend(types)
         return Tree("start", types)
 
-    def __init__(self,):
-        self.types = {}
-        pass
+    def object(self, children):
+        if not self.objects_inside_objects:
+            return Tree("object", children)
+        for key in children:
+            name, value = key.children  # TODO sometimes first is annotation
+            if value.data in ["object"]:
+                print("ok")
+                id = self.make_new_name(name)
+                self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
+                key.children = [name, Tree("reference", [id])]
+        return Tree("object", children)
 
     @v_args(meta=True)
     def list(self, children, meta):
+        if not self.objects_inside_lists or not meta:
+            return Tree("list", children)
         child, = children
         if not child.data in ["object", "list"]:
             return Tree("list", children)
-        parent_key = meta["parent_key"]
-        id = self.make_id(parent_key)
+        name = meta["parent_key"]
+        id = self.make_new_name(name)
         old_children = copy(child.children)
         self.types[id] = Tree("root_pair", [id] + [Tree("object", old_children)])
         return Tree("list", [Tree("reference", [id])])
 
     @v_args(meta=True)
     def union(self, children, meta):
-        parent_key = meta["parent_key"]
-        id = self.make_id(parent_key)
+        if not self.unions_inside_objects or not meta:
+            return Tree("union", children)
+        name = meta["parent_key"]
+        id = self.make_new_name(name)
         old_children = copy(children)
         self.types[id] = Tree("root_pair", [id] + [Tree("union", old_children)])
         return Tree("reference", [id])
 
-    def intersection(self, tree: Tree):
-        raise Exception("cannot handle intersections")
-
-    def object(self, children):
-        for key in children:
-            name, value = key.children  # TODO sometimes first is annotation
-            if value.data in ["object"]:
-                print("ok")
-                id = self.make_id(name)
-                self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
-                key.children = [name, Tree("reference", [id])]
-        return Tree("object", children)

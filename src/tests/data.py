@@ -1,4 +1,8 @@
 x = """
+vvv: A | B
+
+
+
 obj:
     a: Str
     b: Int
