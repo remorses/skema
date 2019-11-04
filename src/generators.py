@@ -24,6 +24,7 @@ def python(string):
     tree = parse(string)
     return transformer.transform(tree)
 
+
 def typescript(string):
     transformer = TransformerChain(
         t.MergeIntersections(),
@@ -49,4 +50,3 @@ def graphq(string):
     )
     tree = parse(string)
     return transformer.transform(tree)
-

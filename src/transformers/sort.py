@@ -13,7 +13,10 @@ from ..support import structure, composed_types
 
 class SortOptionalsLast(Transformer):
     def object(self, children):
-        optionals = [child for child in children if child.data == structure.OPTIONAL_PAIR]
-        required = [child for child in children if child.data == structure.REQUIRED_PAIR]
+        optionals = [
+            child for child in children if child.data == structure.OPTIONAL_PAIR
+        ]
+        required = [
+            child for child in children if child.data == structure.REQUIRED_PAIR
+        ]
         return Tree(composed_types.OBJECT, required + optionals)
-

@@ -17,6 +17,7 @@ class TranformerDictMeta(Transformer):
             meta = {}
         return Tree(data, children, meta)
 
+
 @v_args(tree=True)
 class GetDependencies(TranformerDictMeta):
     dependencies: defaultdict = defaultdict(OrderedSet)
@@ -46,8 +47,6 @@ class GetDependencies(TranformerDictMeta):
     root_pair = required_pair
 
 
-
-
 @v_args(tree=True)
 class AddListMetas(TranformerDictMeta):
     def required_pair(self, tree: Tree):
@@ -69,5 +68,6 @@ class AddUnionMetas(TranformerDictMeta):
             return tree
         list_node._meta = {"parent_key": name}
         return tree
+
     # optional_pair = required_pair
     # root_pair = required_pair

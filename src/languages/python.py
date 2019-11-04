@@ -10,17 +10,16 @@ ELLIPSIS = "..."
 
 @v_args(tree=True)
 class AddInitializersMetas(Transformer):
-
     def get_initializer(self, node: Tree):
         initializer = {
-            types.STR: lambda: 'str($value)',
-            types.INT: lambda: 'int($value)',
-            types.FLOAT: lambda: 'float($value)',
-            types.BOOL: lambda: 'bool($value)',
-            types.ANY: lambda: '$value',
-            structure.REFERENCE: lambda: f'{node.children[0]}.from_($value)',
-            composed_types.OBJECT: lambda: f'unexpected object',
-            composed_types.UNION: lambda: '$value',
+            types.STR: lambda: "str($value)",
+            types.INT: lambda: "int($value)",
+            types.FLOAT: lambda: "float($value)",
+            types.BOOL: lambda: "bool($value)",
+            types.ANY: lambda: "$value",
+            structure.REFERENCE: lambda: f"{node.children[0]}.from_($value)",
+            composed_types.OBJECT: lambda: f"unexpected object",
+            composed_types.UNION: lambda: "$value",
             composed_types.LIST: lambda: f'[{self.get_initializer(node.children[0]).replace("$value", "x")} for x in $value]',
         }[str(node.data)]()
         return initializer
@@ -30,18 +29,19 @@ class AddInitializersMetas(Transformer):
         initializer = self.get_initializer(v)
         if not isinstance(t._meta, dict):
             t._meta = {}
-        t._meta = {**t._meta, 'initializer': initializer}
+        t._meta = {**t._meta, "initializer": initializer}
         return t
 
     optional_pair = required_pair
 
 
-
-imports = '''
+imports = """
 from typing import (Optional, List, Any)
 from typing_extensions import Literal
 
-'''
+"""
+
+
 class Python(Transformer):
     def __init__(self, ref=None):
         self.ref = ref
@@ -68,13 +68,13 @@ class Python(Transformer):
         return "Any"
 
     def literal_null(self, _):
-        return 'None'
+        return "None"
 
     def literal_true(self, _):
-        return f'Literal[True]'
+        return f"Literal[True]"
 
     def literal_false(self, _):
-        return f'Literal[False]'
+        return f"Literal[False]"
 
     def literal_string(self, children):
         value, = children
@@ -105,15 +105,14 @@ class Python(Transformer):
         return value
 
     def object(self, children):
-        types = "\n".join([x for x, _, _ in children]) + '\n'
-        arguments = ',\n'.join([x for _, x, _ in children])
-        initializers = ',\n'.join([x for _, _, x in children])
+        types = "\n".join([x for x, _, _ in children]) + "\n"
+        arguments = ",\n".join([x for _, x, _ in children])
+        initializers = ",\n".join([x for _, _, x in children])
         template = indent_to(
             "",
             """
             class $key(dictlike):
                 ${{indent_to('    ', types)}}
-
                 def __init__(
                     self,
                     *, 
@@ -126,7 +125,15 @@ class Python(Transformer):
                     )
             """,
         )
-        return populate_string(template, dict(types=types, arguments=arguments, initializers=initializers, indent_to=indent_to))
+        return populate_string(
+            template,
+            dict(
+                types=types,
+                arguments=arguments,
+                initializers=initializers,
+                indent_to=indent_to,
+            ),
+        )
 
     def list(self, children):
         value, = children
@@ -148,7 +155,11 @@ class Python(Transformer):
         if "$key" in v:
             return v.replace("$key", k)
         else:
-            return f"{k}: Optional[{v}] = None\n", f'{k}=None', f'{k}={meta["initializer"].replace("$value", k)}'
+            return (
+                f"{k}: Optional[{v}] = None\n",
+                f"{k}=None",
+                f'{k}={meta["initializer"].replace("$value", k)}',
+            )
 
     def root_pair(self, children):
         k, v = children
@@ -156,7 +167,6 @@ class Python(Transformer):
             return v.replace("$key", k)
         else:
             return f"{k} = {v}\n{k}.from = lambda x: x\n"
-
 
     pass
 

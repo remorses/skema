@@ -10,7 +10,6 @@ import uuid
 from copy import copy
 
 
-
 @v_args(tree=True)
 class Printer(Transformer):
     def start(self, t):
@@ -37,6 +36,7 @@ is_reference_parent = lambda node: (  # TODO add list reference k case
 #     node.data in ['optional_pair', 'required_pair'] and node.children[1].data == 'list'
 #     and (node.children[1].children[0].data == 'list')
 # )
+
 
 def is_reference_list_parent(node: Tree):
     is_list_pair = (

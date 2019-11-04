@@ -101,4 +101,3 @@ class Splitter(TransformerWithMeta):
         old_children = copy(children)
         self.types[id] = Tree("root_pair", [id] + [Tree("union", old_children)])
         return Tree("reference", [id])
-

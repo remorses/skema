@@ -70,7 +70,7 @@ class Typescript(Transformer):
         return value
 
     def object(self, children):
-        types = "\n    ".join(children) # .replace(' ', '.')
+        types = "\n    ".join(children)  # .replace(' ', '.')
         return "interface $key {\n    " + types + "\n}\n"
 
     def list(self, children):
