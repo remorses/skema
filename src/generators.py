@@ -18,6 +18,7 @@ def python(string):
         t.AddUnionMetas(),
         t.Splitter(unions_inside_objects=False),
         t.SortOptionalsLast(),
+        l.AddInitializersMetas(),
         l.Python(),
     )
     tree = parse(string)

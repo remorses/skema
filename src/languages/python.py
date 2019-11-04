@@ -1,14 +1,46 @@
 from prtty import pretty
 from populate import indent_to, populate_string
-from lark import Transformer, Token, Tree
+from lark import Transformer, Token, Tree, v_args
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
+from ..support import structure, types, composed_types
 
 ELLIPSIS = "..."
+
+
+@v_args(tree=True)
+class AddInitializersMetas(Transformer):
+
+    def get_initializer(self, node: Tree):
+        initializer = {
+            types.STR: lambda: 'str($value)',
+            types.INT: lambda: 'int($value)',
+            types.FLOAT: lambda: 'float($value)',
+            types.BOOL: lambda: 'bool($value)',
+            types.ANY: lambda: '$value',
+            structure.REFERENCE: lambda: f'{node.children[0]}.from_($value)',
+            composed_types.OBJECT: lambda: f'unexpected object',
+            composed_types.UNION: lambda: '$value',
+            composed_types.LIST: lambda: f'[{self.get_initializer(node.children[0]).replace("$value", "x")} for x in $value]',
+        }[str(node.data)]()
+        return initializer
+
+    def required_pair(self, t):
+        k, v = t.children
+        initializer = self.get_initializer(v)
+        if not isinstance(t._meta, dict):
+            t._meta = {}
+        t._meta = {**t._meta, 'initializer': initializer}
+        return t
+
+    optional_pair = required_pair
+
+
 
 imports = '''
 from typing import (Optional, List, Any)
 from typing_extensions import Literal
+
 '''
 class Python(Transformer):
     def __init__(self, ref=None):
@@ -73,33 +105,28 @@ class Python(Transformer):
         return value
 
     def object(self, children):
-
-        template = """
-        class ${{typename}}(dotdict):
-            _schema: dict
-
-            ${{indent_to('    ', render_hints(hints, args)) + '\\n'}}
-
-            def __init__(
-                self, 
-                *, 
-                ${{indent_to('        ', render_args(args, hints)) }}, 
-                **kwargs
-            ):
-                super().__init__(
-                    ${{indent_to('            ', render_setters(setters, args))}},
-                    **kwargs
-                )
-        """
-        types = "\n".join(children)
+        types = "\n".join([x for x, _, _ in children]) + '\n'
+        arguments = ',\n'.join([x for _, x, _ in children])
+        initializers = ',\n'.join([x for _, _, x in children])
         template = indent_to(
             "",
             """
             class $key(dictlike):
                 ${{indent_to('    ', types)}}
+
+                def __init__(
+                    self,
+                    *, 
+                    ${{indent_to('        ', arguments)}}, 
+                    **kwargs
+                ):
+                    super().__init__(
+                        ${{indent_to('            ', initializers)}},
+                        **kwargs
+                    )
             """,
         )
-        return populate_string(template, dict(types=types, indent_to=indent_to))
+        return populate_string(template, dict(types=types, arguments=arguments, initializers=initializers, indent_to=indent_to))
 
     def list(self, children):
         value, = children
@@ -108,25 +135,28 @@ class Python(Transformer):
     def union(self, children):
         return f'Union[{", ".join(children)}]'
 
-    def required_pair(self, children):
+    @v_args(meta=True)
+    def required_pair(self, children, meta):
         k, v = children
         if "$key" in v:
             return v.replace("$key", k)
-        return k + ": " + v
+        return k + ": " + v, k, f'{k}={meta["initializer"].replace("$value", k)}'
+
+    @v_args(meta=True)
+    def optional_pair(self, children, meta):
+        k, v = children
+        if "$key" in v:
+            return v.replace("$key", k)
+        else:
+            return f"{k}: Optional[{v}] = None\n", f'{k}=None', f'{k}={meta["initializer"].replace("$value", k)}'
 
     def root_pair(self, children):
         k, v = children
         if "$key" in v:
             return v.replace("$key", k)
         else:
-            return f"{k} = {v}\n"
+            return f"{k} = {v}\n{k}.from = lambda x: x\n"
 
-    def optional_pair(self, children):
-        k, v = children
-        if "$key" in v:
-            return v.replace("$key", k)
-        else:
-            return f"{k}: Optional[{v}] = None\n"
 
     pass
 

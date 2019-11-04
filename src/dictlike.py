@@ -18,6 +18,11 @@ class dictlike(dict):
         assert isinstance(obj, dict)
         return cls(**obj)
 
+    @classmethod
+    def from_(cls, obj: dict):
+        assert isinstance(obj, dict)
+        return cls(**obj)
+
     def validate(self):
         # return self.validate_(self)
         return validate(instance=self, schema=self._schema)

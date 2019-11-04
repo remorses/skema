@@ -8,7 +8,7 @@ from orderedset import OrderedSet
 from ..types import UniqueKey
 import uuid
 from copy import copy
-from .support import structure, composed_types
+from ..support import structure, composed_types
 
 
 class SortOptionalsLast(Transformer):
