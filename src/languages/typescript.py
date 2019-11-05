@@ -1,6 +1,6 @@
 from prtty import pretty
 from populate import indent_to, populate_string
-from lark import Token, Tree
+from lark import Token, Tree, v_args
 from funcy import merge, lmap, omit, concat
 from ..transformers import Transformer
 from ..parser import parser
@@ -93,12 +93,15 @@ class Typescript(Transformer):
             return v.replace("$key", k)
         return k + "?: " + v
 
-    def root_pair(self, children):
+    @v_args(meta=True)
+    def root_pair(self, children, meta):
         k, v = children
+        annotation = meta['annotation'] if 'annotation' in meta else ''    
+        annotation = annotation and f'/*\n{annotation}\n*/\n'
         if "$key" in v:
-            return v.replace("$key", k)
+            return annotation + v.replace("$key", k)
         else:
-            return f"type {k} = {v}\n"
+            return annotation + f"type {k} = {v}\n"
 
     pass
 
