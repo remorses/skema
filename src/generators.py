@@ -34,7 +34,6 @@ def typescript(string):
         t.AddListMetas(),
         t.AddUnionMetas(),
         t.Splitter(unions_inside_objects=False),
-        t.Printer(),
         l.Typescript(),
     )
     tree = parse(string)

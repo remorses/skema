@@ -77,7 +77,7 @@ class Splitter(TransformerWithMeta):
             if value.data in ["object"]:
                 print("ok")
                 id = self.make_new_name(name)
-                self.types[id] = Tree("root_pair", [id] + copy(key.children[1:]))
+                self.types[id] = Tree("root_pair", [id] + copy(key.children[1:],), meta={})
                 key.children = [name, Tree("reference", [id])]
         return Tree("object", children)
 
@@ -91,7 +91,7 @@ class Splitter(TransformerWithMeta):
         name = meta["parent_key"]
         id = self.make_new_name(name)
         old_children = copy(child.children)
-        self.types[id] = Tree("root_pair", [id] + [Tree("object", old_children)])
+        self.types[id] = Tree("root_pair", [id] + [Tree("object", old_children)], meta={})
         return Tree("list", [Tree("reference", [id])])
 
     @v_args(meta=True)
@@ -101,5 +101,5 @@ class Splitter(TransformerWithMeta):
         name = meta["parent_key"]
         id = self.make_new_name(name)
         old_children = copy(children)
-        self.types[id] = Tree("root_pair", [id] + [Tree("union", old_children)])
+        self.types[id] = Tree("root_pair", [id] + [Tree("union", old_children)], meta={})
         return Tree("reference", [id])
