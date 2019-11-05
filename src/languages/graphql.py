@@ -41,10 +41,9 @@ class Graphql(Transformer):
 
     # def literal_false(self, _):
     #     raise NotImplementedError("false not exists in graphql")
-
-    # def literal_string(self, children):
-    #     value, = children
-    #     return value
+    @v_args(tree=True)
+    def literal_string(self, t):
+        return t
 
     def literal_ellipsis(self, _):
         return ELLIPSIS
