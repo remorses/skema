@@ -4,8 +4,8 @@ import src.languages as l
 import src.transformers as t
 
 
-def jsonschema(string):
-    transformer = TransformerChain(l.JsonSchema())
+def jsonschema(string, ref=None):
+    transformer = TransformerChain(l.JsonSchema(ref=ref))
     tree = parse(string)
     return transformer.transform(tree)
 

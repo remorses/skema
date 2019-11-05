@@ -37,3 +37,8 @@ class structure:
     OPTIONAL_PAIR = "optional_pair"
     REFERENCE = "reference"
     ANNOTATION = "annotation"
+
+def capitalize(s: str):
+    if not s:
+        return ''
+    return s[0].capitalize() + s[1:]
