@@ -37,7 +37,8 @@ class AddInitializersMetas(Transformer):
 
 
 imports = """
-from typing import (Optional, List, Any)
+from src import dictlike
+from typing import Optional, List, Any, Union
 from typing_extensions import Literal
 
 """
@@ -115,6 +116,7 @@ class Python(Transformer):
             class $key(dictlike):
                 $annotation
                 ${{indent_to('    ', types)}}
+                
                 def __init__(
                     self,
                     *, 

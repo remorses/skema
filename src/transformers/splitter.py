@@ -75,7 +75,6 @@ class Splitter(TransformerWithMeta):
         for key in children:
             name, value = key.children  # TODO sometimes first is annotation
             if value.data in ["object"]:
-                print("ok")
                 id = self.make_new_name(name)
                 self.types[id] = Tree("root_pair", [id] + copy(key.children[1:],), meta={})
                 key.children = [name, Tree("reference", [id])]

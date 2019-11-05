@@ -6,6 +6,7 @@ from collections import defaultdict
 from toposort import toposort, toposort_flatten
 from orderedset import OrderedSet
 from ..types import UniqueKey
+from ..logger import logger
 from ..support import structure
 import uuid
 from copy import copy
@@ -22,7 +23,7 @@ class Transformer(_Transformer):
 @v_args(tree=True)
 class Printer(Transformer):
     def start(self, t):
-        print(t.pretty())
+        logger.debug(t.pretty())
         return t
     
 
