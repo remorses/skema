@@ -78,6 +78,7 @@ parser = Lark(
 
 
 def parse(string):
-    t = parser.parse(string)
+    string = '\n'.join([l for l in string.split('\n') if l.strip()])
+    t = parser.parse(string + '\n')
     print(t.pretty())
     return t
