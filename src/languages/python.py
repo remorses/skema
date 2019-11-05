@@ -95,7 +95,7 @@ class Python(Transformer):
 
     def reference(self, children):
         value, = children
-        return value
+        return f'"{value}"'
 
     def annotation(self, children):
         value, = children
