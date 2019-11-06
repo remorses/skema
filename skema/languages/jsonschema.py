@@ -148,7 +148,7 @@ class JsonSchema(Transformer):
         else:
             key, value = children
             annotation = ""
-        res = {str(key): value, "required": True, "description": str(annotation)}
+        res = {str(key): {**value, "description": str(annotation)}, "required": True,}
         return res
 
     def root_pair(self, children):
@@ -157,7 +157,7 @@ class JsonSchema(Transformer):
         else:
             key, value = children
             annotation = ""
-        res = {str(key): {"title": key, **value}, "description": str(annotation)}
+        res = {str(key): {"title": key, "description": str(annotation), **value}}
         return res
 
     def optional_pair(self, children):

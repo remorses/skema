@@ -216,7 +216,7 @@ def fake_data(
 
     @given(get_generator(json_schema, resolvers))
     @settings(max_examples=amount)
-    def generate(example_data=None):
+    def generate(example_data):
         examples.append(example_data)
 
     generate()

@@ -6,13 +6,13 @@ from datetime import datetime
 
 customs = {
     'DateTime': datetime.utcnow,
-    # 'ObjectId': bson.ObjectId,
+    # 'ObjectId': bson.ObjectId,Ò
 }
 
 @pytest.mark.parametrize("string", schemas, ids=names)
 def test_fake_data(string):
     json_schema = gens.jsonschema(string, resolve=True)
-    # print(json_schema)
+    pretty(json_schema)
     fakes = fake_data(string, amount=30)
     for o in fakes:
         print(json.dumps(o, indent=4, ensure_ascii=False))
