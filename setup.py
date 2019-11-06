@@ -1,6 +1,6 @@
 
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(
@@ -36,12 +36,9 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
-    packages=['skema', 'skema.fake_data', 'skema.generate', 'skema.infer'],
+    packages=find_packages(exclude=('tests',)),
     scripts=[
-        'bin/skema-gen',
         'bin/skema',
-        'bin/skema.infer',
-        'bin/skema.generate',
     ],
 
 )

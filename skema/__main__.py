@@ -1,6 +1,6 @@
 import fire
-from .cli import CLI
+from .cli import Cli
 
 
-fire.Fire(CLI)
+fire.Fire(Cli)
 

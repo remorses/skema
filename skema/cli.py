@@ -26,7 +26,7 @@ def get_stdin() -> str:
     return string
 
 
-class CLI:
+class Cli:
     def python(self,):
         stdin = get_stdin()
         code = gens.python(stdin)
