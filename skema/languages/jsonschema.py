@@ -151,7 +151,14 @@ class JsonSchema(Transformer):
         res = {str(key): value, "required": True, "description": str(annotation)}
         return res
 
-    root_pair = required_pair
+    def root_pair(self, children):
+        if len(children) == 3:
+            annotation, key, value = children
+        else:
+            key, value = children
+            annotation = ""
+        res = {str(key): {"title": key, **value}, "description": str(annotation)}
+        return res
 
     def optional_pair(self, children):
         key, value = children
