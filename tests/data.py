@@ -1,10 +1,4 @@
-x = '''
-vvv: A | B
-
-
-"""
-[graphql hide]
-"""
+x = """
 obj:
     a: Str
     b?: Int
@@ -39,8 +33,10 @@ zzz: A &
         o: [Int]
     ]
 
-xxx: A & zzz
-'''
+
+
+
+"""
 
 x1 = '''
     obj: Str
@@ -72,6 +68,61 @@ x1 = '''
 '''
 
 y = """
-x:
-    un: A | B
+obj:
+    a: Str
+    b?: Int
+    c: A | B
+    z?:
+        a: Int
+        b: Str
+        nn:
+            a: Str
+            lkk: [
+                k: Int
+            ]
+ll:
+    z: Str
+    x: [
+        x: Int
+    ]
+zzz: A &
+    y: Int
+    b: Str
+    kkkkk: [
+        z: Int
+        o: [Int]
+    ]
+A:
+    x: Str
+B:
+    y: Str
+    l: [Str]
 """
+
+x = '''
+obj:
+    a: Str
+    b?: Int
+    c: A | B
+    z?:
+        a: Int
+        b: Str
+        nn:
+            a: Str
+            lkk: [
+                k: Int
+            ]
+ll:
+    z: Str
+    x: [
+        x: Int
+    ]
+
+zzz:
+    y: Int
+    b: Str
+    kkkkk: [
+        z: Int
+        o: [Int]
+    ]
+'''

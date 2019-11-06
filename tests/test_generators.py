@@ -6,7 +6,7 @@ def test_python():
 
 
 def test_grpahql():
-    print(graphq(x))
+    print(graphql(x))
 
 
 def test_jsonschema():
