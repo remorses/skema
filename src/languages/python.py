@@ -37,7 +37,7 @@ class AddInitializersMetas(Transformer):
 
 
 imports = """
-from src import dictlike
+from skema import dictlike
 from typing import Optional, List, Any, Union
 from typing_extensions import Literal
 

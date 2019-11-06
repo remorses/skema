@@ -1,7 +1,7 @@
 from .parser import parse
 from lark.visitors import TransformerChain
-import src.languages as l
-import src.transformers as t
+import skema.languages as l
+import skema.transformers as t
 
 
 def jsonschema(string, ref=None):

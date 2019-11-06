@@ -1,7 +1,7 @@
 import pytest
 from prtty import pretty
-from src.parser import parser
-from src.languages import *
-from src.transformers import *
+from skema.parser import parser
+from skema.languages import *
+from skema.transformers import *
 from .data import *
-from src.generators import *
+from skema.generators import *

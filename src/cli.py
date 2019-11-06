@@ -1,8 +1,8 @@
 import fire
 import json
 import sys
-from src.resolve_refs import resolve_refs
-import src.generators as gens
+from skema.resolve_refs import resolve_refs
+import skema.generators as gens
 
 
 def as_list(x):
