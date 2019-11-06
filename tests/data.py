@@ -117,12 +117,14 @@ ll:
     x: [
         x: Int
     ]
-
-zzz:
+zzz: ll &
     y: Int
-    b: Str
+    b: obj &
+        x: Str
+        y: Int
     kkkkk: [
         z: Int
         o: [Int]
     ]
+x: Str
 '''

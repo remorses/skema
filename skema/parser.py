@@ -18,29 +18,26 @@ tree_grammar = r"""
         | SIGNED_INT -> literal_integer
         | NAME -> reference
         | /\/.*\// -> regex
-        | (SIGNED_INT  | SIGNED_FLOAT) ".." (SIGNED_INT | SIGNED_FLOAT) -> bounded_range
-        | (SIGNED_INT  | SIGNED_FLOAT) ".." -> low_bounded_range
-        | ".." (SIGNED_INT  | SIGNED_FLOAT) -> high_bounded_range
+
 
     literal_ellipsis: "..."
     union: (value ("|" scalar)+)
-    intersection: value (("&" scalar)+ | "&" _NL object)
+    intersection: value (("&" scalar)+ _NL | "&" _NL object)
 
     ?value: scalar
         | union
-        | intersection
 
     _TRIPLE_QUOTE: "\"\"\""
 
     annotation: _TRIPLE_QUOTE _NL (/.+/ _NL)* _TRIPLE_QUOTE _NL
 
-    root_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
-    required_pair: [annotation] NAME ":" (_NL object | value _NL | list _NL)
-    optional_pair: [annotation] NAME "?:" (_NL object | value _NL | list _NL)
+    root_pair: [annotation] NAME ":" (_NL object | value _NL | intersection | list _NL)
+    required_pair: [annotation] NAME ":" (_NL object | intersection | value _NL | list _NL)
+    optional_pair: [annotation] NAME "?:" (_NL object | intersection | value _NL | list _NL)
 
     list: "[" (_NL object | value) "]"
 
-    object: _INDENT (required_pair | optional_pair)* [literal_ellipsis _NL] _DEDENT
+    object: _INDENT (required_pair | optional_pair)+ [literal_ellipsis _NL] _DEDENT
 
     COMMENT: /#.*/
 

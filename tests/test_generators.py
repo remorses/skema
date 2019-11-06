@@ -1,6 +1,5 @@
 from .support import *
 
-
 def test_python():
     print(python(x))
 
@@ -10,7 +9,7 @@ def test_grpahql():
 
 
 def test_jsonschema():
-    print(jsonschema(x))
+    pretty(jsonschema(x))
 
 
 def test_typescript():
