@@ -39,9 +39,7 @@ class Cli:
 
     def jsonschema(self, ref=None, resolve=False):
         stdin = get_stdin()
-        obj = gens.jsonschema(stdin, ref=ref)
-        if resolve:
-            resolve_refs(obj)
+        obj = gens.jsonschema(stdin, ref=ref, resolve=resolve)
         code = json.dumps(obj, indent=4)
         print(code.strip())
 

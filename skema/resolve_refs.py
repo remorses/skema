@@ -1,9 +1,8 @@
-
+from copy import deepcopy
 import json
 
 
-
-def _resolve(schema, definitions, add_titles=False):
+def recursive_resolve(schema, definitions, add_titles=False):
     if not isinstance(schema, dict):
         return
     for k, v in schema.items():
@@ -15,7 +14,7 @@ def _resolve(schema, definitions, add_titles=False):
             if add_titles:
                 schema[k].update({'title': ref})
         elif isinstance(v, dict):
-            _resolve(schema[k], definitions, add_titles)
+            recursive_resolve(schema[k], definitions, add_titles)
         elif isinstance(v, list):
             for i, item in enumerate(v):
                 if isinstance(item, dict) and '$ref' in list(item.keys()):
@@ -23,7 +22,7 @@ def _resolve(schema, definitions, add_titles=False):
                     ref = item['$ref'].split('/')[-1]
                     schema[k][i] = definitions[ref]
                 elif isinstance(item, dict):
-                    _resolve(schema[k][i], definitions, add_titles)
+                    recursive_resolve(schema[k][i], definitions, add_titles)
                 else:
                     value = json.dumps(v, indent=4)[:400] + "\n"
                     # print(f'should not be here, {k}={value}')
@@ -32,11 +31,13 @@ def _resolve(schema, definitions, add_titles=False):
             # print(f'should not be here, {k}={value}')
 
 
-def resolve_refs(schema, add_titles=False):
+def resolve_refs(schema, ref=None, add_titles=False):
     if not 'definitions' in schema:
         return
     definitions = schema['definitions']
-    _resolve(schema, definitions, add_titles)
+    if ref:
+        schema["$ref"] = "#/definitions/" + ref
+    recursive_resolve(schema, definitions, add_titles)
     if '$ref' in schema:
         ref = schema['$ref'].split('/')[-1]
         schema.update(schema['definitions'][ref])

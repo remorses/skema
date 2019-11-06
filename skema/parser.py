@@ -2,6 +2,7 @@ from lark import Lark
 from lark.indenter import Indenter
 from lark.reconstruct import Reconstructor
 from .logger import logger
+from populate import indent_to
 
 tree_grammar = r"""
     start: (_NL* root_pair)+ _NL*
@@ -77,6 +78,7 @@ parser = Lark(
 
 def parse(string):
     string = "\n".join([l for l in string.split("\n") if l.strip()])
+    string = indent_to('', string)
     logger.debug(string)
     t = parser.parse(string + "\n")
     logger.debug(t.pretty())

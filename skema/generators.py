@@ -2,12 +2,15 @@ from .parser import parse
 from lark.visitors import TransformerChain
 import skema.languages as l
 import skema.transformers as t
+from .resolve_refs import resolve_refs
 
-
-def jsonschema(string, ref=None):
+def jsonschema(string, ref=None, resolve=False):
     transformer = TransformerChain(l.JsonSchema(ref=ref))
     tree = parse(string)
-    return transformer.transform(tree)
+    data = transformer.transform(tree)
+    if resolve:
+        resolve_refs(data)
+    return data
 
 
 def python(string):
