@@ -157,7 +157,7 @@ class JsonSchema(Transformer):
         else:
             key, value = children
             annotation = ""
-        res = {str(key): {"title": key, "description": str(annotation), **value}}
+        res = {str(key): {"title": str(key), "description": str(annotation), **value}}
         return res
 
     def optional_pair(self, children):
