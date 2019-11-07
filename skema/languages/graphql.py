@@ -43,7 +43,8 @@ class Graphql(Transformer):
     #     raise NotImplementedError("false not exists in graphql")
     @v_args(tree=True)
     def literal_string(self, t):
-        return t
+        v, = t.children
+        return v
 
     def literal_ellipsis(self, _):
         return ELLIPSIS
@@ -73,10 +74,10 @@ class Graphql(Transformer):
         return f"[{value}]"
 
     def union(self, children):
-        if all([isinstance(x, Tree) and x.data == "literal_string" for x in children]):
+        if all([isinstance(x, str) and '"' in x for x in children]):
             return (
                 "enum $key {\n"
-                + "\n".join(["    " + str(x.children[0][1:-1]) for x in children])
+                + "\n".join(["    " + str(x[1:-1]) for x in children])
                 + "\n}\n"
             )
         elif all([isinstance(x, str) for x in children]):

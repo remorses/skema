@@ -4,7 +4,7 @@ from lark import Token, Tree, v_args
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
 from ..transformers import Transformer
-from ..support import structure, types, composed_types
+from ..support import structure, types, composed_types, literals
 
 ELLIPSIS = "..."
 
@@ -18,6 +18,11 @@ class AddInitializersMetas(Transformer):
             types.FLOAT: lambda: "float($value)",
             types.BOOL: lambda: "bool($value)",
             types.ANY: lambda: "$value",
+            literals.STRING: lambda: "$value",
+            literals.TRUE: lambda: "True",
+            literals.FALSE: lambda: "False",
+            literals.INTEGER: lambda: "$value",
+            literals.NULL: lambda: "None",
             structure.REFERENCE: lambda: f"{node.children[0]}.from_($value)",
             composed_types.OBJECT: lambda: f"unexpected object",
             composed_types.UNION: lambda: "$value",

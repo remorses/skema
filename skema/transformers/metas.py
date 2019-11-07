@@ -36,8 +36,11 @@ class RemoveAnnotations(TranformerDictMeta):
 
 @v_args(tree=True)
 class GetDependencies(TranformerDictMeta):
-    dependencies: defaultdict = defaultdict(OrderedSet)
-
+    dependencies: defaultdict
+    
+    def __init__(self,):
+        self.dependencies = defaultdict(OrderedSet)
+        
     def start(self, tree):
         ordered_deps = list(toposort_flatten(self.dependencies_as_sets))
         for k in ordered_deps:

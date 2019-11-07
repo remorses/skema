@@ -9,12 +9,14 @@ Enum: "dfgj" | "dsf" | "4543"
 
 '''
 
-# simple = """
-# X:
-#     ciao: Str
-#     b: Int | Str
-#     c: "ciao"
-# """
+simple = """
+union: Int | Str
+
+X:
+    ciao: Str
+    b: union
+    c: "ciao"
+"""
 
 # indent2 = """
 # X:

@@ -12,7 +12,10 @@ from copy import copy
 
 
 class TransformerWithMeta(Transformer):
-    meta: dict = {}
+    meta: dict
+
+    def __init__(self,):
+        self.meta = {}
 
     def transform(self, t):
         self.tree = t
@@ -35,7 +38,7 @@ def join_names(names):
 
 
 class Splitter(TransformerWithMeta):
-    types: dict = {}
+    types: dict
 
     def __init__(
         self,
@@ -44,6 +47,7 @@ class Splitter(TransformerWithMeta):
         unions_inside_objects=True,
         join_names=join_names,
     ):
+        self.types = {}
         self.join_names = join_names
         self.objects_inside_objects = objects_inside_objects
         self.objects_inside_lists = objects_inside_lists

@@ -12,10 +12,10 @@ from copy import copy
 
 
 class MergeIntersections(Transformer):
-    types: dict = {}
+    types: dict
 
     def __init__(self,):
-        pass
+        self.types = {}
 
     @v_args(tree=True)
     def root_pair(self, t):
