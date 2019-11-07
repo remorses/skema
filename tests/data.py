@@ -48,6 +48,33 @@ C:
 Scalar: Str
 '''
 
+with_intersection = '''
+Elem1:
+    name: Str
+
+Elem2:
+    surname: Str
+
+Elem3:
+    address: Str
+    name: Int
+
+Group: Elem1 & Elem2 & Elem3
+'''
+
+with_intersection_inline = '''
+Base:
+    name: Str
+
+Elem2: Base &
+    surname: Str
+
+Elem3: Base &
+    address: Str
+    name: Int
+'''
+
+
 # indent2 = """
 # X:
 #     ciao: Str
