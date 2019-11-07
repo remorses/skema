@@ -1,5 +1,6 @@
 from lark import Visitor, Tree, Token, v_args
 from .support import Transformer
+from ..support import capitalize
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -32,7 +33,7 @@ def join_names(names):
     # print(self.dependencies[key])
     if not names:
         return str(uuid.uuid1())[:8]
-    id = "_".join(names)
+    id = str(names[0]) + "".join([capitalize(x) for x in names[1:]])
     assert id
     return id
 
