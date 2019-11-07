@@ -2,6 +2,9 @@ fire
 fastjsonschema
 jsonschema
 genson
+lark-parser
+toposort
+orderedset
 populate
 # for fake_data
 hypothesis

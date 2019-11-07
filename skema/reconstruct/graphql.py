@@ -9,5 +9,5 @@ def reconstruct(string) -> Tree:
         raise Exception('need graphql-core package to reconstruct graphql')
     schema = build_schema(string)
     skema = print_schema(schema)
-    print(skema.replace(' ', '.'))
+    # print(skema.replace(' ', '.'))
     return parse(skema)
