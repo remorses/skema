@@ -153,11 +153,11 @@ def print_scalar(type_: GraphQLScalarType) -> str:
 def print_object(type_: GraphQLObjectType) -> str:
     interfaces = type_.interfaces
     implemented_interfaces = (
-        (" & ".join(i.name for i in interfaces)  + ' &') if interfaces else ""
+        (" &".join(f' {i.name}' for i in interfaces)  + ' &') if interfaces else ""
     )
     return (
         print_description(type_)
-        + f"{type_.name}: " +  implemented_interfaces
+        + f"{type_.name}:" +  implemented_interfaces
         + print_fields(type_)
     )
 
@@ -182,7 +182,7 @@ def print_enum(type_: GraphQLEnumType) -> str:
 
 def print_input_object(type_: GraphQLInputObjectType) -> str:
     fields = [
-        print_description(field, "  ", not i) + "  " + print_input_value(name, field)
+        print_description(field, "    ", not i) + "    " + print_input_value(name, field)
         for i, (name, field) in enumerate(type_.fields.items())
     ]
     return print_description(type_, adding='[graphql input]') + f"{type_.name}:" + print_block(fields)
@@ -200,7 +200,7 @@ map_graphql_to_skema = {
 def print_fields(type_: Union[GraphQLObjectType, GraphQLInterfaceType]) -> str:
     fields = [
         print_description(field, "  ", not i)
-        + f"  {name}"
+        + f"    {name}"
         + print_args(field.args, "  ")
         + f": {map_graphql_to_skema.get(str(field.type), field.type)}"
         + print_deprecated(field)
@@ -210,7 +210,7 @@ def print_fields(type_: Union[GraphQLObjectType, GraphQLInterfaceType]) -> str:
 
 
 def print_block(items: List[str]) -> str:
-    return " \n" + "\n".join(items) + "\n" if items else ""
+    return "\n" + "\n".join(items) + "\n" if items else ""
 
 
 def print_args(args: Dict[str, GraphQLArgument], indentation="") -> str:

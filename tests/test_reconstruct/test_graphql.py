@@ -1,9 +1,9 @@
-from skema.reconstruct import print_schema
+from skema.reconstruct import reconstruct_graphql
 from graphql import build_schema
 
 def test_1():
     print()
-    s = build_schema(
+    s = (
         """
     type X {
         a: String
@@ -15,7 +15,7 @@ def test_1():
     interface Node {
         b: String
     }
-    type Y implements Interface & Node {
+    type Y implements Interface {
         a: String @direct
         b: X
     }
@@ -37,4 +37,4 @@ def test_1():
 
     """
     )
-    print(print_schema(s))
+    print(reconstruct_graphql(s).pretty())
