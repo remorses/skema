@@ -10,4 +10,5 @@ def reconstruct(string) -> Tree:
     schema = build_schema(string)
     skema = print_schema(schema)
     # print(skema.replace(' ', '.'))
-    return parse(skema)
+    return skema
+    # return parse(skema)

@@ -1,4 +1,4 @@
-from skema.reconstruct import reconstruct_graphql
+from skema.reconstruct import from_graphql
 from graphql import build_schema
 
 def test_1():
@@ -37,5 +37,5 @@ def test_1():
 
     """
     )
-    tree = reconstruct_graphql(s)
-    print()
+    skema = from_graphql(s)
+    print(skema)

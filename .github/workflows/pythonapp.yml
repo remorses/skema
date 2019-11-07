@@ -1,4 +1,4 @@
-name: Python package and Docker
+name: Python package
 
 on:
   push:

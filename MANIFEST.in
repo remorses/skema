@@ -1,1 +1,1 @@
-include VERSION README.md requirements.txt
+include VERSION README.md requirements.txt requirements-tests.txt
