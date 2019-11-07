@@ -2,7 +2,7 @@ name: Python package
 
 on:
   push:
-    branches:
+    branches-ignore:
       - master
       
 jobs:
@@ -20,17 +20,17 @@ jobs:
       run: |
         pip install pytest
         pytest
-    - name: Bump version
-      uses: remorses/bump-version@master
-      with:
-        version_file: VERSION
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Publish
-      uses: remorses/pypi@master
-      with:
-        username: ${{ secrets.pypi_username }}
-        password: ${{ secrets.pypi_password }}
+    # - name: Bump version
+    #   uses: remorses/bump-version@master
+    #   with:
+    #     version_file: VERSION
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Publish
+    #   uses: remorses/pypi@master
+    #   with:
+    #     username: ${{ secrets.pypi_username }}
+    #     password: ${{ secrets.pypi_password }}
 
 
     
