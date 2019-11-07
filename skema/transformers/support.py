@@ -4,7 +4,7 @@ from funcy import cat, flip, collecting
 from prtty import pretty
 from collections import defaultdict
 from toposort import toposort, toposort_flatten
-from orderedset import OrderedSet
+from ordered_set import OrderedSet
 from ..types import UniqueKey
 from ..logger import logger
 from ..support import structure
