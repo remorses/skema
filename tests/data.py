@@ -10,7 +10,7 @@ Enum: "dfgj" | "dsf" | "a4543"
 '''
 
 simple = """
-Union: A | B
+Unioned: A | B
 
 A:
     c: Str
@@ -20,7 +20,7 @@ B:
 
 X:
     ciao: Str
-    b: Union
+    b: Unioned
     c: "ciao"
     inline: A | B
 """
