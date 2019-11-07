@@ -2,6 +2,8 @@
 
 from setuptools import setup, find_packages
 
+dependencies = [x for x in open('./requirements.txt').read().strip().split('\n') if x.strip()]
+test_dependencies = [x for x in open('./requirements-tests.txt').read().strip().split('\n') if x.strip()]
 
 setup(
     name='skema',
@@ -17,7 +19,7 @@ setup(
 
     url='https://github.com/remorses/schema',
     keywords=['schema', 'jsonschema', 'alternative', 'readable'],
-    install_requires=[x for x in open('./requirements.txt').read().strip().split('\n') if x.strip()],
+    install_requires=dependencies,
     package_data={'': ['*.yaml', '*.json', '*.yml', 'VERSION']},
     include_package_data=True,
     classifiers=[
@@ -40,6 +42,9 @@ setup(
     scripts=[
         'bin/skema',
     ],
+    extras_require={
+        'test': test_dependencies
+    }
 
 )
 
