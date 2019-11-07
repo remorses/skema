@@ -81,7 +81,7 @@ class Graphql(Transformer):
                 + "\n}\n"
             )
         elif all([isinstance(x, str) for x in children]):
-            return "type $key = " + " | ".join(children) + "\n"
+            return "union $key = " + " | ".join(children) + "\n"
         else:
             raise NotImplementedError("cannot mix literals and shit")
 
@@ -89,6 +89,8 @@ class Graphql(Transformer):
         k, v = children
         if "$key" in v:
             return v.replace("$key", k)
+        if '"' in v:
+            v = 'String'
         return k + ": " + v
 
     optional_pair = required_pair

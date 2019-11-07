@@ -5,18 +5,48 @@ Shape:
     name: Str
     other: Enum
 
-Enum: "dfgj" | "dsf" | "4543"
+Enum: "dfgj" | "dsf" | "a4543"
 
 '''
 
 simple = """
-union: Int | Str
+Union: A | B
+
+A:
+    c: Str
+
+B:
+    d: Str
 
 X:
     ciao: Str
-    b: union
+    b: Union
     c: "ciao"
+    inline: A | B
 """
+
+middle = '''
+Event: A | B | C
+
+A:
+    name: Str
+    type: "a1a" | "a2a" | "a3a"
+
+B:
+    title: Str
+    tags: [
+        code: Str
+    ]
+
+C:
+    code: Scalar
+    coordinates: [
+        x: Float
+        y: Float
+    ]
+
+Scalar: Str
+'''
 
 # indent2 = """
 # X:
