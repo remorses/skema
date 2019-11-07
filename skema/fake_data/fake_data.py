@@ -48,7 +48,7 @@ def should_include(key, required_list):
 
 
 def gen_array(prop, customs):
-    min_items = prop.get("minItems", 0)
+    min_items = prop.get("minItems", 2)
     max_items = prop.get("maxItems", 5)
     if prop.get("items", {}):
         generator = get_generator(prop.get("items"), customs)
