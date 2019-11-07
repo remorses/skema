@@ -1,0 +1,4 @@
+# tests
+graphql-core>=3a
+# for generating code types
+# npm i -g quicktype

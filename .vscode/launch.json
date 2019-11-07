@@ -5,11 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: infer",
+            "name": "Python: lark gql",
             "type": "python",
             "request": "launch",
-            "module": "skema.infer.infer_schema",
-            "console": "externalTerminal"
+            "module": "skema_lark.graphql",
         },
         {
             "type": "python",

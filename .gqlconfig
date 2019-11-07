@@ -1,8 +1,0 @@
-
-// .gqlconfig (with query)
-{
-    schema: {
-        files: '*.graphql',
-    },
-    
-}
