@@ -32,13 +32,15 @@ class composed_types:
 
 
 class structure:
+    START = "start"
     ROOT_PAIR = "root_pair"
     REQUIRED_PAIR = "required_pair"
     OPTIONAL_PAIR = "optional_pair"
     REFERENCE = "reference"
     ANNOTATION = "annotation"
 
+
 def capitalize(s: str):
     if not s:
-        return ''
+        return ""
     return s[0].capitalize() + s[1:]
