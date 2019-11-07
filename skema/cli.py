@@ -3,6 +3,7 @@ import json
 import sys
 from skema.resolve_refs import resolve_refs
 import skema.generators as gens
+import skema.parser as parse
 
 
 def as_list(x):
@@ -29,22 +30,26 @@ def get_stdin() -> str:
 class Cli:
     def python(self,):
         stdin = get_stdin()
-        code = gens.python(stdin)
+        tree = parse(stdin)
+        code = gens.python(tree)
         print(code.strip())
 
     def typescript(self,):
         stdin = get_stdin()
-        code = gens.typescript(stdin)
+        tree = parse(stdin)
+        code = gens.typescript(tree)
         print(code.strip())
 
     def jsonschema(self, ref=None, resolve=False):
         stdin = get_stdin()
-        obj = gens.jsonschema(stdin, ref=ref, resolve=resolve)
+        tree = parse(stdin)
+        obj = gens.jsonschema(tree, ref=ref, resolve=resolve)
         code = json.dumps(obj, indent=4)
         print(code.strip())
 
     def graphql(self,):
         stdin = get_stdin()
-        code = gens.graphql(stdin)
+        tree = parse(stdin)
+        code = gens.graphql(tree)
         print(code.strip())
 

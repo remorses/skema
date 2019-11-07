@@ -37,4 +37,5 @@ def test_1():
 
     """
     )
-    print(reconstruct_graphql(s).pretty())
+    tree = reconstruct_graphql(s)
+    print()

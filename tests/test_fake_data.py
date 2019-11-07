@@ -11,7 +11,7 @@ customs = {
 
 @pytest.mark.parametrize("string", schemas, ids=names)
 def test_fake_data(string):
-    json_schema = gens.jsonschema(string, resolve=True)
+    json_schema = gens.jsonschema(parse(string), resolve=True)
     pretty(json_schema)
     fakes = fake_data(string, amount=30)
     for o in fakes:

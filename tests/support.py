@@ -1,7 +1,7 @@
 import pytest
 import json
 from prtty import pretty
-from skema.parser import parser
+from skema.parser import parser, parse
 import skema.languages as langs
 import skema.transformers as trans
 import skema.generators as gens

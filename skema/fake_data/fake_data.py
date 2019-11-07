@@ -1,4 +1,5 @@
 import skema.generators as gens
+from skema.parser import parse
 from jsonschema import validate
 import json
 from typing import List
@@ -211,7 +212,7 @@ def fake_data(
     if from_json:
         json_schema = schema
     else:
-        json_schema = gens.jsonschema(schema, ref=ref, resolve=True)
+        json_schema = gens.jsonschema(parse(schema), ref=ref, resolve=True)
     examples = []
 
     @given(get_generator(json_schema, resolvers))
