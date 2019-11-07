@@ -4,6 +4,10 @@
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
+## Todo 
+- multiple interfaces not supported in grammar
+
+
 ## Why
 
 Today multi-service architectures requires developers to keep in sync a lot of different services built in different languages by different teams.
