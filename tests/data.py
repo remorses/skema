@@ -74,6 +74,34 @@ Elem3: Base &
     name: Int
 '''
 
+annotations = '''
+"""
+root annotation
+"""
+Cosa:
+    nest:
+        """
+        field annotation
+        """
+        puppets: [
+            name: Str
+            type: "dog" | "cat"
+        ]
+        """
+        ciao
+        """
+        position: Int
+'''
+
+comments = ''' # TODO not works
+Cosa:
+    nest:
+        puppets: [
+            name: Str
+            type: "dog" | "cat"
+        ]
+        position: Int
+'''
 
 # indent2 = """
 # X:
@@ -328,7 +356,7 @@ Elem3: Base &
 # """
 
 strings = [(x, y) for (x, y) in locals().items() if not x[0] == '_']
-names = [x for x, _ in strings]
+names = [f'0{i}{x}' for i, (x, _) in enumerate(strings)]
 schemas = [x for _, x in strings]
 
 # print(list(strings.keys()))
