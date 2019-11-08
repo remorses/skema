@@ -22,6 +22,8 @@ class dictlike(dict):
     def from_(cls, obj: dict):
         assert isinstance(obj, dict)
         return cls(**obj)
+    
+    from_dict = from_
 
     def validate(self):
         # return self.validate_(self)
