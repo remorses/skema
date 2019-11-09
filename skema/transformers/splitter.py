@@ -1,6 +1,5 @@
-from lark import Visitor, Tree, Token, v_args
+from skema.lark import Tree, Token, v_args, Transformer
 from lark.tree import Meta
-from .support import Transformer
 from ..support import capitalize, structure, composed_types, literals, types
 from ..logger import logger
 from functools import partial

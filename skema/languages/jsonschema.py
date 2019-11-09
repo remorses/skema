@@ -1,6 +1,6 @@
 from prtty import pretty
-from lark import Token
-from ..transformers import Transformer
+from skema.lark import Token
+from ..lark import Transformer
 from funcy import merge, lmap, omit
 from ..parser import parser
 

@@ -2,6 +2,7 @@ from lark import Lark
 from lark.indenter import Indenter
 from lark.reconstruct import Reconstructor
 from .logger import logger
+from .lark import Tree
 from populate import indent_to
 
 tree_grammar = r"""
@@ -73,6 +74,7 @@ parser = Lark(
     parser="lalr",
     postlex=TreeIndenter(),
     lexer_callbacks={"COMMENT": lambda c: None},
+    tree_class=Tree,
 )
 
 

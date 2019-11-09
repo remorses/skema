@@ -1,6 +1,6 @@
 from prtty import pretty
-from lark import Token, Tree, v_args
-from ..transformers import Transformer
+from skema.lark import Token, Tree, v_args
+from ..lark import Transformer
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
 from ..support import modifiers

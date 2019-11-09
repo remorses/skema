@@ -1,10 +1,11 @@
 from skema.parser import parse
 from random import randint
 from funcy import omit
-from lark import Tree, Token
+from skema.lark import Tree, Token
 import skema.reconstruct.schema_types as jsontypes
 from ..support import composed_types, types, literals, structure
 from ..dictlike import dictlike
+from ..resolve_refs import resolve_refs
 
 
 def is_block(obj):
@@ -12,8 +13,10 @@ def is_block(obj):
     return any([k in obj for k in ks])
 
 
-def reconstruct(obj, definition_key="definitions", root_name="Root") -> Tree:
+def reconstruct(obj, ref=None, definition_key="definitions", root_name="Root") -> Tree:
     nodes = []
+    if ref:
+        resolve_refs(obj, ref=ref)
     obj = dictlike(**obj)
     if definition_key in obj:
         for name, block in obj[definition_key].items():

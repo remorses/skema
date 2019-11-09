@@ -1,4 +1,4 @@
-from lark import Visitor, Tree, Transformer as _Transformer, Token, v_args
+from skema.lark import Tree, Token, v_args, Transformer
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -12,12 +12,6 @@ import uuid
 from copy import copy
 
 
-class Transformer(_Transformer):
-    def __default__(self, data, children, meta):
-        "Default operation on tree (for override)"
-        if not isinstance(meta, dict):
-            meta = {}
-        return Tree(data, children, meta)
 
 
 @v_args(tree=True)

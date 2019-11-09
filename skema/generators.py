@@ -15,6 +15,12 @@ def jsonschema(tree, ref=None, resolve=False):
     return data
 
 
+def skema(tree,):
+    transformer = TransformerChain(t.RemoveAnnotations(), l.Skema())
+    data = transformer.transform(tree)
+    return data
+
+
 def python(tree):
     transformer = TransformerChain(
         t.RemoveAnnotations(),

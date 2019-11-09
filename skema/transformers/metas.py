@@ -1,5 +1,5 @@
-from lark import Visitor, Tree, Token, v_args
-from .support import Transformer
+import lark
+from skema.lark import Tree, Token, v_args, Transformer
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty

@@ -1,7 +1,7 @@
 from skema.parser import parse
-from lark import Tree
+from skema.lark import Tree
 
-def reconstruct(string) -> Tree:
+def reconstruct(string) -> str:
     try:
         from graphql import build_schema, DocumentNode
         from .print_graphql_schema import print_schema

@@ -4,6 +4,7 @@ import sys
 from skema.resolve_refs import resolve_refs
 import skema.generators as gens
 from skema.parser import parse
+from skema.reconstruct import from_graphql, from_jsonschema
 
 
 def as_list(x):
@@ -28,7 +29,6 @@ def get_stdin() -> str:
 
 
 class Gen:
-
     def python(self,):
         stdin = get_stdin()
         tree = parse(stdin)
@@ -54,24 +54,42 @@ class Gen:
         code = gens.graphql(tree)
         print(code.strip())
 
+
 class FakeData:
     pass
+
 
 class InferJson:
     pass
 
+
 class FromCode:
-    pass
+    def jsonschema(self, ref=None):
+        stdin = get_stdin()
+        obj = json.loads(stdin)
+        tree = from_jsonschema(obj, ref=ref)
+        code = gens.skema(tree)
+        print(code.strip())
+
+    def graphql(self, ):
+        stdin = get_stdin()
+        obj = json.loads(stdin)
+        tree =from_graphql(obj,)
+        code = gens.skema(tree)
+        print(code.strip())
+
 
 def print_tree():
     stdin = get_stdin()
     t = parse(stdin)
     print(t.pretty())
 
+
 Cli = {
-    'gen': Gen,
-    'fakedata': FakeData, # cat schema.skema | skema fakedata json > data.json
-    'tree': print_tree
+    "to": Gen,
+    "from": FromCode,
+    "fakedata": FakeData,  # cat schema.skema | skema fakedata json > data.json
+    "tree": print_tree
     # 'from': FromCode, # skema from jsonschema -f schema.json -t skema.skema
     # 'inferjson': InferJson # cat data.json | skema inferjson > skema.skema
 }

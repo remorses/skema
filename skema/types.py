@@ -1,4 +1,4 @@
-from lark import Lark, Tree, Transformer, Token
+from skema.lark import Tree, Token
 
 
 class UniqueKey(Token):
