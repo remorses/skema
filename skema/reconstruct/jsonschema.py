@@ -21,8 +21,8 @@ def reconstruct(obj, definition_key="definitions", root_name="Root") -> Tree:
             t = Tree(structure.ROOT_PAIR, [make_token(name), process_block(block)])
             nodes.append(t)
     if is_block(obj):
-        if "$ref" in obj:
-            root_name = get_ref_name(obj)
+        if "title" in obj:
+            root_name = obj['title']
         obj = omit(obj, ["$ref"])
         obj = dictlike(obj)
         t = Tree(structure.ROOT_PAIR, [make_token(root_name), process_block(obj)])
