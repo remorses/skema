@@ -174,7 +174,7 @@ def print_union(type_: GraphQLUnionType) -> str:
 
 def print_enum(type_: GraphQLEnumType) -> str:
     values = [
-        print_description(value, "  ", not i) + f"  {name}" + print_deprecated(value)
+        f"{name}"
         for i, (name, value) in enumerate(type_.values.items())
     ]
     return print_description(type_) + f"{type_.name}: " + ' | '.join([f'"{x}"' for x in values])

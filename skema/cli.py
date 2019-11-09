@@ -71,11 +71,9 @@ class FromCode:
         code = gens.skema(tree)
         print(code.strip())
 
-    def graphql(self, ):
+    def graphql(self,):
         stdin = get_stdin()
-        obj = json.loads(stdin)
-        tree =from_graphql(obj,)
-        code = gens.skema(tree)
+        code = from_graphql(stdin)
         print(code.strip())
 
 

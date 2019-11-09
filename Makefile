@@ -12,3 +12,6 @@ jsonschema:
 
 print:
 	cat jsonschema.skema | python -m skema tree
+
+pipes:
+	cat play.graphql | python -m skema from graphql
