@@ -44,12 +44,29 @@ def process_block(block: jsontypes.Block,):
     elif "$ref" in block:
         name = get_ref_name(block)
         return Tree(structure.REFERENCE, [name])
-    elif "anyOf" in block:
+    elif "anyOf" in block or "oneOf" in block:
+        k = 'anyOf' if block.get("anyOf") else 'oneOf'
         return Tree(
-            composed_types.UNION,
+            composed_types.UNION, [process_block(dictlike(item)) for item in block[k]]
+        )
+    elif "allOf" in block:
+        return Tree(
+            composed_types.INTERSECTION,
             [process_block(dictlike(item)) for item in block.anyOf],
         )
-
+    elif "enum" in block:
+        return Tree(composed_types.UNION, [process_block(dictlike(x)) for x in block.enum])
+    elif "const" in block:
+        x = block.const
+        data = literals.INTEGER 
+        if isinstance(x, (float,)):
+            raise Exception('const cannot contina floats')
+        if isinstance(x, (int,)):
+            data = literals.INTEGER
+        if isinstance(x, (str,)):
+            data = literals.STRING
+            x = f'"{x}"'
+        return Tree(data, [x])
     elif blocktype == "array":
         return Tree(composed_types.LIST, [process_block(dictlike(block["items"]))])
     elif blocktype == "object":
