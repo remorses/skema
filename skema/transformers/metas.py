@@ -88,5 +88,5 @@ class AddUnionMetas(TranformerDictMeta):
         list_node._meta = {**list_node._meta, "parent_key": name}
         return tree
 
-    # optional_pair = required_pair
-    # root_pair = required_pair
+    optional_pair = required_pair
+    root_pair = required_pair

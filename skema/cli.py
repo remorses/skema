@@ -27,7 +27,8 @@ def get_stdin() -> str:
     return string
 
 
-class Cli:
+class Gen:
+
     def python(self,):
         stdin = get_stdin()
         tree = parse(stdin)
@@ -53,3 +54,18 @@ class Cli:
         code = gens.graphql(tree)
         print(code.strip())
 
+class FakeData:
+    pass
+
+class InferJson:
+    pass
+
+class FromCode:
+    pass
+
+Cli = {
+    'gen': Gen,
+    'fakedata': FakeData, # cat schema.skema | skema fakedata json > data.json
+    # 'from': FromCode, # skema from jsonschema -f schema.json -t skema.skema
+    # 'inferjson': InferJson # cat data.json | skema inferjson > skema.skema
+}

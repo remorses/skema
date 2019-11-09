@@ -30,9 +30,9 @@ pip install skema
 
 ## Usage
 ```
-cat ./schema.skema | skema python > types.py
-cat ./schema.skema | skema typescript > types.ts
-cat ./schema.skema | skema jsonschema > types.json
+cat ./schema.skema | skema gen python > types.py
+cat ./schema.skema | skema gen typescript > types.ts
+cat ./schema.skema | skema gen jsonschema > types.json
 ```
 
 ## Examples

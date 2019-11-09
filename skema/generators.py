@@ -20,7 +20,7 @@ def python(tree):
         t.GetDependencies(),
         t.AddListMetas(),
         t.AddUnionMetas(),
-        t.Splitter(unions_inside_objects=False),
+        t.Splitter(unions_inside_objects=False, unions_inside_lists=False),
         t.SortOptionalsLast(),
         l.AddInitializersMetas(),
         l.Python(),

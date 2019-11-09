@@ -1,6 +1,8 @@
 from lark import Visitor, Tree, Token, v_args
+from lark.tree import Meta
 from .support import Transformer
-from ..support import capitalize
+from ..support import capitalize, structure, composed_types, literals, types
+from ..logger import logger
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -46,12 +48,14 @@ class Splitter(TransformerWithMeta):
         objects_inside_objects=True,
         objects_inside_lists=True,
         unions_inside_objects=True,
+        unions_inside_lists=True,
         join_names=join_names,
     ):
         self.types = {}
         self.join_names = join_names
         self.objects_inside_objects = objects_inside_objects
         self.objects_inside_lists = objects_inside_lists
+        self.unions_inside_lists = unions_inside_lists
         self.unions_inside_objects = unions_inside_objects
 
     def make_new_name(self, name):
@@ -87,20 +91,33 @@ class Splitter(TransformerWithMeta):
 
     @v_args(meta=True)
     def list(self, children, meta):
-        if not self.objects_inside_lists or not meta:
-            return Tree("list", children)
+        if not meta or isinstance(meta, Meta):
+            logger.warn(f'list parent of {children[0].pretty()} has not meta')
+
+        if not any([self.objects_inside_lists, self.unions_inside_lists]):
+            return Tree(composed_types.LIST, children)
+        TO_SPLIT = {
+            composed_types.OBJECT: self.objects_inside_lists,
+            composed_types.UNION: self.unions_inside_lists,
+        }
+        TO_SPLIT = [k for k, v in TO_SPLIT.items() if v]
         child, = children
-        if not child.data in ["object", "list"]:
+        if not child.data in TO_SPLIT:
             return Tree("list", children)
         name = meta["parent_key"]
         id = self.make_new_name(name)
-        old_children = copy(child.children)
-        self.types[id] = Tree("root_pair", [id] + [Tree("object", old_children)], meta={})
+        old_child = copy(child)
+        self.types[id] = Tree("root_pair", [id] + [old_child], meta={})
         return Tree("list", [Tree("reference", [id])])
 
-    @v_args(meta=True)
-    def union(self, children, meta):
-        if not self.unions_inside_objects or not meta:
+    @v_args(tree=True)
+    def union(self, t,):
+        meta = t.meta
+        children = t.children
+        if not meta:
+            logger.warning(f'no meta for {children} union')
+            return t
+        if not self.unions_inside_objects:
             return Tree("union", children)
         name = meta["parent_key"]
         id = self.make_new_name(name)
