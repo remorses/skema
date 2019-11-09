@@ -1,0 +1,39 @@
+SchemaTypeEnums: "string" | "array" | "object" | "number" | "boolean" | "integer"
+SchemaType: SchemaTypeEnums | [SchemaTypeEnums]
+
+Block: GenericBlock | Enum | Object | Array | Constant | AllOf | AnyOf | OneOf
+
+Object:
+    type: SchemaType
+    properties: Any
+    additionalProperties: Any
+    ...
+
+GenericBlock:
+    type: SchemaType
+    ...
+
+Enum:
+    enum: [Block]
+    ...
+
+Constant:
+    const: Str
+    ...
+
+AllOf:
+    allOf: [Block]
+    ...
+
+AnyOf:
+    anyOf: [Block]
+    ...
+
+OneOf:
+    oneOf: [Block]
+    ...
+
+Array:
+    items: Block
+    ...
+

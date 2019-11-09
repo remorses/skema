@@ -22,7 +22,7 @@ tree_grammar = r"""
 
 
     literal_ellipsis: "..."
-    union: (value ("|" scalar)+)
+    union: (value ("|" (scalar | list))+)
     intersection: value (("&" scalar)+ _NL | "&" _NL object)
 
     ?value: scalar

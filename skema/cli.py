@@ -63,9 +63,15 @@ class InferJson:
 class FromCode:
     pass
 
+def print_tree():
+    stdin = get_stdin()
+    t = parse(stdin)
+    print(t.pretty())
+
 Cli = {
     'gen': Gen,
     'fakedata': FakeData, # cat schema.skema | skema fakedata json > data.json
+    'tree': print_tree
     # 'from': FromCode, # skema from jsonschema -f schema.json -t skema.skema
     # 'inferjson': InferJson # cat data.json | skema inferjson > skema.skema
 }

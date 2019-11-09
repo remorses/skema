@@ -17,7 +17,9 @@ With skema you can have one single source of truth for your shared types and hav
 -   **graphql**
 -   **typescript**
 
-## Soon, adding other languages support is pretty straightforward
+## Soon
+
+adding other languages support is pretty straightforward
 
 -   **go**
 -   **rust**
@@ -42,7 +44,9 @@ cat ./schema.skema | skema gen typescript > types.ts
 cat ./schema.skema | skema gen jsonschema > types.json
 ```
 
-## Examples
+---
+
+# Examples
 
 ## Nested objects
 
