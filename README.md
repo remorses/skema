@@ -36,12 +36,17 @@ pip install skema
 
 # Usage
 
-## Generating types
 
-```
-cat ./schema.skema | skema gen python > types.py
-cat ./schema.skema | skema gen typescript > types.ts
-cat ./schema.skema | skema gen jsonschema > types.json
+```sh
+# Generating types
+cat ./schema.skema | skema to python > types.py
+cat ./schema.skema | skema to typescript > types.ts
+cat ./schema.skema | skema to jsonschema > types.json
+# From jsonschema to graphql
+cat ./schema.json | skema from jsonschema | skema to graphql > ./schema.graphql
+# From graphql to python
+cat ./schema.graphql | skema from graphql | skema to python > ./types.py
+# Use your imagination
 ```
 
 ---
