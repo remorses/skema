@@ -118,7 +118,7 @@ class Splitter(TransformerWithMeta):
             logger.warning(f'no meta for {children} union')
             return t
         if not self.unions_inside_objects:
-            return Tree("union", children)
+            return t
         name = meta["parent_key"]
         id = self.make_new_name(name)
         old_children = copy(children)

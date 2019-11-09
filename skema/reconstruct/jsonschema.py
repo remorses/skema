@@ -45,7 +45,7 @@ def process_block(block: jsontypes.Block,):
         name = get_ref_name(block)
         return Tree(structure.REFERENCE, [name])
     elif "anyOf" in block or "oneOf" in block:
-        k = 'anyOf' if block.get("anyOf") else 'oneOf'
+        k = 'anyOf' if block.get("anyOf", None) != None else 'oneOf'
         return Tree(
             composed_types.UNION, [process_block(dictlike(item)) for item in block[k]]
         )

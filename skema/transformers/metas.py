@@ -98,4 +98,4 @@ class AddUnionMetas(Transformer):
         return tree
 
     optional_pair = required_pair
-    root_pair = required_pair
+    # root_pair = required_pair # TODO these metas are then used to split unions
