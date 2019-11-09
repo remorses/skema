@@ -101,7 +101,7 @@ class Typescript(Transformer):
         if "$key" in v:
             return annotation + v.replace("$key", k)
         else:
-            return annotation + f"type {k} = {v}\n"
+            return annotation + f"export type {k} = {v}\n"
 
     pass
 
