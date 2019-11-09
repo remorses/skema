@@ -3,7 +3,7 @@ import json
 import sys
 from skema.resolve_refs import resolve_refs
 import skema.generators as gens
-import skema.parser as parse
+from skema.parser import parse
 
 
 def as_list(x):

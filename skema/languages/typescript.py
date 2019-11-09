@@ -72,7 +72,7 @@ class Typescript(Transformer):
 
     def object(self, children):
         types = "\n    ".join(children)  # .replace(' ', '.')
-        return "interface $key {\n    " + types + "\n}\n"
+        return "export interface $key {\n    " + types + "\n}\n"
 
     def list(self, children):
         value, = children

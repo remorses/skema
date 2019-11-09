@@ -156,7 +156,7 @@ class Python(Transformer):
         k, v = children
         if "$key" in v:
             return v.replace("$key", k)
-        return k + ": " + v, k, f'{k}={meta["initializer"].replace("$value", k)}'
+        return k + ": " + v, k, f'{k}={meta["initializer"].replace("$value", k)} if {k} != None else None'
 
     @v_args(meta=True)
     def optional_pair(self, children, meta):
@@ -167,7 +167,7 @@ class Python(Transformer):
             return (
                 f"{k}: Optional[{v}] = None\n",
                 f"{k}=None",
-                f'{k}={meta["initializer"].replace("$value", k)}',
+                f'{k}={meta["initializer"].replace("$value", k)} if {k} != None else None',
             )
 
     @v_args(meta=True)
