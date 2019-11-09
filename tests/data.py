@@ -110,7 +110,7 @@ User:
     x: Int
     y: Int
     unions3: unions2
-
+    ...
 Bot:
     settings?:
         x: Int
@@ -128,7 +128,16 @@ Bot:
 
 unions2: ["dsfg" | "dfg"]
 '''
-
+ellipsis = '''
+Bot:
+    settings?:
+        x: Int
+        y: Str
+        obj:
+            ciao: Str
+        ...
+    name?: Str
+'''
 # indent2 = """
 # X:
 #     ciao: Str

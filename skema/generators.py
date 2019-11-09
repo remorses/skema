@@ -6,7 +6,9 @@ from .resolve_refs import resolve_refs
 
 
 def jsonschema(tree, ref=None, resolve=False):
-    transformer = TransformerChain(l.JsonSchema(ref=ref))
+    transformer = TransformerChain(
+        t.RemoveAnnotations(), t.RemoveEllipses(), l.JsonSchema(ref=ref)
+    )
     data = transformer.transform(tree)
     if resolve:
         resolve_refs(data)
@@ -16,6 +18,7 @@ def jsonschema(tree, ref=None, resolve=False):
 def python(tree):
     transformer = TransformerChain(
         t.RemoveAnnotations(),
+        t.RemoveEllipses(),
         t.MergeIntersections(),
         t.GetDependencies(),
         t.AddListMetas(),
@@ -32,6 +35,7 @@ def python(tree):
 def typescript(tree):
     transformer = TransformerChain(
         t.RemoveAnnotations(),
+        t.RemoveEllipses(),
         t.MergeIntersections(),
         t.GetDependencies(),
         t.AddListMetas(),
@@ -45,6 +49,7 @@ def typescript(tree):
 def graphql(tree):
     transformer = TransformerChain(
         t.RemoveAnnotations(),
+        t.RemoveEllipses(),
         t.MergeIntersections(),
         t.GetDependencies(),
         t.AddListMetas(),

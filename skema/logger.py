@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-LEVEL = 'DEBUG' if os.getenv('DEBUG') else 'WARNING'
+LEVEL = 'DEBUG' if os.getenv('DEBUG') else 'ERROR'
 
 coloredlogs.DEFAULT_FIELD_STYLES = {'asctime': {'color': 'white'}, 'hostname': {'color': 'white'}, 'levelname': {
     'color': 'white', 'bold': True}, 'name': {'color': 'white'}, 'programname': {'color': 'white'}}

@@ -7,20 +7,14 @@ from collections import defaultdict
 from toposort import toposort, toposort_flatten
 from ordered_set import OrderedSet
 from ..types import UniqueKey
-from ..support import structure
+from ..support import structure, literals, composed_types
 import uuid
 from copy import copy
 
 
-class TranformerDictMeta(Transformer):
-    def __default__(self, data, children, meta):
-        "Default operation on tree (for override)"
-        if not isinstance(meta, dict):
-            meta = {}
-        return Tree(data, children, meta)
 
 @v_args(tree=True)
-class RemoveAnnotations(TranformerDictMeta):
+class RemoveAnnotations(Transformer):
     def root_pair(self, t: Tree):
         first, *_ = t.children
         if isinstance(first, Tree) and first.data == structure.ANNOTATION:
@@ -34,8 +28,23 @@ class RemoveAnnotations(TranformerDictMeta):
     optional_pair = root_pair
 
 
+
 @v_args(tree=True)
-class GetDependencies(TranformerDictMeta):
+class RemoveEllipses(Transformer):
+    def object(self, t: Tree):
+        last = t.children[-1]
+        meta = t.meta if isinstance(t.meta, dict) else {}
+        if isinstance(last, Tree) and last.data == literals.ELLIPSIS:
+            t._meta = {**meta, 'ellipsis': True}
+            t.children.pop(-1)
+            return t
+        t._meta = {**meta, 'ellipsis': False}
+        return t
+
+
+
+@v_args(tree=True)
+class GetDependencies(Transformer):
     dependencies: defaultdict
     
     def __init__(self,):
@@ -67,7 +76,7 @@ class GetDependencies(TranformerDictMeta):
 
 
 @v_args(tree=True)
-class AddListMetas(TranformerDictMeta):
+class AddListMetas(Transformer):
     def required_pair(self, tree: Tree):
         name, list_node = tree.children
         if not list_node.data == "list":
@@ -80,7 +89,7 @@ class AddListMetas(TranformerDictMeta):
 
 
 @v_args(tree=True)
-class AddUnionMetas(TranformerDictMeta):
+class AddUnionMetas(Transformer):
     def required_pair(self, tree: Tree):
         name, list_node = tree.children
         if not list_node.data == "union":

@@ -113,19 +113,19 @@ class JsonSchema(Transformer):
         ]
         children = lmap(lambda o: omit(o, ["required"]), children)
         properties = merge(*children)
-        if ELLIPSIS in children:
-            children.remove(ELLIPSIS)
-            if len(children) == 1:
-                res = {"type": "object"}
-            else:
-                res = {"type": "object", "properties": properties}
-        else:
-            res = {
-                "type": "object",
-                "properties": properties,
-                "additionalProperties": False,
-                "required": required,
-            }
+        # if ELLIPSIS in children:
+        #     children.remove(ELLIPSIS)
+        #     if len(children) == 1:
+        #         res = {"type": "object"}
+        #     else:
+        #         res = {"type": "object", "properties": properties}
+
+        res = {
+            "type": "object",
+            "properties": properties,
+            "additionalProperties": False,
+            "required": required,
+        }
         if required:
             res.update({"required": required})
         return res
@@ -143,20 +143,14 @@ class JsonSchema(Transformer):
         return {"allOf": children}
 
     def required_pair(self, children):
-        if len(children) == 3:
-            annotation, key, value = children
-        else:
-            key, value = children
-            annotation = ""
+        key, value = children
+        annotation = ""
         res = {str(key): {**value, "description": str(annotation)}, "required": True,}
         return res
 
     def root_pair(self, children):
-        if len(children) == 3:
-            annotation, key, value = children
-        else:
-            key, value = children
-            annotation = ""
+        key, value = children
+        annotation = ""
         res = {str(key): {"title": str(key), "description": str(annotation), **value}}
         return res
 
