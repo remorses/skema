@@ -4,45 +4,36 @@
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
-## Todo 
-- multiple interfaces not supported in grammar
-
 
 ## Why
 
 Today multi-service architectures requires developers to keep in sync a lot of different services built in different languages by different teams.
-To do this manually requires a lot of work always changing the shared object types between different projects and a lot of integration tests to make sure that all the services can communicate.
-With skema you can have one single source of truth for your most important shared types and can generate the validation (jsonschema) and the code to serialize them and be sure the different services can communicate.
+Doing this manually requires a lot of work always changing the shared object types between different projects and a lot of integration tests to make sure that all the services can communicate.
+With skema you can have one single source of truth for your shared types and have static checkers warn you when some services use different shared types.
 
-## Supported languages
-### built-in
+## Supported target languages
 - **jsonschema**
 - **python**
 - **graphql**
-### using [quicktype](https://github.com/quicktype/quicktype)
-- **python**
 - **typescript**
+## Soon, adding other languages support is pretty straightforward
 - **go**
 - **rust**
-- **c++**
+- **sql**
 ...
 
 ## Installation
-Requires python 3.6+ and npm
+Requires python 3.6+
 ```
 pip install skema
-npm i -g quicktype # for more languages
 ```
 
 ## Usage
 ```
-skema generate ./schema.skema --jsonschema ./your_path.json
-skema generate ./schema.skema --graphql ./your_path.graphql
-skema generate ./schema.skema --typescript ./your_path.graphql
-# using an hosted skema
-skema generate "https://gist.github.com/your_gist" --typescript ./your_path.graphql
+cat ./schema.skema | skema python > types.py
+cat ./schema.skema | skema typescript > types.ts
+cat ./schema.skema | skema jsonschema > types.json
 ```
-
 
 ## Examples
 
@@ -56,11 +47,13 @@ User:
         number: Int
         state: Str
     credit: Float
-    email: /.*@.*\.com/
+    email: Str
 ```
 
 ## Lists
 ```yml
+CronString: Str
+
 Pet:
     name: Str
     friends: [Pet] # you can reference other types
@@ -72,12 +65,14 @@ Owner:
         when: CronString
     ]
 
-CronString: Str
+
 ```
 
 ## Unions
 ```yml
 Animal: Tiger | Bear | Panthera
+
+ObjectId: Any
 
 Panthera:
     _id: ObjectId # a type alias
@@ -90,8 +85,6 @@ Tiger:
 Bear:
     _id: ObjectId
     likes_honey: Bool
-
-ObjectId: Any
 ```
 
 ## And types
@@ -100,12 +93,12 @@ Centaur: Horse & Human
 
 Horse:
     name: Str
-    eats: ["carrots" | "weeds"]
+    eats: "carrots" | "weeds"
 
 Human:
     name: Str
     surname: Str
-    eats: ["meat" | "vegetables"]
+    eats: "meat" | "vegetables"
 ```
 
 
@@ -120,19 +113,19 @@ Human:
 - null
 - "literal string"
 - /regex/
-- 0..69
+- 0 .. 69 (ranges)
 - Any
 
 
 
 ## What you can do with a skema file:
 - Validate json input
-- Generare code types for every language in your architecture (graphql, py, ts, cpp, ...)
+- Generare code types for every language in your architecture (graphql, py, ts, ...)
 - Generate fake data based on your schema
 - Infer schema from raw json (perfect for reverse engineering)
 - convert jsonschema to be easier to read
 - use it for API types documentation
-- Generate react forms, via [`react-skema-forms`]
+- Generate react forms
 - use it to plan your domain model!
 
 
@@ -145,13 +138,13 @@ Human:
     - Bool,
     - Float
     - /regex/
-    - 0..100 (int range)
-    - .0..1 (float range)
+    - 0 .. 100 (int range)
+    - .0 .. 1 (float range)
 - type inside [ ] is an array type
 - types can be mixed together: 
-    - `Str | Int` means one of string and int
+    - `Str | Int` means one of string or int
     - `Object1 & Object2` means "all the properties of object 1 and 2"
-    - `Object1 | Object2` means "properties of object 1 and 2"
-- types can be annotated writing annotations """ quotes above the definition
-- additional propertiescan be specified adding ... at the end of an object and can be better shaped treating it like a normal key, ...: Str means additional properties must be Str
+    - `Object1 | Object2` means "properties of object 1 or 2"
+- types can be annotated writing annotations """\nannotation\n""" quotes above the definition
+- you can use ... to mean that additional properties can be added to an object
 
