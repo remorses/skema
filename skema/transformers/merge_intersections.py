@@ -1,4 +1,4 @@
-from skema.lark import Tree, Token, v_args, Transformer
+from skema.lark import Tree, Token, v_args, Transformer, MutatingTransformer
 from .support import unique
 from functools import partial
 from funcy import cat, flip, collecting
@@ -7,17 +7,17 @@ from collections import defaultdict
 from toposort import toposort, toposort_flatten
 from ordered_set import OrderedSet
 from ..types import UniqueKey
+from ..support import composed_types, structure
 import uuid
 from copy import copy
 
 
-class MergeIntersections(Transformer):
+class MergeIntersections(MutatingTransformer):
     types: dict
 
     def __init__(self,):
         self.types = {}
 
-    @v_args(tree=True)
     def root_pair(self, t):
         key, *_ = t.children
         self.types[key] = t
@@ -42,17 +42,18 @@ class MergeIntersections(Transformer):
     #     tree.data = 'object'
     #     tree.children = to_join
 
-    def intersection(self, children):
+    def intersection(self, t):
         to_join = []
-        for child in children:
-            if child.data == "reference":
+        for child in t.children:
+            if child.data == structure.REFERENCE:
                 ref, = child.children
                 root_pair = self.types[ref]
                 # only if object
                 _, object = root_pair.children
                 fields = object.children
                 to_join += fields
-            elif child.data == "object":
+            elif child.data == composed_types.OBJECT:
                 to_join += child.children
-        children = unique(to_join, key=lambda x: x.children[0])
-        return Tree("object", children)
+        t.children = unique(to_join, key=lambda x: x.children[0])
+        t.data = composed_types.OBJECT
+        # return Tree("object", children)
