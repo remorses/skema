@@ -84,13 +84,16 @@ class Skema(Transformer):
     #     return value
 
     def bounded_range(self, children):
-        return 'TODO'
+        l, h, = children
+        return f'{l} .. {h}'
 
     def low_bounded_range(self, children):
-        return 'TODO'
+        x, = children
+        return f'{x} ..'
 
     def high_bounded_range(self, children):
-        return 'TODO'
+        x, = children
+        return f'.. {x}'
 
     @v_args(meta=True)
     def object(self, children, m):
