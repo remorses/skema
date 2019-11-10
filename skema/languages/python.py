@@ -3,7 +3,7 @@ from populate import indent_to, populate_string
 from skema.lark import Token, Tree, v_args
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
-from ..lark import Transformer
+from ..lark import Transformer, chain_with
 from ..support import structure, types, composed_types, literals
 
 ELLIPSIS = "..."
@@ -48,7 +48,7 @@ from typing_extensions import Literal
 
 """
 
-
+@chain_with([AddInitializersMetas()])
 class Python(Transformer):
     def __init__(self, ref=None):
         self.ref = ref

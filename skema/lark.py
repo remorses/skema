@@ -16,6 +16,7 @@ class Transformer(_Transformer):
     tree: Tree
     def transform(self, tree):
         self.tree = tree
+        self.meta = tree.meta
         return super().transform(tree)
     def __default__(self, data, children, meta):
         "Default operation on tree (for override)"

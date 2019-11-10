@@ -26,12 +26,8 @@ def python(tree):
         t.RemoveAnnotations(),
         t.RemoveEllipses(),
         t.MergeIntersections(),
-        t.GetDependencies(),
-        t.AddListMetas(),
-        t.AddUnionMetas(),
         t.Splitter(unions_inside_objects=False, unions_inside_lists=False),
         t.SortOptionalsLast(),
-        l.AddInitializersMetas(),
         l.Python(),
     )
 
@@ -43,10 +39,7 @@ def typescript(tree):
         t.RemoveAnnotations(),
         t.RemoveEllipses(),
         t.MergeIntersections(),
-        t.GetDependencies(),
-        t.AddListMetas(),
-        t.AddUnionMetas(),
-        t.Splitter(unions_inside_objects=False),
+        t.Splitter(unions_inside_objects=False, unions_inside_lists=False, ),
         l.Typescript(),
     )
     return transformer.transform(tree)
@@ -57,11 +50,8 @@ def graphql(tree):
         t.RemoveAnnotations(),
         t.RemoveEllipses(),
         t.MergeIntersections(),
-        t.GetDependencies(),
-        t.AddListMetas(),
-        t.AddUnionMetas(),
         t.Splitter(),
-        t.Printer(),
+        # t.Printer(),
         l.Graphql(),
     )
 

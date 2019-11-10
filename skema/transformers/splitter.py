@@ -1,4 +1,4 @@
-from skema.lark import Tree, Token, v_args, Transformer
+from skema.lark import Tree, Token, v_args, Transformer, chain_with
 from lark.tree import Meta
 from ..support import capitalize, structure, composed_types, literals, types
 from ..logger import logger
@@ -11,22 +11,8 @@ from ordered_set import OrderedSet
 from ..types import UniqueKey
 import uuid
 from copy import copy
+from .metas import GetDependencies
 
-
-class TransformerWithMeta(Transformer):
-    meta: dict
-
-    def __init__(self,):
-        self.meta = {}
-
-    def transform(self, t):
-        self.tree = t
-        if not t.meta or not isinstance(t.meta, dict):
-            raise Exception("needs meta")
-        self.meta = t.meta
-        # for k, v in t.meta["dependencies"].items():
-        #     print(f"{k} -> {list(v)}")
-        return super().transform(t)
 
 
 def join_names(names):
@@ -39,7 +25,34 @@ def join_names(names):
     return id
 
 
-class Splitter(TransformerWithMeta):
+@v_args(tree=True)
+class AddListMetas(Transformer):
+    def required_pair(self, tree: Tree):
+        name, list_node = tree.children
+        if not list_node.data == "list":
+            return tree
+        list_node._meta = {**list_node._meta, "parent_key": name}
+        return tree
+
+    optional_pair = required_pair
+    root_pair = required_pair
+
+
+@v_args(tree=True)
+class AddUnionMetasToSplit(Transformer):
+    def required_pair(self, tree: Tree):
+        name, list_node = tree.children
+        if not list_node.data == "union":
+            return tree
+        list_node._meta = {**list_node._meta, "parent_key": name}
+        return tree
+
+    optional_pair = required_pair
+    # root_pair = required_pair
+
+
+@chain_with([GetDependencies(), AddUnionMetasToSplit(), AddListMetas()])
+class Splitter(Transformer):
     types: dict
 
     def __init__(
