@@ -26,9 +26,11 @@ class Transformer(_Transformer):
 
 
 class MutatingTransformer(Visitor):
-    def transform(self, t):
-        self.visit(t)
-        return t
+    def transform(self, tree):
+        self.tree = tree
+        self.meta = tree.meta
+        self.visit(tree)
+        return tree
 
 
 class TopDownTransformer(Interpreter):

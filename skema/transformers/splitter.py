@@ -1,4 +1,4 @@
-from skema.lark import Tree, Token, v_args, Transformer, chain_with
+from skema.lark import Tree, Token, v_args, Transformer, chain_with, MutatingTransformer
 from lark.tree import Meta
 from ..support import capitalize, structure, composed_types, literals, types
 from ..logger import logger
@@ -25,8 +25,8 @@ def join_names(names):
     return id
 
 
-@v_args(tree=True)
-class AddListMetas(Transformer):
+
+class AddListMetas(MutatingTransformer):
     def required_pair(self, tree: Tree):
         name, list_node = tree.children
         if not list_node.data == "list":
@@ -38,14 +38,14 @@ class AddListMetas(Transformer):
     root_pair = required_pair
 
 
-@v_args(tree=True)
-class AddUnionMetasToSplit(Transformer):
+
+class AddUnionMetasToSplit(MutatingTransformer):
     def required_pair(self, tree: Tree):
         name, list_node = tree.children
         if not list_node.data == "union":
-            return tree
+            return 
         list_node._meta = {**list_node._meta, "parent_key": name}
-        return tree
+        return 
 
     optional_pair = required_pair
     # root_pair = required_pair
