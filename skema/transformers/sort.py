@@ -1,4 +1,4 @@
-from skema.lark import Tree, Token, v_args, Transformer
+from skema.lark import Tree, Token, v_args, Transformer, MutatingTransformer
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -11,12 +11,13 @@ from copy import copy
 from ..support import structure, composed_types
 
 
-class SortOptionalsLast(Transformer):
-    def object(self, children):
-        optionals = [
-            child for child in children if child.data == structure.OPTIONAL_PAIR
-        ]
-        required = [
-            child for child in children if child.data == structure.REQUIRED_PAIR
-        ]
-        return Tree(composed_types.OBJECT, required + optionals)
+class SortOptionalsLast(MutatingTransformer):
+    def object(self, t):
+        optionals = []
+        required = []
+        for child in t.children:
+            if child.data == structure.OPTIONAL_PAIR:
+                optionals += [child]
+            if child.data == structure.REQUIRED_PAIR:
+                required += [child]
+        t.children = required + optionals
