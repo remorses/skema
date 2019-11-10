@@ -8,6 +8,9 @@ from ..support import structure, types, composed_types, literals
 
 ELLIPSIS = "..."
 
+def is_float(string):
+    return '.' in string
+
 
 @v_args(tree=True)
 class AddInitializersMetas(Transformer):
@@ -26,6 +29,9 @@ class AddInitializersMetas(Transformer):
             structure.REFERENCE: lambda: f"{node.children[0]}.from_($value)",
             composed_types.OBJECT: lambda: f"unexpected object",
             composed_types.UNION: lambda: "$value",
+            composed_types.RANGE: lambda: "$value",
+            composed_types.LOW_RANGE: lambda: "$value",
+            composed_types.HIGH_RANGE: lambda: "$value",
             composed_types.LIST: lambda: f'[{self.get_initializer(node.children[0]).replace("$value", "x")} for x in $value]',
         }[str(node.data)]()
         return initializer
@@ -105,6 +111,24 @@ class Python(Transformer):
     def annotation(self, children):
         value, = children
         return value
+
+    def bounded_range(self, children):
+        l, h, = children
+        if any([is_float(x) for x in [h, l]]):
+            return 'float'
+        return 'int'
+
+    def low_bounded_range(self, children):
+        value, = children
+        if is_float(value):
+            return 'float'
+        return 'int'
+
+    def high_bounded_range(self, children):
+        value, = children
+        if is_float(value):
+            return 'float'
+        return 'int'
 
     def object(self, children):
         types = "\n".join([x for x, _, _ in children]) + "\n"

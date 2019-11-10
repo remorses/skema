@@ -138,6 +138,16 @@ Bot:
         ...
     name?: Str
 '''
+ranges = '''
+Bot:
+    settings?:
+        x: 0 .. 10
+        y: Str
+        obj:
+            ciao: Str
+        ...
+    name?: Str
+'''
 # indent2 = """
 # X:
 #     ciao: Str

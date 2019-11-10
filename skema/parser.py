@@ -20,7 +20,9 @@ tree_grammar = r"""
         | SIGNED_INT -> literal_integer
         | NAME -> reference
         | /\/.*\// -> regex
-
+        | (SIGNED_INT  | SIGNED_FLOAT) ".." (SIGNED_INT | SIGNED_FLOAT) -> bounded_range
+        | (SIGNED_INT  | SIGNED_FLOAT) ".." -> low_bounded_range
+        | ".." (SIGNED_INT  | SIGNED_FLOAT) -> high_bounded_range
 
     literal_ellipsis: "..."
     union: (value ("|" (scalar | list))+)
