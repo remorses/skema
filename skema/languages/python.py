@@ -106,11 +106,6 @@ class Python(Transformer):
         value, = children
         return value
 
-    # TODO remove and make range better
-    def scalar(self, children):
-        value, = children
-        return value
-
     def object(self, children):
         types = "\n".join([x for x, _, _ in children]) + "\n"
         arguments = ",\n".join([x for _, x, _ in children])

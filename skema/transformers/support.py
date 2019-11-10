@@ -32,12 +32,12 @@ def unique(l, *, key):
         passed.add(d)
 
 
-is_reference_parent = lambda node: (  # TODO add list reference k case
+is_reference_parent = lambda node: (
     node.data in [structure.REQUIRED_PAIR, structure.OPTIONAL_PAIR]
     and node.children[1].data == structure.REFERENCE
 )
 
-# is_reference_list_parent = lambda node: ( # TODO add list reference k case
+# is_reference_list_parent = lambda node: ( 
 #     node.data in ['optional_pair', 'required_pair'] and node.children[1].data == 'list'
 #     and (node.children[1].children[0].data == 'list')
 # )

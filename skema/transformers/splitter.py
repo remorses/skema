@@ -94,7 +94,7 @@ class Splitter(Transformer):
         if not self.objects_inside_objects:
             return Tree("object", children)
         for key in children:
-            name, value = key.children  # TODO sometimes first is annotation
+            name, value = key.children 
             if value.data in ["object"]:
                 id = self.make_new_name(name)
                 self.types[id] = Tree("root_pair", [id] + copy(key.children[1:],), meta={})

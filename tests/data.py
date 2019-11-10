@@ -93,7 +93,7 @@ Cosa:
         position: Int
 '''
 
-comments = ''' # TODO not works
+comments = ''' # TODO commentsa not work
 Cosa:
     nest:
         puppets: [

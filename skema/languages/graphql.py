@@ -61,11 +61,6 @@ class Graphql(Transformer):
         value, = children
         return str(value)
 
-    # TODO remove and make range better
-    def scalar(self, children):
-        value, = children
-        return value
-
     def object(self, children):
         return "type $key {\n" + "\n".join(["    " + c for c in children]) + "\n}\n"
 

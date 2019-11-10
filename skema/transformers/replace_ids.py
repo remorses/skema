@@ -76,7 +76,7 @@
 #         # get generic references
 #         refs_parents = Tree("", children).find_pred(is_reference_parent)
 #         for child in refs_parents:
-#             parentname, ref = child.children  #  TODO first child might be annotation
+#             parentname, ref = child.children 
 #             refname, = ref.children
 #             self.child_of[refname].add(str(key))
 #             self.child_of[refname].add(str(parentname))
@@ -125,7 +125,7 @@
 
 # #     def object(self, tree: Tree):
 # #         for key in tree.children:
-# #             name, value = key.children # TODO sometimes first is annotation
+# #             name, value = key.children
 # #             if value.data in ['object']:
 # #                 print('ok')
 # #                 id = make_id()

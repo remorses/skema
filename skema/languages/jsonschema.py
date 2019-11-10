@@ -66,11 +66,6 @@ class JsonSchema(Transformer):
         value, = children
         return value
 
-    # TODO remove and make range better
-    def scalar(self, children):
-        value, = children
-        return value
-
     def bounded_range(self, children):
         are_floats = any(["." in x for x in children])
         if are_floats:

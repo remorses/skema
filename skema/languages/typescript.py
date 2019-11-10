@@ -65,10 +65,6 @@ class Typescript(Transformer):
         value, = children
         return value
 
-    # TODO remove and make range better
-    def scalar(self, children):
-        value, = children
-        return value
 
     def object(self, children):
         types = "\n    ".join(children)  # .replace(' ', '.')
