@@ -5,11 +5,9 @@ from funcy import merge, lmap, omit, concat
 from ..parser import parser
 from ..lark import Transformer, chain_with
 from ..support import structure, types, composed_types, literals
+from .support import is_float
 
 ELLIPSIS = "..."
-
-def is_float(string):
-    return '.' in string
 
 
 @v_args(tree=True)

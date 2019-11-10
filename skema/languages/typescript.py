@@ -42,6 +42,18 @@ class Typescript(Transformer):
     def literal_false(self, _):
         return f"false"
 
+    def bounded_range(self, children):
+        l, h, = children
+        return 'number'
+
+    def low_bounded_range(self, children):
+        value, = children
+        return 'number'
+
+    def high_bounded_range(self, children):
+        value, = children
+        return 'number'
+
     def literal_string(self, children):
         value, = children
         return f'{value}'

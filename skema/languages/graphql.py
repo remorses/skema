@@ -4,6 +4,7 @@ from ..lark import Transformer
 from funcy import merge, lmap, omit, concat
 from ..parser import parser
 from ..support import modifiers
+from .support import is_float
 
 ELLIPSIS = "..."
 
@@ -32,6 +33,24 @@ class Graphql(Transformer):
 
     def type_any(self, _):
         return "Json"
+
+    def bounded_range(self, children):
+        l, h, = children
+        if any([is_float(x) for x in [h, l]]):
+            return 'Float'
+        return 'Int'
+
+    def low_bounded_range(self, children):
+        value, = children
+        if is_float(value):
+            return 'Float'
+        return 'Int'
+
+    def high_bounded_range(self, children):
+        value, = children
+        if is_float(value):
+            return 'Float'
+        return 'Int'
 
     # def literal_null(self, _):
     #     raise NotImplementedError("null not exists in graphql")
