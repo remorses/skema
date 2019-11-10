@@ -1,5 +1,5 @@
 import lark
-from skema.lark import Tree, Token, v_args, Transformer
+from skema.lark import Tree, Token, v_args, Transformer, MutatingTransformer
 from functools import partial
 from funcy import cat, flip, collecting
 from prtty import pretty
@@ -13,8 +13,8 @@ from copy import copy
 
 
 
-@v_args(tree=True)
-class RemoveAnnotations(Transformer):
+
+class RemoveAnnotations(MutatingTransformer):
     def root_pair(self, t: Tree):
         first, *_ = t.children
         if isinstance(first, Tree) and first.data == structure.ANNOTATION:
@@ -23,28 +23,27 @@ class RemoveAnnotations(Transformer):
             annotation = ''
         meta = t.meta if isinstance(t.meta, dict) else {}
         t._meta = {**meta, 'annotation': str(annotation)}
-        return t
+        # return t
     required_pair = root_pair
     optional_pair = root_pair
 
 
 
-@v_args(tree=True)
-class RemoveEllipses(Transformer):
+
+class RemoveEllipses(MutatingTransformer):
     def object(self, t: Tree):
         last = t.children[-1]
         meta = t.meta if isinstance(t.meta, dict) else {}
         if isinstance(last, Tree) and last.data == literals.ELLIPSIS:
             t._meta = {**meta, 'ellipsis': True}
             t.children.pop(-1)
-            return t
+            # return t
         t._meta = {**meta, 'ellipsis': False}
-        return t
+        # return t
 
 
 
-@v_args(tree=True)
-class GetDependencies(Transformer):
+class GetDependencies(MutatingTransformer):
     dependencies: defaultdict
     
     def __init__(self,):
@@ -57,8 +56,8 @@ class GetDependencies(Transformer):
             to_process = [x for x in v if x in self.dependencies]
             for x in to_process:
                 self.dependencies[(k)].update(self.dependencies[x])
-        return Tree("start", tree.children, meta={"dependencies": self.dependencies})
-
+        tree._meta.update({"dependencies": self.dependencies})
+        
     @property
     def dependencies_as_sets(self,):
         return {k: set(v) for k, v in self.dependencies.items()}
@@ -69,7 +68,7 @@ class GetDependencies(Transformer):
             for child in value.children:
                 k, _ = child.children
                 self.dependencies[UniqueKey(k)].add(UniqueKey(this))
-        return t
+        # return t
 
     optional_pair = required_pair
     root_pair = required_pair
