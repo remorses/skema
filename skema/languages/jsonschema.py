@@ -130,8 +130,8 @@ class JsonSchema(Transformer):
         return {"type": "array", "items": value}
 
     def union(self, children):
-        if all(["const" in x for x in children]):
-            return {"enum": children}
+        # if all(["const" in x for x in children]):
+        #     return {"enum": children}
         return {"anyOf": children}
 
     def intersection(self, children):
