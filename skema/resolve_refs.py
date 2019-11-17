@@ -2,7 +2,7 @@ from copy import deepcopy
 import json
 
 
-def recursive_resolve(schema, definitions, add_titles=False):
+def recursive_resolve(schema, definitions, add_titles):
     if not isinstance(schema, dict):
         return
     for k, v in schema.items():
@@ -17,9 +17,14 @@ def recursive_resolve(schema, definitions, add_titles=False):
             recursive_resolve(schema[k], definitions, add_titles)
         elif isinstance(v, list):
             for i, item in enumerate(v):
+                if isinstance(item, dict) and 'const' in list(item.keys()):
+                    if add_titles:
+                        item.update({'title': item['const']})
                 if isinstance(item, dict) and '$ref' in list(item.keys()):
                     # print('_')
                     ref = item['$ref'].split('/')[-1]
+                    if add_titles:
+                        definitions[ref].update({'title': ref})
                     schema[k][i] = definitions[ref]
                 elif isinstance(item, dict):
                     recursive_resolve(schema[k][i], definitions, add_titles)
@@ -31,7 +36,7 @@ def recursive_resolve(schema, definitions, add_titles=False):
             # print(f'should not be here, {k}={value}')
 
 
-def resolve_refs(schema, ref=None, add_titles=False):
+def resolve_refs(schema, ref=None, add_titles=True):
     if not 'definitions' in schema:
         return
     definitions = schema['definitions']

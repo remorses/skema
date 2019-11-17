@@ -10,6 +10,12 @@ def test_schema_is_dumpable(x):
     json.dumps(code)
 
 @pytest.mark.parametrize("x", schemas, ids=names)
+def test_schema_resolved_is_dumpable(x):
+    code = gens.jsonschema(parse(x), resolve=True)
+    pretty(code)
+    json.dumps(code)
+
+@pytest.mark.parametrize("x", schemas, ids=names)
 def test_schema_valid(x):
     code = gens.jsonschema(parse(x))
     pretty(code)

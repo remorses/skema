@@ -1,6 +1,6 @@
 from prtty import pretty
 from skema.lark import Token
-from ..lark import Transformer
+from ..lark import Transformer, v_args
 from funcy import merge, lmap, omit
 from ..parser import parser
 
@@ -130,28 +130,32 @@ class JsonSchema(Transformer):
         return {"type": "array", "items": value}
 
     def union(self, children):
-        # if all(["const" in x for x in children]):
-        #     return {"enum": children}
+        if all(["const" in x for x in children]):
+            return {"enum": [c['const'] for c in children]}
         return {"anyOf": children}
 
     def intersection(self, children):
         return {"allOf": children}
 
-    def required_pair(self, children):
+    @v_args(meta=True)
+    def required_pair(self, children, meta):
         key, value = children
-        annotation = ""
+        annotation = meta['annotation']
         res = {str(key): {**value, "description": str(annotation)}, "required": True,}
         return res
 
-    def root_pair(self, children):
+    @v_args(meta=True)
+    def root_pair(self, children, meta):
         key, value = children
-        annotation = ""
+        annotation = meta['annotation']
         res = {str(key): {"title": str(key), "description": str(annotation), **value}}
         return res
 
-    def optional_pair(self, children):
+    @v_args(meta=True)
+    def optional_pair(self, children, meta):
         key, value = children
-        res = {str(key): value, "required": False}
+        annotation = meta['annotation']
+        res = {str(key): {"description": str(annotation), **value}, "required": False}
         return res
 
     pass
