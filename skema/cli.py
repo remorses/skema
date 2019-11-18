@@ -29,28 +29,43 @@ def get_stdin() -> str:
 
 
 class Gen:
-    def python(self,):
-        stdin = get_stdin()
-        tree = parse(stdin)
+    def python(self, skema=""):
+        """
+        """
+        if not skema:
+            skema = get_stdin()
+        tree = parse(skema)
         code = gens.python(tree)
         print(code.strip())
 
-    def typescript(self,):
-        stdin = get_stdin()
-        tree = parse(stdin)
+    def typescript(self, skema=""):
+        """
+        """
+        if not skema:
+            skema = get_stdin()
+        tree = parse(skema)
         code = gens.typescript(tree)
         print(code.strip())
 
-    def jsonschema(self, ref=None, resolve=False):
-        stdin = get_stdin()
-        tree = parse(stdin)
+    def jsonschema(self, ref=None, resolve=False, skema=""):
+        """
+        Root:
+            ref: Str
+            resolve: Bool
+        """
+        if not skema:
+            skema = get_stdin()
+        tree = parse(skema)
         obj = gens.jsonschema(tree, ref=ref, resolve=resolve)
         code = json.dumps(obj, indent=4)
         print(code.strip())
 
-    def graphql(self,):
-        stdin = get_stdin()
-        tree = parse(stdin)
+    def graphql(self, skema=""):
+        """
+        """
+        if not skema:
+            skema = get_stdin()
+        tree = parse(skema)
         code = gens.graphql(tree)
         print(code.strip())
 
