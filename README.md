@@ -4,6 +4,8 @@
 <h1 align="center">skema</h1>
 <h3 align="center">Single source of truth for all your types</h3>
 
+<a href="https://skema.club/">Site</a> • <a href="https://skema.club/app">Playground</a> • <a href="https://skema.club/docs">Docs</a>
+
 ## Why
 
 Today multi-service architectures requires developers to keep in sync a lot of different services built in different languages by different teams.
