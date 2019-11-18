@@ -37,6 +37,7 @@ class Gen:
         tree = parse(skema)
         code = gens.python(tree)
         print(code.strip())
+        return code.strip()
 
     def typescript(self, skema=""):
         """
@@ -46,6 +47,7 @@ class Gen:
         tree = parse(skema)
         code = gens.typescript(tree)
         print(code.strip())
+        return code.strip()
 
     def jsonschema(self, ref=None, resolve=False, skema=""):
         """
@@ -59,6 +61,7 @@ class Gen:
         obj = gens.jsonschema(tree, ref=ref, resolve=resolve)
         code = json.dumps(obj, indent=4)
         print(code.strip())
+        return code.strip()
 
     def graphql(self, skema=""):
         """
@@ -68,6 +71,7 @@ class Gen:
         tree = parse(skema)
         code = gens.graphql(tree)
         print(code.strip())
+        return code.strip()
 
 
 class FakeData:
