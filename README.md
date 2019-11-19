@@ -1,7 +1,7 @@
 <p align="center">
   <img width="450" src="https://raw.githubusercontent.com/remorses/skema/master/.github/logo.jpg">
 </p>
-<h1 align="center">skema</h1>
+<!-- <h1 align="center">skema</h1> -->
 <h3 align="center">Single source of truth for all your types</h3>
 
 <a href="https://skema.club/">Site</a> • <a href="https://skema.club/app">Playground</a> • <a href="https://skema.club/docs">Docs</a>
@@ -37,7 +37,6 @@ pip install skema
 ```
 
 # Usage
-
 
 ```sh
 # Generating types
