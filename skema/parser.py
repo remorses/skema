@@ -9,6 +9,7 @@ tree_grammar = r"""
     start: (_NL* root_pair)+ _NL*
 
     scalar: "Str" -> type_str
+        | "String" -> type_int
         | "Int" -> type_int
         | "Float" -> type_float
         | "Bool" -> type_bool

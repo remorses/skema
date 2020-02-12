@@ -197,12 +197,19 @@ map_graphql_to_skema = {
     'ID': 'Str',
 }
 
+def gql_to_skema(field):
+    # if isinstance(field.type, (list, tuple)):
+    #     field = field[0]
+    # print(field)
+    # print(str(field.type))
+    return map_graphql_to_skema.get(str(field.type).strip(), str(field.type))
+
 def print_fields(type_: Union[GraphQLObjectType, GraphQLInterfaceType]) -> str:
     fields = [
         print_description(field, "  ", not i)
         + f"    {name}"
         + print_args(field.args, "  ")
-        + f": {map_graphql_to_skema.get(str(field.type), field.type)}"
+        + f": {gql_to_skema(field)}"
         + print_deprecated(field)
         for i, (name, field) in enumerate(type_.fields.items())
     ]
@@ -239,7 +246,7 @@ def print_args(args: Dict[str, GraphQLArgument], indentation="") -> str:
 
 def print_input_value(name: str, arg: GraphQLArgument) -> str:
     default_ast = ast_from_value(arg.default_value, arg.type)
-    arg_decl = f"{name}: {arg.type}"
+    arg_decl = f"{name}: {gql_to_skema(arg)}"
     if default_ast:
         arg_decl += f" = {print_ast(default_ast)}"
     return arg_decl

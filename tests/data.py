@@ -148,6 +148,13 @@ Bot:
         ...
     name?: Str
 '''
+
+with_enums = '''
+Enum: "a" | "b"
+X:
+    a: "a" | "b"
+    b: Enum
+'''
 # indent2 = """
 # X:
 #     ciao: Str
